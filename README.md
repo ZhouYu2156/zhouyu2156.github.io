@@ -29,6 +29,7 @@ Currently supported features:
 
 5. You can click on the attribute text listed on the card to continue viewing the information of that attribute
 
+6. Support scrolling to move the canvas
 
 ## What I want to say
 
