@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "sass": "^1.86.0",
+    "typescript": "^5.8.2",
+    "vitepress": "^1.6.3"
+  },
+  "scripts": {
+    "dev": "vitepress dev src",
+    "build": "vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "element-plus": "^2.9.7",
+    "vitepress-auto-nav": "^1.2.0"
+  }
+}

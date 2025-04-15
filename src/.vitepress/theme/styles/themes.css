@@ -1,0 +1,1667 @@
+/**
+ * 主题颜色配置
+ * 每个主题都有独立的颜色方案
+ */
+
+/* 默认主题 - 紫蓝渐变 */
+.theme-default {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #3451b2;
+  --vp-c-indigo-2: #3a5ccc;
+  --vp-c-indigo-3: #5672cd;
+  --vp-c-indigo-soft: rgba(100, 108, 255, 0.14);
+
+  --vp-c-purple-1: #6f42c1;
+  --vp-c-purple-2: #7e4cc9;
+  --vp-c-purple-3: #8e5cd9;
+  --vp-c-purple-soft: rgba(159, 122, 234, 0.14);
+
+  --vp-c-green-1: #18794e;
+  --vp-c-green-2: #299764;
+  --vp-c-green-3: #30a46c;
+  --vp-c-green-soft: rgba(16, 185, 129, 0.14);
+
+  --vp-c-yellow-1: #915930;
+  --vp-c-yellow-2: #946300;
+  --vp-c-yellow-3: #9f6a00;
+  --vp-c-yellow-soft: rgba(234, 179, 8, 0.14);
+
+  --vp-c-red-1: #b8272c;
+  --vp-c-red-2: #d5393e;
+  --vp-c-red-3: #e0575b;
+  --vp-c-red-soft: rgba(244, 63, 94, 0.14);
+
+  /* 恢复VitePress默认主题颜色 */
+  --vp-c-brand-1: var(--vp-c-indigo-1);
+  --vp-c-brand-2: var(--vp-c-indigo-2);
+  --vp-c-brand-3: var(--vp-c-indigo-3);
+  --vp-c-brand-soft: var(--vp-c-indigo-soft);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #bd34fe 50%, #47caff 50%);
+
+  /* 背景色 - 使用默认VitePress背景色 */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f6f6f7;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f6f6f7;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(60, 60, 60, 1);
+  --vp-c-text-2: rgba(60, 60, 60, 0.75);
+  --vp-c-text-3: rgba(60, 60, 60, 0.5);
+}
+
+.dark .theme-default,
+.dark.theme-default {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #a8b1ff;
+  --vp-c-indigo-2: #5c73e7;
+  --vp-c-indigo-3: #3e63dd;
+  --vp-c-indigo-soft: rgba(100, 108, 255, 0.16);
+
+  --vp-c-purple-1: #c8abfa;
+  --vp-c-purple-2: #a879e6;
+  --vp-c-purple-3: #8e5cd9;
+  --vp-c-purple-soft: rgba(159, 122, 234, 0.16);
+
+  --vp-c-green-1: #3dd68c;
+  --vp-c-green-2: #30a46c;
+  --vp-c-green-3: #298459;
+  --vp-c-green-soft: rgba(16, 185, 129, 0.16);
+
+  --vp-c-yellow-1: #f9b44e;
+  --vp-c-yellow-2: #da8b17;
+  --vp-c-yellow-3: #a46a0a;
+  --vp-c-yellow-soft: rgba(234, 179, 8, 0.16);
+
+  --vp-c-red-1: #f66f81;
+  --vp-c-red-2: #f14158;
+  --vp-c-red-3: #b62a3c;
+  --vp-c-red-soft: rgba(244, 63, 94, 0.16);
+
+  --vp-c-bg: #1b1b1f;
+  --vp-c-bg-alt: #161618;
+  --vp-c-bg-elv: #202127;
+  --vp-c-bg-soft: #202127;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(255, 255, 255, 0.87);
+  --vp-c-text-2: rgba(255, 255, 255, 0.6);
+  --vp-c-text-3: rgba(255, 255, 255, 0.38);
+}
+
+/* 翡翠绿主题 */
+.theme-emerald {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #059669;
+  --vp-c-indigo-2: #10b981;
+  --vp-c-indigo-3: #34d399;
+  --vp-c-indigo-soft: rgba(16, 185, 129, 0.14);
+
+  --vp-c-purple-1: #047857;
+  --vp-c-purple-2: #059669;
+  --vp-c-purple-3: #10b981;
+  --vp-c-purple-soft: rgba(16, 185, 129, 0.14);
+
+  --vp-c-green-1: #065f46;
+  --vp-c-green-2: #047857;
+  --vp-c-green-3: #059669;
+  --vp-c-green-soft: rgba(16, 185, 129, 0.14);
+
+  --vp-c-yellow-1: #166534;
+  --vp-c-yellow-2: #15803d;
+  --vp-c-yellow-3: #16a34a;
+  --vp-c-yellow-soft: rgba(22, 163, 74, 0.14);
+
+  --vp-c-red-1: #991b1b;
+  --vp-c-red-2: #b91c1c;
+  --vp-c-red-3: #dc2626;
+  --vp-c-red-soft: rgba(220, 38, 38, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #059669 30%, #34d399);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #059669 50%, #34d399 50%);
+
+  /* 背景色 - 绿色系柔和背景 */
+  --vp-c-bg: #f8faf9;
+  --vp-c-bg-alt: #f0f7f4;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0f7f4;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(32, 70, 58, 1);
+  --vp-c-text-2: rgba(32, 70, 58, 0.78);
+  --vp-c-text-3: rgba(32, 70, 58, 0.5);
+}
+
+.dark .theme-emerald,
+.dark.theme-emerald {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #34d399;
+  --vp-c-indigo-2: #10b981;
+  --vp-c-indigo-3: #059669;
+  --vp-c-indigo-soft: rgba(16, 185, 129, 0.16);
+
+  --vp-c-purple-1: #34d399;
+  --vp-c-purple-2: #10b981;
+  --vp-c-purple-3: #059669;
+  --vp-c-purple-soft: rgba(16, 185, 129, 0.16);
+
+  --vp-c-green-1: #34d399;
+  --vp-c-green-2: #10b981;
+  --vp-c-green-3: #059669;
+  --vp-c-green-soft: rgba(16, 185, 129, 0.16);
+
+  --vp-c-yellow-1: #4ade80;
+  --vp-c-yellow-2: #22c55e;
+  --vp-c-yellow-3: #16a34a;
+  --vp-c-yellow-soft: rgba(22, 163, 74, 0.16);
+
+  --vp-c-red-1: #f87171;
+  --vp-c-red-2: #ef4444;
+  --vp-c-red-3: #dc2626;
+  --vp-c-red-soft: rgba(220, 38, 38, 0.16);
+
+  --vp-c-bg: #0f1a17;
+  --vp-c-bg-alt: #0d1512;
+  --vp-c-bg-elv: #152922;
+  --vp-c-bg-soft: #152922;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(240, 247, 244, 0.9);
+  --vp-c-text-2: rgba(240, 247, 244, 0.62);
+  --vp-c-text-3: rgba(240, 247, 244, 0.4);
+}
+
+/* 宝石红主题 */
+.theme-ruby {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #b91c1c;
+  --vp-c-indigo-2: #dc2626;
+  --vp-c-indigo-3: #ef4444;
+  --vp-c-indigo-soft: rgba(220, 38, 38, 0.14);
+
+  --vp-c-purple-1: #991b1b;
+  --vp-c-purple-2: #b91c1c;
+  --vp-c-purple-3: #dc2626;
+  --vp-c-purple-soft: rgba(220, 38, 38, 0.14);
+
+  --vp-c-green-1: #991b1b;
+  --vp-c-green-2: #b91c1c;
+  --vp-c-green-3: #dc2626;
+  --vp-c-green-soft: rgba(220, 38, 38, 0.14);
+
+  --vp-c-yellow-1: #991b1b;
+  --vp-c-yellow-2: #b91c1c;
+  --vp-c-yellow-3: #dc2626;
+  --vp-c-yellow-soft: rgba(220, 38, 38, 0.14);
+
+  --vp-c-red-1: #7f1d1d;
+  --vp-c-red-2: #991b1b;
+  --vp-c-red-3: #b91c1c;
+  --vp-c-red-soft: rgba(220, 38, 38, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #b91c1c 30%, #fb7185);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #b91c1c 50%, #fb7185 50%);
+
+  /* 背景色 - 红色系柔和背景 */
+  --vp-c-bg: #fdfafa;
+  --vp-c-bg-alt: #faf1f1;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #faf1f1;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(82, 30, 30, 1);
+  --vp-c-text-2: rgba(82, 30, 30, 0.78);
+  --vp-c-text-3: rgba(82, 30, 30, 0.5);
+}
+
+.dark .theme-ruby,
+.dark.theme-ruby {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #f87171;
+  --vp-c-indigo-2: #ef4444;
+  --vp-c-indigo-3: #dc2626;
+  --vp-c-indigo-soft: rgba(220, 38, 38, 0.16);
+
+  --vp-c-purple-1: #f87171;
+  --vp-c-purple-2: #ef4444;
+  --vp-c-purple-3: #dc2626;
+  --vp-c-purple-soft: rgba(220, 38, 38, 0.16);
+
+  --vp-c-green-1: #f87171;
+  --vp-c-green-2: #ef4444;
+  --vp-c-green-3: #dc2626;
+  --vp-c-green-soft: rgba(220, 38, 38, 0.16);
+
+  --vp-c-yellow-1: #f87171;
+  --vp-c-yellow-2: #ef4444;
+  --vp-c-yellow-3: #dc2626;
+  --vp-c-yellow-soft: rgba(220, 38, 38, 0.16);
+
+  --vp-c-red-1: #f87171;
+  --vp-c-red-2: #ef4444;
+  --vp-c-red-3: #dc2626;
+  --vp-c-red-soft: rgba(220, 38, 38, 0.16);
+
+  --vp-c-bg: #1e1415;
+  --vp-c-bg-alt: #1a1112;
+  --vp-c-bg-elv: #251718;
+  --vp-c-bg-soft: #251718;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(250, 241, 241, 0.9);
+  --vp-c-text-2: rgba(250, 241, 241, 0.62);
+  --vp-c-text-3: rgba(250, 241, 241, 0.4);
+}
+
+/* 琥珀黄主题 */
+.theme-amber {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #d97706;
+  --vp-c-indigo-2: #f59e0b;
+  --vp-c-indigo-3: #fbbf24;
+  --vp-c-indigo-soft: rgba(245, 158, 11, 0.14);
+
+  --vp-c-purple-1: #b45309;
+  --vp-c-purple-2: #d97706;
+  --vp-c-purple-3: #f59e0b;
+  --vp-c-purple-soft: rgba(245, 158, 11, 0.14);
+
+  --vp-c-green-1: #b45309;
+  --vp-c-green-2: #d97706;
+  --vp-c-green-3: #f59e0b;
+  --vp-c-green-soft: rgba(245, 158, 11, 0.14);
+
+  --vp-c-yellow-1: #92400e;
+  --vp-c-yellow-2: #b45309;
+  --vp-c-yellow-3: #d97706;
+  --vp-c-yellow-soft: rgba(245, 158, 11, 0.14);
+
+  --vp-c-red-1: #92400e;
+  --vp-c-red-2: #b45309;
+  --vp-c-red-3: #d97706;
+  --vp-c-red-soft: rgba(245, 158, 11, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #d97706 30%, #fbbf24);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #d97706 50%, #fbbf24 50%);
+
+  /* 背景色 - 黄色系柔和背景 */
+  --vp-c-bg: #fffcf7;
+  --vp-c-bg-alt: #fdf7e9;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #fdf7e9;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(82, 58, 18, 1);
+  --vp-c-text-2: rgba(82, 58, 18, 0.78);
+  --vp-c-text-3: rgba(82, 58, 18, 0.5);
+}
+
+.dark .theme-amber,
+.dark.theme-amber {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #fbbf24;
+  --vp-c-indigo-2: #f59e0b;
+  --vp-c-indigo-3: #d97706;
+  --vp-c-indigo-soft: rgba(245, 158, 11, 0.16);
+
+  --vp-c-purple-1: #fbbf24;
+  --vp-c-purple-2: #f59e0b;
+  --vp-c-purple-3: #d97706;
+  --vp-c-purple-soft: rgba(245, 158, 11, 0.16);
+
+  --vp-c-green-1: #fbbf24;
+  --vp-c-green-2: #f59e0b;
+  --vp-c-green-3: #d97706;
+  --vp-c-green-soft: rgba(245, 158, 11, 0.16);
+
+  --vp-c-yellow-1: #fbbf24;
+  --vp-c-yellow-2: #f59e0b;
+  --vp-c-yellow-3: #d97706;
+  --vp-c-yellow-soft: rgba(245, 158, 11, 0.16);
+
+  --vp-c-red-1: #fbbf24;
+  --vp-c-red-2: #f59e0b;
+  --vp-c-red-3: #d97706;
+  --vp-c-red-soft: rgba(245, 158, 11, 0.16);
+
+  --vp-c-bg: #1e1a14;
+  --vp-c-bg-alt: #191711;
+  --vp-c-bg-elv: #251a15;
+  --vp-c-bg-soft: #251a15;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(253, 247, 233, 0.9);
+  --vp-c-text-2: rgba(253, 247, 233, 0.62);
+  --vp-c-text-3: rgba(253, 247, 233, 0.4);
+}
+
+/* 宝石蓝主题 */
+.theme-sapphire {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #1d4ed8;
+  --vp-c-indigo-2: #3b82f6;
+  --vp-c-indigo-3: #60a5fa;
+  --vp-c-indigo-soft: rgba(59, 130, 246, 0.14);
+
+  --vp-c-purple-1: #1e40af;
+  --vp-c-purple-2: #1d4ed8;
+  --vp-c-purple-3: #3b82f6;
+  --vp-c-purple-soft: rgba(59, 130, 246, 0.14);
+
+  --vp-c-green-1: #1e40af;
+  --vp-c-green-2: #1d4ed8;
+  --vp-c-green-3: #3b82f6;
+  --vp-c-green-soft: rgba(59, 130, 246, 0.14);
+
+  --vp-c-yellow-1: #1e40af;
+  --vp-c-yellow-2: #1d4ed8;
+  --vp-c-yellow-3: #3b82f6;
+  --vp-c-yellow-soft: rgba(59, 130, 246, 0.14);
+
+  --vp-c-red-1: #1e40af;
+  --vp-c-red-2: #1d4ed8;
+  --vp-c-red-3: #3b82f6;
+  --vp-c-red-soft: rgba(59, 130, 246, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #1d4ed8 30%, #60a5fa);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #1d4ed8 50%, #60a5fa 50%);
+
+  /* 背景色 - 蓝色系柔和背景 */
+  --vp-c-bg: #f8fafd;
+  --vp-c-bg-alt: #f0f5fb;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0f5fb;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(30, 58, 138, 1);
+  --vp-c-text-2: rgba(30, 58, 138, 0.78);
+  --vp-c-text-3: rgba(30, 58, 138, 0.5);
+}
+
+.dark .theme-sapphire,
+.dark.theme-sapphire {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #60a5fa;
+  --vp-c-indigo-2: #3b82f6;
+  --vp-c-indigo-3: #1d4ed8;
+  --vp-c-indigo-soft: rgba(59, 130, 246, 0.16);
+
+  --vp-c-purple-1: #60a5fa;
+  --vp-c-purple-2: #3b82f6;
+  --vp-c-purple-3: #1d4ed8;
+  --vp-c-purple-soft: rgba(59, 130, 246, 0.16);
+
+  --vp-c-green-1: #60a5fa;
+  --vp-c-green-2: #3b82f6;
+  --vp-c-green-3: #1d4ed8;
+  --vp-c-green-soft: rgba(59, 130, 246, 0.16);
+
+  --vp-c-yellow-1: #60a5fa;
+  --vp-c-yellow-2: #3b82f6;
+  --vp-c-yellow-3: #1d4ed8;
+  --vp-c-yellow-soft: rgba(59, 130, 246, 0.16);
+
+  --vp-c-red-1: #60a5fa;
+  --vp-c-red-2: #3b82f6;
+  --vp-c-red-3: #1d4ed8;
+  --vp-c-red-soft: rgba(59, 130, 246, 0.16);
+
+  --vp-c-bg: #111827;
+  --vp-c-bg-alt: #0f1623;
+  --vp-c-bg-elv: #17224a;
+  --vp-c-bg-soft: #17224a;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(240, 245, 251, 0.9);
+  --vp-c-text-2: rgba(240, 245, 251, 0.62);
+  --vp-c-text-3: rgba(240, 245, 251, 0.4);
+}
+
+/* 紫水晶主题 */
+.theme-amethyst {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #6d28d9;
+  --vp-c-indigo-2: #8b5cf6;
+  --vp-c-indigo-3: #a78bfa;
+  --vp-c-indigo-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-purple-1: #5b21b6;
+  --vp-c-purple-2: #6d28d9;
+  --vp-c-purple-3: #8b5cf6;
+  --vp-c-purple-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-green-1: #5b21b6;
+  --vp-c-green-2: #6d28d9;
+  --vp-c-green-3: #8b5cf6;
+  --vp-c-green-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-yellow-1: #5b21b6;
+  --vp-c-yellow-2: #6d28d9;
+  --vp-c-yellow-3: #8b5cf6;
+  --vp-c-yellow-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-red-1: #5b21b6;
+  --vp-c-red-2: #6d28d9;
+  --vp-c-red-3: #8b5cf6;
+  --vp-c-red-soft: rgba(139, 92, 246, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #6d28d9 30%, #a78bfa);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #6d28d9 50%, #a78bfa 50%);
+
+  /* 背景色 - 紫色系柔和背景 */
+  --vp-c-bg: #fbfafd;
+  --vp-c-bg-alt: #f5f1fb;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f5f1fb;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(67, 40, 116, 1);
+  --vp-c-text-2: rgba(67, 40, 116, 0.78);
+  --vp-c-text-3: rgba(67, 40, 116, 0.5);
+}
+
+.dark .theme-amethyst,
+.dark.theme-amethyst {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #a78bfa;
+  --vp-c-indigo-2: #8b5cf6;
+  --vp-c-indigo-3: #6d28d9;
+  --vp-c-indigo-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-purple-1: #a78bfa;
+  --vp-c-purple-2: #8b5cf6;
+  --vp-c-purple-3: #6d28d9;
+  --vp-c-purple-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-green-1: #a78bfa;
+  --vp-c-green-2: #8b5cf6;
+  --vp-c-green-3: #6d28d9;
+  --vp-c-green-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-yellow-1: #a78bfa;
+  --vp-c-yellow-2: #8b5cf6;
+  --vp-c-yellow-3: #6d28d9;
+  --vp-c-yellow-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-red-1: #a78bfa;
+  --vp-c-red-2: #8b5cf6;
+  --vp-c-red-3: #6d28d9;
+  --vp-c-red-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-bg: #17131f;
+  --vp-c-bg-alt: #14111b;
+  --vp-c-bg-elv: #1e1a30;
+  --vp-c-bg-soft: #1e1a30;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(245, 241, 251, 0.9);
+  --vp-c-text-2: rgba(245, 241, 251, 0.62);
+  --vp-c-text-3: rgba(245, 241, 251, 0.4);
+}
+
+/* 薄荷绿主题 */
+.theme-mint {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #0d9488;
+  --vp-c-indigo-2: #14b8a6;
+  --vp-c-indigo-3: #2dd4bf;
+  --vp-c-indigo-soft: rgba(20, 184, 166, 0.14);
+
+  --vp-c-purple-1: #0f766e;
+  --vp-c-purple-2: #0d9488;
+  --vp-c-purple-3: #14b8a6;
+  --vp-c-purple-soft: rgba(20, 184, 166, 0.14);
+
+  --vp-c-green-1: #0f766e;
+  --vp-c-green-2: #0d9488;
+  --vp-c-green-3: #14b8a6;
+  --vp-c-green-soft: rgba(20, 184, 166, 0.14);
+
+  --vp-c-yellow-1: #0f766e;
+  --vp-c-yellow-2: #0d9488;
+  --vp-c-yellow-3: #14b8a6;
+  --vp-c-yellow-soft: rgba(20, 184, 166, 0.14);
+
+  --vp-c-red-1: #0f766e;
+  --vp-c-red-2: #0d9488;
+  --vp-c-red-3: #14b8a6;
+  --vp-c-red-soft: rgba(20, 184, 166, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #0d9488 30%, #5eead4);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #0d9488 50%, #5eead4 50%);
+
+  /* 背景色 - 薄荷绿柔和背景 */
+  --vp-c-bg: #f8fcfc;
+  --vp-c-bg-alt: #f0f9f8;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0f9f8;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(19, 78, 74, 1);
+  --vp-c-text-2: rgba(19, 78, 74, 0.78);
+  --vp-c-text-3: rgba(19, 78, 74, 0.5);
+}
+
+.dark .theme-mint,
+.dark.theme-mint {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #2dd4bf;
+  --vp-c-indigo-2: #14b8a6;
+  --vp-c-indigo-3: #0d9488;
+  --vp-c-indigo-soft: rgba(20, 184, 166, 0.16);
+
+  --vp-c-purple-1: #2dd4bf;
+  --vp-c-purple-2: #14b8a6;
+  --vp-c-purple-3: #0d9488;
+  --vp-c-purple-soft: rgba(20, 184, 166, 0.16);
+
+  --vp-c-green-1: #2dd4bf;
+  --vp-c-green-2: #14b8a6;
+  --vp-c-green-3: #0d9488;
+  --vp-c-green-soft: rgba(20, 184, 166, 0.16);
+
+  --vp-c-yellow-1: #2dd4bf;
+  --vp-c-yellow-2: #14b8a6;
+  --vp-c-yellow-3: #0d9488;
+  --vp-c-yellow-soft: rgba(20, 184, 166, 0.16);
+
+  --vp-c-red-1: #2dd4bf;
+  --vp-c-red-2: #14b8a6;
+  --vp-c-red-3: #0d9488;
+  --vp-c-red-soft: rgba(20, 184, 166, 0.16);
+
+  --vp-c-bg: #0f1b1a;
+  --vp-c-bg-alt: #0d1616;
+  --vp-c-bg-elv: #15201f;
+  --vp-c-bg-soft: #15201f;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(240, 249, 248, 0.9);
+  --vp-c-text-2: rgba(240, 249, 248, 0.62);
+  --vp-c-text-3: rgba(240, 249, 248, 0.4);
+}
+
+/* 海洋蓝主题 */
+.theme-ocean {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #0369a1;
+  --vp-c-indigo-2: #0284c7;
+  --vp-c-indigo-3: #0ea5e9;
+  --vp-c-indigo-soft: rgba(2, 132, 199, 0.14);
+
+  --vp-c-purple-1: #075985;
+  --vp-c-purple-2: #0369a1;
+  --vp-c-purple-3: #0284c7;
+  --vp-c-purple-soft: rgba(2, 132, 199, 0.14);
+
+  --vp-c-green-1: #075985;
+  --vp-c-green-2: #0369a1;
+  --vp-c-green-3: #0284c7;
+  --vp-c-green-soft: rgba(2, 132, 199, 0.14);
+
+  --vp-c-yellow-1: #075985;
+  --vp-c-yellow-2: #0369a1;
+  --vp-c-yellow-3: #0284c7;
+  --vp-c-yellow-soft: rgba(2, 132, 199, 0.14);
+
+  --vp-c-red-1: #075985;
+  --vp-c-red-2: #0369a1;
+  --vp-c-red-3: #0284c7;
+  --vp-c-red-soft: rgba(2, 132, 199, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #0369a1 30%, #22d3ee);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #0369a1 50%, #22d3ee 50%);
+
+  /* 背景色 - 海洋蓝柔和背景 */
+  --vp-c-bg: #f8fbfd;
+  --vp-c-bg-alt: #f0f7fb;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0f7fb;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(12, 74, 110, 1);
+  --vp-c-text-2: rgba(12, 74, 110, 0.78);
+  --vp-c-text-3: rgba(12, 74, 110, 0.5);
+}
+
+.dark .theme-ocean,
+.dark.theme-ocean {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #0ea5e9;
+  --vp-c-indigo-2: #0284c7;
+  --vp-c-indigo-3: #0369a1;
+  --vp-c-indigo-soft: rgba(2, 132, 199, 0.16);
+
+  --vp-c-purple-1: #0ea5e9;
+  --vp-c-purple-2: #0284c7;
+  --vp-c-purple-3: #0369a1;
+  --vp-c-purple-soft: rgba(2, 132, 199, 0.16);
+
+  --vp-c-green-1: #0ea5e9;
+  --vp-c-green-2: #0284c7;
+  --vp-c-green-3: #0369a1;
+  --vp-c-green-soft: rgba(2, 132, 199, 0.16);
+
+  --vp-c-yellow-1: #0ea5e9;
+  --vp-c-yellow-2: #0284c7;
+  --vp-c-yellow-3: #0369a1;
+  --vp-c-yellow-soft: rgba(2, 132, 199, 0.16);
+
+  --vp-c-red-1: #0ea5e9;
+  --vp-c-red-2: #0284c7;
+  --vp-c-red-3: #0369a1;
+  --vp-c-red-soft: rgba(2, 132, 199, 0.16);
+
+  --vp-c-bg: #0a1721;
+  --vp-c-bg-alt: #08141c;
+  --vp-c-bg-elv: #0e1d29;
+  --vp-c-bg-soft: #0e1d29;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(240, 247, 251, 0.9);
+  --vp-c-text-2: rgba(240, 247, 251, 0.62);
+  --vp-c-text-3: rgba(240, 247, 251, 0.4);
+}
+
+/* 珊瑚橙主题 */
+.theme-coral {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #c2410c;
+  --vp-c-indigo-2: #ea580c;
+  --vp-c-indigo-3: #f97316;
+  --vp-c-indigo-soft: rgba(234, 88, 12, 0.14);
+
+  --vp-c-purple-1: #9a3412;
+  --vp-c-purple-2: #c2410c;
+  --vp-c-purple-3: #ea580c;
+  --vp-c-purple-soft: rgba(234, 88, 12, 0.14);
+
+  --vp-c-green-1: #9a3412;
+  --vp-c-green-2: #c2410c;
+  --vp-c-green-3: #ea580c;
+  --vp-c-green-soft: rgba(234, 88, 12, 0.14);
+
+  --vp-c-yellow-1: #9a3412;
+  --vp-c-yellow-2: #c2410c;
+  --vp-c-yellow-3: #ea580c;
+  --vp-c-yellow-soft: rgba(234, 88, 12, 0.14);
+
+  --vp-c-red-1: #9a3412;
+  --vp-c-red-2: #c2410c;
+  --vp-c-red-3: #ea580c;
+  --vp-c-red-soft: rgba(234, 88, 12, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #c2410c 30%, #fdba74);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #c2410c 50%, #fdba74 50%);
+
+  /* 背景色 - 珊瑚橙柔和背景 */
+  --vp-c-bg: #fdfaf8;
+  --vp-c-bg-alt: #faf3ef;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #faf3ef;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(124, 45, 18, 1);
+  --vp-c-text-2: rgba(124, 45, 18, 0.78);
+  --vp-c-text-3: rgba(124, 45, 18, 0.5);
+}
+
+.dark .theme-coral,
+.dark.theme-coral {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #f97316;
+  --vp-c-indigo-2: #ea580c;
+  --vp-c-indigo-3: #c2410c;
+  --vp-c-indigo-soft: rgba(234, 88, 12, 0.16);
+
+  --vp-c-purple-1: #f97316;
+  --vp-c-purple-2: #ea580c;
+  --vp-c-purple-3: #c2410c;
+  --vp-c-purple-soft: rgba(234, 88, 12, 0.16);
+
+  --vp-c-green-1: #f97316;
+  --vp-c-green-2: #ea580c;
+  --vp-c-green-3: #c2410c;
+  --vp-c-green-soft: rgba(234, 88, 12, 0.16);
+
+  --vp-c-yellow-1: #f97316;
+  --vp-c-yellow-2: #ea580c;
+  --vp-c-yellow-3: #c2410c;
+  --vp-c-yellow-soft: rgba(234, 88, 12, 0.16);
+
+  --vp-c-red-1: #f97316;
+  --vp-c-red-2: #ea580c;
+  --vp-c-red-3: #c2410c;
+  --vp-c-red-soft: rgba(234, 88, 12, 0.16);
+
+  --vp-c-bg: #1e1712;
+  --vp-c-bg-alt: #1a140f;
+  --vp-c-bg-elv: #251a15;
+  --vp-c-bg-soft: #251a15;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(250, 243, 239, 0.9);
+  --vp-c-text-2: rgba(250, 243, 239, 0.62);
+  --vp-c-text-3: rgba(250, 243, 239, 0.4);
+}
+
+/* 石墨黑主题 */
+.theme-graphite {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #374151;
+  --vp-c-indigo-2: #4b5563;
+  --vp-c-indigo-3: #6b7280;
+  --vp-c-indigo-soft: rgba(75, 85, 99, 0.14);
+
+  --vp-c-purple-1: #1f2937;
+  --vp-c-purple-2: #374151;
+  --vp-c-purple-3: #4b5563;
+  --vp-c-purple-soft: rgba(75, 85, 99, 0.14);
+
+  --vp-c-green-1: #1f2937;
+  --vp-c-green-2: #374151;
+  --vp-c-green-3: #4b5563;
+  --vp-c-green-soft: rgba(75, 85, 99, 0.14);
+
+  --vp-c-yellow-1: #1f2937;
+  --vp-c-yellow-2: #374151;
+  --vp-c-yellow-3: #4b5563;
+  --vp-c-yellow-soft: rgba(75, 85, 99, 0.14);
+
+  --vp-c-red-1: #1f2937;
+  --vp-c-red-2: #374151;
+  --vp-c-red-3: #4b5563;
+  --vp-c-red-soft: rgba(75, 85, 99, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #374151 30%, #9ca3af);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #374151 50%, #9ca3af 50%);
+
+  /* 背景色 - 石墨灰柔和背景 */
+  --vp-c-bg: #f9fafb;
+  --vp-c-bg-alt: #f1f2f4;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f1f2f4;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(31, 41, 55, 1);
+  --vp-c-text-2: rgba(31, 41, 55, 0.78);
+  --vp-c-text-3: rgba(31, 41, 55, 0.5);
+}
+
+.dark .theme-graphite,
+.dark.theme-graphite {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #9ca3af;
+  --vp-c-indigo-2: #6b7280;
+  --vp-c-indigo-3: #4b5563;
+  --vp-c-indigo-soft: rgba(75, 85, 99, 0.16);
+
+  --vp-c-purple-1: #9ca3af;
+  --vp-c-purple-2: #6b7280;
+  --vp-c-purple-3: #4b5563;
+  --vp-c-purple-soft: rgba(75, 85, 99, 0.16);
+
+  --vp-c-green-1: #9ca3af;
+  --vp-c-green-2: #6b7280;
+  --vp-c-green-3: #4b5563;
+  --vp-c-green-soft: rgba(75, 85, 99, 0.16);
+
+  --vp-c-yellow-1: #9ca3af;
+  --vp-c-yellow-2: #6b7280;
+  --vp-c-yellow-3: #4b5563;
+  --vp-c-yellow-soft: rgba(75, 85, 99, 0.16);
+
+  --vp-c-red-1: #9ca3af;
+  --vp-c-red-2: #6b7280;
+  --vp-c-red-3: #4b5563;
+  --vp-c-red-soft: rgba(75, 85, 99, 0.16);
+
+  --vp-c-bg: #1a1b1e;
+  --vp-c-bg-alt: #15171a;
+  --vp-c-bg-elv: #202225;
+  --vp-c-bg-soft: #202225;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(241, 242, 244, 0.9);
+  --vp-c-text-2: rgba(241, 242, 244, 0.62);
+  --vp-c-text-3: rgba(241, 242, 244, 0.4);
+}
+
+/* 樱花粉主题 */
+.theme-sakura {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #be185d;
+  --vp-c-indigo-2: #db2777;
+  --vp-c-indigo-3: #ec4899;
+  --vp-c-indigo-soft: rgba(219, 39, 119, 0.14);
+
+  --vp-c-purple-1: #9d174d;
+  --vp-c-purple-2: #be185d;
+  --vp-c-purple-3: #db2777;
+  --vp-c-purple-soft: rgba(219, 39, 119, 0.14);
+
+  --vp-c-green-1: #9d174d;
+  --vp-c-green-2: #be185d;
+  --vp-c-green-3: #db2777;
+  --vp-c-green-soft: rgba(219, 39, 119, 0.14);
+
+  --vp-c-yellow-1: #9d174d;
+  --vp-c-yellow-2: #be185d;
+  --vp-c-yellow-3: #db2777;
+  --vp-c-yellow-soft: rgba(219, 39, 119, 0.14);
+
+  --vp-c-red-1: #9d174d;
+  --vp-c-red-2: #be185d;
+  --vp-c-red-3: #db2777;
+  --vp-c-red-soft: rgba(219, 39, 119, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #be185d 30%, #f9a8d4);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #be185d 50%, #f9a8d4 50%);
+
+  /* 背景色 - 樱花粉柔和背景 */
+  --vp-c-bg: #fdf9fb;
+  --vp-c-bg-alt: #fbf0f5;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #fbf0f5;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(112, 26, 60, 1);
+  --vp-c-text-2: rgba(112, 26, 60, 0.78);
+  --vp-c-text-3: rgba(112, 26, 60, 0.5);
+}
+
+.dark .theme-sakura,
+.dark.theme-sakura {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #f9a8d4;
+  --vp-c-indigo-2: #ec4899;
+  --vp-c-indigo-3: #db2777;
+  --vp-c-indigo-soft: rgba(219, 39, 119, 0.16);
+
+  --vp-c-purple-1: #f9a8d4;
+  --vp-c-purple-2: #ec4899;
+  --vp-c-purple-3: #db2777;
+  --vp-c-purple-soft: rgba(219, 39, 119, 0.16);
+
+  --vp-c-green-1: #f9a8d4;
+  --vp-c-green-2: #ec4899;
+  --vp-c-green-3: #db2777;
+  --vp-c-green-soft: rgba(219, 39, 119, 0.16);
+
+  --vp-c-yellow-1: #f9a8d4;
+  --vp-c-yellow-2: #ec4899;
+  --vp-c-yellow-3: #db2777;
+  --vp-c-yellow-soft: rgba(219, 39, 119, 0.16);
+
+  --vp-c-red-1: #f9a8d4;
+  --vp-c-red-2: #ec4899;
+  --vp-c-red-3: #db2777;
+  --vp-c-red-soft: rgba(219, 39, 119, 0.16);
+
+  --vp-c-bg: #1e111b;
+  --vp-c-bg-alt: #1a0f17;
+  --vp-c-bg-elv: #261425;
+  --vp-c-bg-soft: #261425;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(251, 240, 245, 0.9);
+  --vp-c-text-2: rgba(251, 240, 245, 0.62);
+  --vp-c-text-3: rgba(251, 240, 245, 0.4);
+}
+
+/* 星河紫主题 */
+.theme-starry {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #4c1d95;
+  --vp-c-indigo-2: #6d28d9;
+  --vp-c-indigo-3: #8b5cf6;
+  --vp-c-indigo-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-purple-1: #4c1d95;
+  --vp-c-purple-2: #6d28d9;
+  --vp-c-purple-3: #8b5cf6;
+  --vp-c-purple-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-green-1: #4c1d95;
+  --vp-c-green-2: #6d28d9;
+  --vp-c-green-3: #8b5cf6;
+  --vp-c-green-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-yellow-1: #4c1d95;
+  --vp-c-yellow-2: #6d28d9;
+  --vp-c-yellow-3: #8b5cf6;
+  --vp-c-yellow-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-red-1: #4c1d95;
+  --vp-c-red-2: #6d28d9;
+  --vp-c-red-3: #8b5cf6;
+  --vp-c-red-soft: rgba(139, 92, 246, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #4c1d95 30%, #c4b5fd);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #4c1d95 50%, #c4b5fd 50%);
+
+  /* 背景色系列 */
+  --vp-c-bg: #fcfaff;
+  --vp-c-bg-alt: #f5f0ff;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f5f0ff;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(55, 33, 95, 1);
+  --vp-c-text-2: rgba(55, 33, 95, 0.78);
+  --vp-c-text-3: rgba(55, 33, 95, 0.5);
+
+  /* 边框颜色 */
+  --vp-c-border: #d8c9fc;
+  --vp-c-divider: #e9deff;
+  --vp-c-gutter: #e9deff;
+
+  /* 代码块 */
+  --vp-code-color: #6d28d9;
+  --vp-code-bg: rgba(139, 92, 246, 0.08);
+  --vp-code-block-bg: #f8f6ff;
+  --vp-code-block-divider-color: rgba(139, 92, 246, 0.2);
+}
+
+.dark .theme-starry,
+.dark.theme-starry {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #c4b5fd;
+  --vp-c-indigo-2: #8b5cf6;
+  --vp-c-indigo-3: #6d28d9;
+  --vp-c-indigo-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-purple-1: #c4b5fd;
+  --vp-c-purple-2: #8b5cf6;
+  --vp-c-purple-3: #6d28d9;
+  --vp-c-purple-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-green-1: #c4b5fd;
+  --vp-c-green-2: #8b5cf6;
+  --vp-c-green-3: #6d28d9;
+  --vp-c-green-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-yellow-1: #c4b5fd;
+  --vp-c-yellow-2: #8b5cf6;
+  --vp-c-yellow-3: #6d28d9;
+  --vp-c-yellow-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-red-1: #c4b5fd;
+  --vp-c-red-2: #8b5cf6;
+  --vp-c-red-3: #6d28d9;
+  --vp-c-red-soft: rgba(139, 92, 246, 0.16);
+
+  /* 背景色系列 */
+  --vp-c-bg: #17122a;
+  --vp-c-bg-alt: #120f21;
+  --vp-c-bg-elv: #1e193a;
+  --vp-c-bg-soft: #1e193a;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(240, 231, 255, 0.9);
+  --vp-c-text-2: rgba(240, 231, 255, 0.62);
+  --vp-c-text-3: rgba(240, 231, 255, 0.4);
+
+  /* 边框颜色 */
+  --vp-c-border: #372d5c;
+  --vp-c-divider: #2a2347;
+  --vp-c-gutter: #100d1d;
+
+  /* 代码块 */
+  --vp-code-color: #a78bfa;
+  --vp-code-bg: rgba(139, 92, 246, 0.16);
+  --vp-code-block-bg: #13112a;
+  --vp-code-block-divider-color: rgba(139, 92, 246, 0.3);
+}
+
+/* 深海蓝主题 */
+.theme-deep-ocean {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #0c4a6e;
+  --vp-c-indigo-2: #0369a1;
+  --vp-c-indigo-3: #0284c7;
+  --vp-c-indigo-soft: rgba(3, 105, 161, 0.14);
+
+  --vp-c-purple-1: #0c4a6e;
+  --vp-c-purple-2: #0369a1;
+  --vp-c-purple-3: #0284c7;
+  --vp-c-purple-soft: rgba(3, 105, 161, 0.14);
+
+  --vp-c-green-1: #0c4a6e;
+  --vp-c-green-2: #0369a1;
+  --vp-c-green-3: #0284c7;
+  --vp-c-green-soft: rgba(3, 105, 161, 0.14);
+
+  --vp-c-yellow-1: #0c4a6e;
+  --vp-c-yellow-2: #0369a1;
+  --vp-c-yellow-3: #0284c7;
+  --vp-c-yellow-soft: rgba(3, 105, 161, 0.14);
+
+  --vp-c-red-1: #0c4a6e;
+  --vp-c-red-2: #0369a1;
+  --vp-c-red-3: #0284c7;
+  --vp-c-red-soft: rgba(3, 105, 161, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #0c4a6e 30%, #38bdf8);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #0c4a6e 50%, #38bdf8 50%);
+
+  /* 背景色系列 */
+  --vp-c-bg: #f8fcfe;
+  --vp-c-bg-alt: #f0f9ff;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0f9ff;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(10, 60, 95, 1);
+  --vp-c-text-2: rgba(10, 60, 95, 0.78);
+  --vp-c-text-3: rgba(10, 60, 95, 0.5);
+
+  /* 边框颜色 */
+  --vp-c-border: #bae1ff;
+  --vp-c-divider: #daeeff;
+  --vp-c-gutter: #daeeff;
+
+  /* 代码块 */
+  --vp-code-color: #0369a1;
+  --vp-code-bg: rgba(3, 105, 161, 0.08);
+  --vp-code-block-bg: #f5faff;
+  --vp-code-block-divider-color: rgba(3, 105, 161, 0.2);
+}
+
+.dark .theme-deep-ocean,
+.dark.theme-deep-ocean {
+  /* 调色盘 */
+  --vp-c-gray-1: #515c67;
+  --vp-c-gray-2: #414853;
+  --vp-c-gray-3: #32363f;
+  --vp-c-gray-soft: rgba(101, 117, 133, 0.16);
+
+  --vp-c-indigo-1: #38bdf8;
+  --vp-c-indigo-2: #0284c7;
+  --vp-c-indigo-3: #0369a1;
+  --vp-c-indigo-soft: rgba(3, 105, 161, 0.16);
+
+  --vp-c-purple-1: #38bdf8;
+  --vp-c-purple-2: #0284c7;
+  --vp-c-purple-3: #0369a1;
+  --vp-c-purple-soft: rgba(3, 105, 161, 0.16);
+
+  --vp-c-green-1: #38bdf8;
+  --vp-c-green-2: #0284c7;
+  --vp-c-green-3: #0369a1;
+  --vp-c-green-soft: rgba(3, 105, 161, 0.16);
+
+  --vp-c-yellow-1: #38bdf8;
+  --vp-c-yellow-2: #0284c7;
+  --vp-c-yellow-3: #0369a1;
+  --vp-c-yellow-soft: rgba(3, 105, 161, 0.16);
+
+  --vp-c-red-1: #38bdf8;
+  --vp-c-red-2: #0284c7;
+  --vp-c-red-3: #0369a1;
+  --vp-c-red-soft: rgba(3, 105, 161, 0.16);
+
+  /* 背景色系列 */
+  --vp-c-bg: #051a2b;
+  --vp-c-bg-alt: #041525;
+  --vp-c-bg-elv: #082541;
+  --vp-c-bg-soft: #082541;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(228, 243, 255, 0.9);
+  --vp-c-text-2: rgba(228, 243, 255, 0.62);
+  --vp-c-text-3: rgba(228, 243, 255, 0.4);
+
+  /* 边框颜色 */
+  --vp-c-border: #14426a;
+  --vp-c-divider: #0f3152;
+  --vp-c-gutter: #021220;
+
+  /* 代码块 */
+  --vp-code-color: #38bdf8;
+  --vp-code-bg: rgba(3, 105, 161, 0.16);
+  --vp-code-block-bg: #041e2f;
+  --vp-code-block-divider-color: rgba(3, 105, 161, 0.3);
+}
+
+/* 森林绿主题 */
+.theme-forest-green {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #166534;
+  --vp-c-indigo-2: #16a34a;
+  --vp-c-indigo-3: #22c55e;
+  --vp-c-indigo-soft: rgba(22, 163, 74, 0.14);
+
+  --vp-c-purple-1: #166534;
+  --vp-c-purple-2: #16a34a;
+  --vp-c-purple-3: #22c55e;
+  --vp-c-purple-soft: rgba(22, 163, 74, 0.14);
+
+  --vp-c-green-1: #166534;
+  --vp-c-green-2: #16a34a;
+  --vp-c-green-3: #22c55e;
+  --vp-c-green-soft: rgba(22, 163, 74, 0.14);
+
+  --vp-c-yellow-1: #166534;
+  --vp-c-yellow-2: #16a34a;
+  --vp-c-yellow-3: #22c55e;
+  --vp-c-yellow-soft: rgba(22, 163, 74, 0.14);
+
+  --vp-c-red-1: #166534;
+  --vp-c-red-2: #16a34a;
+  --vp-c-red-3: #22c55e;
+  --vp-c-red-soft: rgba(22, 163, 74, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #166534 30%, #86efac);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #166534 50%, #86efac 50%);
+
+  /* 背景色系列 */
+  --vp-c-bg: #f8fcf8;
+  --vp-c-bg-alt: #f0f7f4;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f0f7f4;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(23, 63, 36, 1);
+  --vp-c-text-2: rgba(23, 63, 36, 0.78);
+  --vp-c-text-3: rgba(23, 63, 36, 0.5);
+
+  /* 边框颜色 */
+  --vp-c-border: #bbeecb;
+  --vp-c-divider: #dcfce7;
+  --vp-c-gutter: #dcfce7;
+
+  /* 代码块 */
+  --vp-code-color: #16a34a;
+  --vp-code-bg: rgba(22, 163, 74, 0.08);
+  --vp-code-block-bg: #f3fcf3;
+  --vp-code-block-divider-color: rgba(22, 163, 74, 0.2);
+}
+
+.dark .theme-forest-green,
+.dark.theme-forest-green {
+  /* 背景色系列 */
+  --vp-c-bg: #0a2014;
+  --vp-c-bg-alt: #091b11;
+  --vp-c-bg-elv: #102f1d;
+  --vp-c-bg-soft: #102f1d;
+
+  /* 文本颜色 - 提高亮度和对比度 */
+  --vp-c-text-1: rgba(255, 255, 255, 0.95);
+  --vp-c-text-2: rgba(255, 255, 255, 0.75);
+  --vp-c-text-3: rgba(255, 255, 255, 0.5);
+
+  /* 品牌与UI元素颜色 - 在暗色模式下使用更亮的颜色 */
+  --vp-c-indigo-1: #4ade80;
+  --vp-c-indigo-2: #22c55e;
+  --vp-c-indigo-3: #16a34a;
+  --vp-c-indigo-soft: rgba(74, 222, 128, 0.16);
+
+  --vp-c-purple-1: #4ade80;
+  --vp-c-purple-2: #22c55e;
+  --vp-c-purple-3: #16a34a;
+  --vp-c-purple-soft: rgba(74, 222, 128, 0.16);
+
+  --vp-c-green-1: #4ade80;
+  --vp-c-green-2: #22c55e;
+  --vp-c-green-3: #16a34a;
+  --vp-c-green-soft: rgba(74, 222, 128, 0.16);
+
+  --vp-c-yellow-1: #4ade80;
+  --vp-c-yellow-2: #22c55e;
+  --vp-c-yellow-3: #16a34a;
+  --vp-c-yellow-soft: rgba(74, 222, 128, 0.16);
+
+  --vp-c-red-1: #4ade80;
+  --vp-c-red-2: #22c55e;
+  --vp-c-red-3: #16a34a;
+  --vp-c-red-soft: rgba(74, 222, 128, 0.16);
+
+  /* 边框颜色 */
+  --vp-c-border: #205b38;
+  --vp-c-divider: #184a2d;
+  --vp-c-gutter: #051c0e;
+
+  /* 代码块 */
+  --vp-code-color: #4ade80;
+  --vp-code-bg: rgba(22, 163, 74, 0.16);
+  --vp-code-block-bg: #0a2516;
+  --vp-code-block-divider-color: rgba(22, 163, 74, 0.3);
+}
+
+/* 暖阳金主题 */
+.theme-warm-gold {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #b45309;
+  --vp-c-indigo-2: #d97706;
+  --vp-c-indigo-3: #f59e0b;
+  --vp-c-indigo-soft: rgba(217, 119, 6, 0.14);
+
+  --vp-c-purple-1: #b45309;
+  --vp-c-purple-2: #d97706;
+  --vp-c-purple-3: #f59e0b;
+  --vp-c-purple-soft: rgba(217, 119, 6, 0.14);
+
+  --vp-c-green-1: #b45309;
+  --vp-c-green-2: #d97706;
+  --vp-c-green-3: #f59e0b;
+  --vp-c-green-soft: rgba(217, 119, 6, 0.14);
+
+  --vp-c-yellow-1: #b45309;
+  --vp-c-yellow-2: #d97706;
+  --vp-c-yellow-3: #f59e0b;
+  --vp-c-yellow-soft: rgba(217, 119, 6, 0.14);
+
+  --vp-c-red-1: #b45309;
+  --vp-c-red-2: #d97706;
+  --vp-c-red-3: #f59e0b;
+  --vp-c-red-soft: rgba(217, 119, 6, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #b45309 30%, #fcd34d);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #b45309 50%, #fcd34d 50%);
+
+  /* 背景色系列 */
+  --vp-c-bg: #fffef8;
+  --vp-c-bg-alt: #fdf7e9;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #fdf7e9;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(88, 52, 9, 1);
+  --vp-c-text-2: rgba(88, 52, 9, 0.78);
+  --vp-c-text-3: rgba(88, 52, 9, 0.5);
+
+  /* 边框颜色 */
+  --vp-c-border: #fcd34d;
+  --vp-c-divider: #fef3c7;
+  --vp-c-gutter: #fef3c7;
+
+  /* 代码块 */
+  --vp-code-color: #d97706;
+  --vp-code-bg: rgba(217, 119, 6, 0.08);
+  --vp-code-block-bg: #fffaec;
+  --vp-code-block-divider-color: rgba(217, 119, 6, 0.2);
+}
+
+.dark .theme-warm-gold,
+.dark.theme-warm-gold {
+  /* 背景色系列 */
+  --vp-c-bg: #271c08;
+  --vp-c-bg-alt: #211807;
+  --vp-c-bg-elv: #372a12;
+  --vp-c-bg-soft: #372a12;
+
+  /* 文本颜色 - 提高亮度和对比度 */
+  --vp-c-text-1: rgba(255, 255, 255, 0.95);
+  --vp-c-text-2: rgba(255, 255, 255, 0.75);
+  --vp-c-text-3: rgba(255, 255, 255, 0.5);
+
+  /* 品牌与UI元素颜色 - 在暗色模式下使用更亮的颜色 */
+  --vp-c-indigo-1: #fbbf24;
+  --vp-c-indigo-2: #f59e0b;
+  --vp-c-indigo-3: #d97706;
+  --vp-c-indigo-soft: rgba(251, 191, 36, 0.16);
+
+  --vp-c-purple-1: #fbbf24;
+  --vp-c-purple-2: #f59e0b;
+  --vp-c-purple-3: #d97706;
+  --vp-c-purple-soft: rgba(251, 191, 36, 0.16);
+
+  --vp-c-green-1: #fbbf24;
+  --vp-c-green-2: #f59e0b;
+  --vp-c-green-3: #d97706;
+  --vp-c-green-soft: rgba(251, 191, 36, 0.16);
+
+  --vp-c-yellow-1: #fbbf24;
+  --vp-c-yellow-2: #f59e0b;
+  --vp-c-yellow-3: #d97706;
+  --vp-c-yellow-soft: rgba(251, 191, 36, 0.16);
+
+  --vp-c-red-1: #fbbf24;
+  --vp-c-red-2: #f59e0b;
+  --vp-c-red-3: #d97706;
+  --vp-c-red-soft: rgba(251, 191, 36, 0.16);
+
+  /* 边框颜色 */
+  --vp-c-border: #925d14;
+  --vp-c-divider: #6b440e;
+  --vp-c-gutter: #251a08;
+
+  /* 代码块 */
+  --vp-code-color: #fbbf24;
+  --vp-code-bg: rgba(217, 119, 6, 0.16);
+  --vp-code-block-bg: #2b2005;
+  --vp-code-block-divider-color: rgba(217, 119, 6, 0.3);
+}
+
+/* 玫瑰红主题 */
+.theme-rose {
+  /* 调色盘 */
+  --vp-c-gray-1: #dddde3;
+  --vp-c-gray-2: #e4e4e9;
+  --vp-c-gray-3: #ebebef;
+  --vp-c-gray-soft: rgba(142, 150, 170, 0.14);
+
+  --vp-c-indigo-1: #9f1239;
+  --vp-c-indigo-2: #be123c;
+  --vp-c-indigo-3: #e11d48;
+  --vp-c-indigo-soft: rgba(190, 18, 60, 0.14);
+
+  --vp-c-purple-1: #9f1239;
+  --vp-c-purple-2: #be123c;
+  --vp-c-purple-3: #e11d48;
+  --vp-c-purple-soft: rgba(190, 18, 60, 0.14);
+
+  --vp-c-green-1: #9f1239;
+  --vp-c-green-2: #be123c;
+  --vp-c-green-3: #e11d48;
+  --vp-c-green-soft: rgba(190, 18, 60, 0.14);
+
+  --vp-c-yellow-1: #9f1239;
+  --vp-c-yellow-2: #be123c;
+  --vp-c-yellow-3: #e11d48;
+  --vp-c-yellow-soft: rgba(190, 18, 60, 0.14);
+
+  --vp-c-red-1: #9f1239;
+  --vp-c-red-2: #be123c;
+  --vp-c-red-3: #e11d48;
+  --vp-c-red-soft: rgba(190, 18, 60, 0.14);
+
+  /* 主页渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #9f1239 30%, #fb7185);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #9f1239 50%, #fb7185 50%);
+
+  /* 背景色系列 */
+  --vp-c-bg: #fff9fb;
+  --vp-c-bg-alt: #fff1f5;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #fff1f5;
+
+  /* 文本颜色 */
+  --vp-c-text-1: rgba(96, 19, 39, 1);
+  --vp-c-text-2: rgba(96, 19, 39, 0.78);
+  --vp-c-text-3: rgba(96, 19, 39, 0.5);
+
+  /* 边框颜色 */
+  --vp-c-border: #fbbccc;
+  --vp-c-divider: #fde2e9;
+  --vp-c-gutter: #fde2e9;
+
+  /* 代码块 */
+  --vp-code-color: #be123c;
+  --vp-code-bg: rgba(190, 18, 60, 0.08);
+  --vp-code-block-bg: #fef6f8;
+  --vp-code-block-divider-color: rgba(190, 18, 60, 0.2);
+}
+
+.dark .theme-rose,
+.dark.theme-rose {
+  /* 背景色系列 */
+  --vp-c-bg: #260d16;
+  --vp-c-bg-alt: #210b13;
+  --vp-c-bg-elv: #3c1724;
+  --vp-c-bg-soft: #3c1724;
+
+  /* 文本颜色 - 提高亮度和对比度 */
+  --vp-c-text-1: rgba(255, 255, 255, 0.95);
+  --vp-c-text-2: rgba(255, 255, 255, 0.75);
+  --vp-c-text-3: rgba(255, 255, 255, 0.5);
+
+  /* 品牌与UI元素颜色 - 在暗色模式下使用更亮的颜色 */
+  --vp-c-indigo-1: #fb7185;
+  --vp-c-indigo-2: #e11d48;
+  --vp-c-indigo-3: #be123c;
+  --vp-c-indigo-soft: rgba(251, 113, 133, 0.16);
+
+  --vp-c-purple-1: #fb7185;
+  --vp-c-purple-2: #e11d48;
+  --vp-c-purple-3: #be123c;
+  --vp-c-purple-soft: rgba(251, 113, 133, 0.16);
+
+  --vp-c-green-1: #fb7185;
+  --vp-c-green-2: #e11d48;
+  --vp-c-green-3: #be123c;
+  --vp-c-green-soft: rgba(251, 113, 133, 0.16);
+
+  --vp-c-yellow-1: #fb7185;
+  --vp-c-yellow-2: #e11d48;
+  --vp-c-yellow-3: #be123c;
+  --vp-c-yellow-soft: rgba(251, 113, 133, 0.16);
+
+  --vp-c-red-1: #fb7185;
+  --vp-c-red-2: #e11d48;
+  --vp-c-red-3: #be123c;
+  --vp-c-red-soft: rgba(251, 113, 133, 0.16);
+
+  /* 边框颜色 */
+  --vp-c-border: #852237;
+  --vp-c-divider: #601729;
+  --vp-c-gutter: #260d16;
+
+  /* 代码块 */
+  --vp-code-color: #fb7185;
+  --vp-code-bg: rgba(190, 18, 60, 0.16);
+  --vp-code-block-bg: #30111d;
+  --vp-code-block-divider-color: rgba(190, 18, 60, 0.3);
+}
+
+/* 更新所有继承自主题色的组件 */
+:root {
+  /* 按钮 */
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: var(--vp-c-white);
+  --vp-button-brand-bg: var(--vp-c-brand-3);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: var(--vp-c-white);
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: var(--vp-c-white);
+  --vp-button-brand-active-bg: var(--vp-c-brand-1);
+
+  /* 提示块 */
+  --vp-custom-block-tip-border: transparent;
+  --vp-custom-block-tip-text: var(--vp-c-text-1);
+  --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
+  --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
+
+  /* 搜索框 */
+  --docsearch-primary-color: var(--vp-c-brand-1) !important;
+}
+
+/* 为所有主题添加全局动画过渡效果 */
+html {
+  transition: --vp-c-brand-1 0.25s ease, --vp-c-brand-2 0.25s ease, --vp-c-brand-3 0.25s ease,
+    --vp-c-brand-soft 0.25s ease, --vp-home-hero-name-background 0.25s ease,
+    --vp-home-hero-image-background-image 0.25s ease;
+}
+
+/** sponsor 去掉灰色滤镜 */
+.vp-sponsor-grid-item .vp-sponsor-grid-image {
+  filter: grayscale(0) invert(0);
+}
+
+/** 修改滚动条样式 **/
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  border-radius: 10px;
+  background-color: var(--vp-c-bg-soft);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--vp-c-brand-2);
+  opacity: 0.7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--vp-c-brand-1);
+}

@@ -1,0 +1,46 @@
+/**
+ * 主题过渡动画样式
+ * 用于实现平滑的主题切换效果
+ */
+
+/* 全局过渡效果 - 应用于HTML元素 */
+html {
+  /* 颜色过渡 */
+  transition-property: background-color, color, border-color, --vp-c-bg, --vp-c-bg-soft, --vp-c-bg-mute, --vp-c-bg-alt,
+    --vp-c-bg-elv, --vp-c-text-1, --vp-c-text-2, --vp-c-text-3, --vp-c-divider, --vp-c-divider-light, --vp-c-brand-1,
+    --vp-c-brand-2, --vp-c-brand-3, --vp-c-brand-soft, --vp-home-hero-name-background,
+    --vp-home-hero-image-background-image;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+/* 主内容区域过渡 */
+.VPContent,
+.VPNav,
+.VPNavBar,
+.VPSidebar,
+.VPFooter,
+.VPDoc,
+.content-container,
+.aside,
+.main {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+/* View Transitions API 过渡样式 */
+::view-transition-old(dark-mode),
+::view-transition-new(dark-mode) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(dark-mode),
+.dark::view-transition-new(dark-mode) {
+  z-index: 1;
+}
+
+::view-transition-new(dark-mode),
+.dark::view-transition-old(dark-mode) {
+  z-index: 9999;
+}

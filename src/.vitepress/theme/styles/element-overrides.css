@@ -1,0 +1,79 @@
+/**
+ * Element Plus 样式覆盖
+ * 确保Element Plus组件与VitePress主题风格一致
+ */
+
+/* 使用VitePress主题颜色定制Element Plus组件 */
+:root {
+  /* 按钮 */
+  --el-color-primary: var(--vp-c-brand-1);
+  --el-color-primary-light-3: var(--vp-c-brand-2);
+  --el-color-primary-light-5: var(--vp-c-brand-3);
+  --el-color-primary-dark-2: var(--vp-c-brand-1);
+
+  /* 文本颜色 */
+  --el-text-color-primary: var(--vp-c-text-1);
+  --el-text-color-regular: var(--vp-c-text-2);
+  --el-text-color-secondary: var(--vp-c-text-3);
+
+  /* 边框颜色 */
+  --el-border-color: var(--vp-c-divider);
+  --el-border-color-light: var(--vp-c-divider-light);
+
+  /* 背景颜色 */
+  --el-bg-color: var(--vp-c-bg);
+  --el-bg-color-page: var(--vp-c-bg);
+  --el-bg-color-overlay: var(--vp-c-bg-soft);
+
+  /* 字体 */
+  --el-font-family: var(--vp-font-family-base);
+}
+
+/* 下拉菜单样式调整 */
+.el-dropdown-menu {
+  padding: 8px 0;
+}
+
+.el-dropdown-menu__item {
+  line-height: 1.5;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* 暗模式下的下拉菜单 */
+.dark .el-dropdown-menu {
+  background-color: var(--vp-c-bg);
+  border-color: var(--vp-c-divider);
+}
+
+.dark .el-dropdown-menu__item:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.dark .el-dropdown-menu__item.is-disabled {
+  color: var(--vp-c-text-3);
+}
+
+/* 修复popper箭头在暗模式下的颜色 */
+.dark .el-popper__arrow::before {
+  background: var(--vp-c-bg);
+  border-color: var(--vp-c-divider);
+}
+
+/* 分割线 */
+.el-divider {
+  margin: 8px 0;
+  border-top-color: var(--vp-c-divider);
+}
+
+/* 高度一致性调整 */
+.el-input__inner,
+.el-button {
+  height: 32px;
+  line-height: 32px;
+}
+
+/* 图标大小统一 */
+.el-icon {
+  font-size: 16px;
+}
