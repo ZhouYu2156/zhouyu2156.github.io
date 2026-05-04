@@ -2,8 +2,11 @@
 import { useData } from 'vitepress'
 import DefaultTheme, { VPSponsors } from 'vitepress/theme'
 import { nextTick, provide } from 'vue'
+import MusicPlayerBar from '../components/MusicPlayerBar.vue'
+import { useTreasuredMusicPlayer } from '../composables/treasuredMusicPlayer'
 
 const { isDark } = useData()
+const { playerBarExpanded, playbackEngaged } = useTreasuredMusicPlayer()
 
 const enableTransitions = () =>
   'startViewTransition' in document && window.matchMedia('(prefers-reduced-motion: no-preference)').matches
@@ -70,6 +73,17 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
         ]" />
     </template>
   </DefaultTheme.Layout>
+  <!-- 底部占位：有播放会话后，展开为大面板；收起为迷你底栏 -->
+  <div
+    v-if="playbackEngaged"
+    class="shrink-0 transition-[height] duration-300 ease-in-out"
+    :class="
+      playerBarExpanded
+        ? 'h-[calc(300px+env(safe-area-inset-bottom))] lg:h-[calc(200px+env(safe-area-inset-bottom))]'
+        : 'h-[calc(68px+env(safe-area-inset-bottom))]'
+    "
+    aria-hidden="true" />
+  <MusicPlayerBar />
 </template>
 
 <style lang="css">

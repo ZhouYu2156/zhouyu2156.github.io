@@ -52,7 +52,7 @@ export default defineConfig({
       { text: '官方首页', link: '/' },
       { text: '所有产品', link: '/products/' },
       { text: '技术文档', link: '/docs/' },
-      { text: '作者履历', link: '/author/' },
+      { text: '作者履历', link: '/resume/' },
       { text: '个人博客', link: '/blogs/' },
       { text: '天涯社区', link: '/community/' },
       { text: '登录', link: '/login/' },

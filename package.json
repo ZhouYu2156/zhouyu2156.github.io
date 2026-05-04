@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter @jiketu/web dev",
-    "build": "pnpm --filter @jiketu/web build"
+    "build": "pnpm --filter @jiketu/web build",
+    "preview": "pnpm --filter @jiketu/web preview"
   },
   "keywords": [],
   "author": "",

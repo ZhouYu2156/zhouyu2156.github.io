@@ -51,3 +51,5 @@ features:
 ---
 
 <HomeSponsors />
+
+## 会有越来越多功能和内容加入，敬请期待！

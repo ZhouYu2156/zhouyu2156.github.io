@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+/* 扫描自定义主题与文档源码；勿在注释中写星号斜杠，否则会截断注释 */
+@source "./**/*.{vue,ts,mts,js}";
+@source "../../src/**/*.{vue,md,ts,mts}";
+
 /** 滚动条样式 */
 ::-webkit-scrollbar {
   width: 3px;
@@ -195,53 +199,4 @@
 
 .DocSearch {
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
-}
-
-/**
- * Home features：聚光灯（随鼠标位置，思路类似 Nuxt UI UPageCard）
- * 依赖 theme/home-feature-spotlight.ts 写入 --jkt-feature-spot-x/y
- * -------------------------------------------------------------------------- */
-
-.VPFeatures .VPFeature {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.VPFeatures .VPFeature::before {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  background: radial-gradient(
-    520px circle at var(--jkt-feature-spot-x, 50%) var(--jkt-feature-spot-y, 50%),
-    color-mix(in srgb, var(--vp-c-brand-1) 22%, transparent),
-    transparent 42%
-  );
-}
-
-.dark .VPFeatures .VPFeature::before {
-  background: radial-gradient(
-    520px circle at var(--jkt-feature-spot-x, 50%) var(--jkt-feature-spot-y, 50%),
-    color-mix(in srgb, var(--vp-c-brand-1) 28%, transparent),
-    transparent 42%
-  );
-}
-
-.VPFeatures .VPFeature.jkt-feature-spotlight-active::before {
-  opacity: 1;
-}
-
-.VPFeatures .VPFeature > .box {
-  position: relative;
-  z-index: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .VPFeatures .VPFeature::before {
-    transition: none;
-  }
 }
