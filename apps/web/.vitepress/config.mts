@@ -89,7 +89,8 @@ export default defineConfig({
     },
 
     footer: {
-      message: `<p style="display: flex; justify-content: center; gap: 10px;">
+      copyright: 'Copyright © 2026 极客兔',
+      /*message: `<p style="display: flex; justify-content: center; gap: 10px;">
             <span style="display: flex; align-items: center; gap: 5px;">
               <img src="/filings/police.png" alt="湘公网安备查询" style="width: 16px; height: 16px;" />
               <a href="https://beian.miit.gov.cn/" target="_blank">
@@ -102,8 +103,7 @@ export default defineConfig({
               湘ICP备2024064075号-1
               </a>
             </span>
-          </p>`,
-      copyright: 'Copyright © 2026 极客兔',
+          </p>`,*/
     },
   },
   vite: {
