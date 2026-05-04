@@ -16,7 +16,7 @@ head:
 hero:
   name: '极客兔'
   text: '一生只做一件事'
-  tagline: '用技术和认知创造<strong class="text-blue-500 text-3xl">财富</strong>和<strong class="text-green-500 text-3xl">自由</strong>'
+  tagline: '用技术和认知创造<strong class="text-blue-500 text-3xl">财富</strong>与<strong class="text-green-500 text-3xl">自由</strong>'
   image:
     src: /global.png
     alt: 极客兔
@@ -50,6 +50,4 @@ features:
     target: _blank
 ---
 
-<h2 class="text-2xl font-bold text-center">感谢以下赞助者对极客兔的支持</h2>
-
-<Sponsors />
+<HomeSponsors />

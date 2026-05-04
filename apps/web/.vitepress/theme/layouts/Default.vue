@@ -38,9 +38,11 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 <template>
   <DefaultTheme.Layout>
-    <template #aside-ads-after>
+    <template #aside-ads-before>
       <VPSponsors
         :size="'big'"
+        :mode="'aside'"
+        :tier="'感谢赞赏'"
         :data="[
           {
             name: '微信',
@@ -51,6 +53,19 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
             name: '支付宝',
             img: '/payment/alipay.jpg',
             url: 'https://www.alipay.com',
+          },
+        ]" />
+    </template>
+    <template #aside-ads-after>
+      <VPSponsors
+        :size="'big'"
+        :mode="'aside'"
+        :tier="'感谢赞赏'"
+        :data="[
+          {
+            name: '赞赏码',
+            img: isDark === true ? '/payment/AdmireCode-dark.jpg' : '/payment/AdmireCode-light.jpg',
+            url: 'https://www.wechat.com',
           },
         ]" />
     </template>
@@ -76,10 +91,8 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 
 /* 赞赏码图片样式调整 */
 .vp-sponsor-grid.big {
-  gap: 0px;
-
   .vp-sponsor-grid-link {
-    height: fit-content;
+    height: auto;
   }
   .vp-sponsor-grid-image {
     max-width: 100%;
