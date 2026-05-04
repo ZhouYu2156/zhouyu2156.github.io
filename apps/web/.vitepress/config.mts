@@ -22,7 +22,7 @@ export default defineConfig({
   cleanUrls: true,
   ignoreDeadLinks: true,
   themeConfig: {
-    /** 主题切换文本显示配置 */
+    /** 主题文本显示配置 */
     darkModeSwitchLabel: '主题',
     lightModeSwitchTitle: '浅色模式',
     darkModeSwitchTitle: '深色模式',
