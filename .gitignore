@@ -1,0 +1,10 @@
+node_modules
+dist
+cache
+build
+company
+
+.env
+.env.local
+
+.idea

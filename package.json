@@ -1,0 +1,14 @@
+{
+  "name": "jiketu",
+  "version": "1.0.0",
+  "description": "极客兔官网",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter @jiketu/web dev",
+    "build": "pnpm --filter @jiketu/web build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.1"
+}
