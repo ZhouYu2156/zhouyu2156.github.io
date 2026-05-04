@@ -62,7 +62,7 @@ export default defineConfig({
       {
         text: '博客',
         link: '/blogs/',
-        items: [{ text: '理性认知', link: '/blogs/理性认知' }],
+        items: [{ text: '认知觉醒', link: '/blogs/认知觉醒' }],
       },
     ],
 

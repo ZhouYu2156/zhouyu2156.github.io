@@ -38,47 +38,54 @@ function onPlay(index: number, e: MouseEvent) {
 </script>
 
 <template>
-  <section class="jkt-music" aria-labelledby="treasured-music-heading">
+  <section
+    class="jkt-music"
+    aria-labelledby="treasured-music-heading">
     <header class="jkt-music__head">
-      <h1 id="treasured-music-heading" class="jkt-music__title">珍藏音乐</h1>
+      <h1
+        id="treasured-music-heading"
+        class="jkt-music__title">
+        珍藏音乐
+      </h1>
       <p class="jkt-music__subtitle">不知道该听些什么？试试珍藏推荐吧~</p>
     </header>
 
-    <p v-if="loadError" class="jkt-music__error" role="alert">
+    <p
+      v-if="loadError"
+      class="jkt-music__error"
+      role="alert">
       {{ loadError }}
     </p>
 
-    <ul v-else-if="loaded" class="jkt-music__grid">
+    <ul
+      v-else-if="loaded"
+      class="jkt-music__grid">
       <li
         v-for="(item, index) in items"
         :key="item.id"
         class="group jkt-music__card"
-        :class="{ 'jkt-music__card--current': index === currentIndex }"
-      >
+        :class="{ 'jkt-music__card--current': index === currentIndex }">
         <div class="jkt-music__cover-wrap">
           <img
             class="jkt-music__cover"
             :src="item.cover"
             :alt="`${item.song_name} 封面`"
             loading="lazy"
-            decoding="async"
-          />
-          <div class="jkt-music__cover-overlay" aria-hidden="true" />
+            decoding="async" />
+          <div
+            class="jkt-music__cover-overlay"
+            aria-hidden="true" />
           <button
             type="button"
             class="jkt-music__play-btn"
-            :aria-label="
-              index === currentIndex && isPlaying ? `暂停 ${item.song_name}` : `播放 ${item.song_name}`
-            "
-            @click="onPlay(index, $event)"
-          >
+            :aria-label="index === currentIndex && isPlaying ? `暂停 ${item.song_name}` : `播放 ${item.song_name}`"
+            @click="onPlay(index, $event)">
             <svg
               v-if="index === currentIndex && isPlaying"
               viewBox="0 0 24 24"
               fill="currentColor"
               class="jkt-music__play-icon"
-              aria-hidden="true"
-            >
+              aria-hidden="true">
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
             </svg>
             <svg
@@ -86,8 +93,7 @@ function onPlay(index: number, e: MouseEvent) {
               viewBox="0 0 24 24"
               fill="currentColor"
               class="jkt-music__play-icon"
-              aria-hidden="true"
-            >
+              aria-hidden="true">
               <path d="M8 5v14l11-7z" />
             </svg>
           </button>
@@ -166,11 +172,11 @@ function onPlay(index: number, e: MouseEvent) {
 }
 
 .jkt-music__cover-overlay {
-  @apply pointer-events-none absolute inset-0 z-[1] bg-black/50 opacity-0 transition-opacity duration-300 ease-out;
+  @apply pointer-events-none absolute inset-0 z-1 bg-black/50 opacity-0 transition-opacity duration-300 ease-out;
 }
 
 .jkt-music__play-btn {
-  @apply pointer-events-none absolute left-1/2 top-1/2 z-[2] flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-(--vp-c-brand-1) opacity-0 shadow-lg transition-all duration-300 ease-out scale-90;
+  @apply pointer-events-none absolute left-1/2 top-1/2 z-2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-(--vp-c-brand-1) opacity-0 shadow-lg transition-all duration-300 ease-out scale-90;
 }
 
 .jkt-music__card:hover .jkt-music__cover-overlay {
