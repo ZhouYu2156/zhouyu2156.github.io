@@ -89,6 +89,7 @@ export default defineConfig({
     },
 
     footer: {
+      message: '用心创造世界，用技术改变未来。',
       copyright: 'Copyright © 2026 极客兔',
       /*message: `<p style="display: flex; justify-content: center; gap: 10px;">
             <span style="display: flex; align-items: center; gap: 5px;">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useData } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
+import DefaultTheme, { VPSponsors } from 'vitepress/theme'
 import { nextTick, provide } from 'vue'
 
 const { isDark } = useData()
@@ -37,7 +37,24 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 </script>
 
 <template>
-  <DefaultTheme.Layout />
+  <DefaultTheme.Layout>
+    <template #aside-ads-after>
+      <VPSponsors
+        :size="'big'"
+        :data="[
+          {
+            name: '微信',
+            img: '/payment/wxpay.jpg',
+            url: 'https://www.wechat.com',
+          },
+          {
+            name: '支付宝',
+            img: '/payment/alipay.jpg',
+            url: 'https://www.alipay.com',
+          },
+        ]" />
+    </template>
+  </DefaultTheme.Layout>
 </template>
 
 <style lang="css">
@@ -55,6 +72,20 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 ::view-transition-new(root),
 .dark::view-transition-old(root) {
   z-index: 9999;
+}
+
+/* 赞赏码图片样式调整 */
+.vp-sponsor-grid.big {
+  gap: 0px;
+
+  .vp-sponsor-grid-link {
+    height: fit-content;
+  }
+  .vp-sponsor-grid-image {
+    max-width: 100%;
+    max-height: 100%;
+    filter: none;
+  }
 }
 
 /** 禁用切换外观的按钮动画 */

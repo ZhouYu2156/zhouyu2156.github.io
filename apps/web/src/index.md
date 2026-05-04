@@ -50,9 +50,6 @@ features:
     target: _blank
 ---
 
-<script setup lang="ts">
-import { useData } from 'vitepress'
+<h2 class="text-2xl font-bold text-center">感谢以下赞助者对极客兔的支持</h2>
 
-const d = useData()
-console.log(d)
-</script>
+<Sponsors />
