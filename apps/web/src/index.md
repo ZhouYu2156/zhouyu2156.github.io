@@ -23,10 +23,10 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /blog/
+      link: /blogs/
     - theme: alt
       text: 关于我
-      link: /about
+      link: /resume/
 
 features:
   - title: 认知、技术分享

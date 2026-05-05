@@ -64,6 +64,16 @@ export default defineConfig({
         link: '/blogs/',
         items: [{ text: '认知觉醒', link: '/blogs/认知觉醒' }],
       },
+      {
+        text: '技术',
+        link: '/docs/',
+        items: [
+          { text: 'nginx', link: '/docs/nginx' },
+          { text: 'docker', link: '/docs/docker' },
+          { text: 'ollama', link: '/docs/ollama' },
+          { text: 'DRF', link: '/docs/DRF' },
+        ],
+      },
     ],
 
     socialLinks: [

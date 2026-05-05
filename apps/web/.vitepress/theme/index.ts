@@ -7,6 +7,7 @@ import JktButton from './components/JktButton.vue'
 import Music from './components/Music.vue'
 import Resume from './components/Resume.vue'
 import Sponsors from './components/Sponsors.vue'
+import UtilityTools from './components/UtilityTools.vue'
 import DefaultLayout from './layouts/Default.vue'
 import './style.css'
 
@@ -20,5 +21,6 @@ export default {
     app.component('Sponsors', Sponsors)
     app.component('Resume', Resume)
     app.component('Music', Music)
+    app.component('UtilityTools', UtilityTools)
   },
 } satisfies Theme

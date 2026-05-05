@@ -35,6 +35,20 @@ $ python manage.py runserver [0.0.0.0:8000]
 $ python manage.py startapp app_name
 ```
 
+## 迁移数据库 & 创建用户
+
+- 迁移数据库
+
+```bash
+$ python manage.py migrate
+```
+
+- 创建用户
+
+```bash
+$ python manage.py createsuperuser --username admin --email admin@qq.com 
+```
+
 DRF
 
 函数视图：`@api_view`
