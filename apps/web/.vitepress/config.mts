@@ -46,6 +46,29 @@ export default defineConfig({
     },
     search: {
       provider: 'local',
+      options: {
+        translations: {
+          button: {
+            buttonText: '搜索',
+            buttonAriaLabel: '搜索',
+          },
+          modal: {
+            displayDetails: '显示详情',
+            resetButtonTitle: '重置',
+            backButtonTitle: '返回',
+            noResultsText: '没有找到结果',
+            footer: {
+              selectText: '选择',
+              selectKeyAriaLabel: '选择',
+              navigateText: '导航',
+              navigateUpKeyAriaLabel: '向上导航',
+              navigateDownKeyAriaLabel: '向下导航',
+              closeText: '关闭',
+              closeKeyAriaLabel: '关闭',
+            },
+          },
+        },
+      },
     },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -55,23 +78,57 @@ export default defineConfig({
       { text: '作者履历', link: '/resume/' },
       { text: '个人博客', link: '/blogs/' },
       { text: '天涯社区', link: '/community/' },
-      { text: '登录', link: '/login/' },
+      { text: '登录', link: '/admin/' },
     ],
 
     sidebar: [
       {
         text: '博客',
         link: '/blogs/',
-        items: [{ text: '认知觉醒', link: '/blogs/认知觉醒' }],
+        items: [{ text: '写作', collapsed: false, items: [{ text: '认知觉醒', link: '/blogs/articles/认知觉醒' }] }],
       },
       {
         text: '技术',
         link: '/docs/',
         items: [
-          { text: 'nginx', link: '/docs/nginx' },
-          { text: 'docker', link: '/docs/docker' },
-          { text: 'ollama', link: '/docs/ollama' },
-          { text: 'DRF', link: '/docs/DRF' },
+          {
+            text: '前端开发',
+            collapsed: false,
+            items: [],
+          },
+          {
+            text: '后端开发',
+            collapsed: false,
+            items: [
+              { text: 'DRF', link: '/docs/DRF' },
+              { text: 'nginx', link: '/docs/nginx' },
+              { text: 'docker', link: '/docs/docker' },
+              { text: '爬虫', link: '/docs/爬虫' },
+            ],
+          },
+          {
+            text: '数据库',
+            collapsed: false,
+            items: [],
+          },
+          {
+            text: 'AI 开发',
+            collapsed: false,
+            items: [
+              { text: 'ollama', link: '/docs/ollama' },
+              { text: 'AI 开发', link: '/docs/AI开发' },
+            ],
+          },
+          {
+            text: '常用工具与配置',
+            collapsed: false,
+            items: [{ text: '常用工具与配置', link: '/docs/常用工具与配置' }],
+          },
+          {
+            text: '其他',
+            collapsed: false,
+            items: [{ text: '谷歌浏览器插件', link: '/docs/谷歌浏览器插件' }],
+          },
         ],
       },
     ],

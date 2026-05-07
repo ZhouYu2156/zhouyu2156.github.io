@@ -9,4 +9,5 @@ company
 
 .idea
 
-profile.md
+server
+**/__pycache__/*.pyc

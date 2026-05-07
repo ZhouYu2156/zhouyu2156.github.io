@@ -50,6 +50,6 @@ features:
     target: _blank
 ---
 
-<HomeSponsors />
+<!-- <HomeSponsors /> -->
 
 ## 越来越多功能和内容正在加入，敬请期待！
