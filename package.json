@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "pnpm --filter @jiketu/web dev",
     "build": "pnpm --filter @jiketu/web build",
-    "preview": "pnpm --filter @jiketu/web preview"
+    "preview": "pnpm --filter @jiketu/web preview",
+    "build:geektu-docs": "pnpm --dir apps/vitepress run build && pnpm --dir apps/vitepress/docs run build"
   },
   "keywords": [],
   "author": "",
