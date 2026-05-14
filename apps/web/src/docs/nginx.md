@@ -60,7 +60,8 @@ DNS1=8.8.8.8        # 指定DNS服务器
 
 - 20 分钟搞懂`Nginx`核心知识：[技术蛋老师讲解 Nginx](https://www.bilibili.com/video/BV1TZ421b7SD/)
 - 参考资料：[前往 Nginx 官方文档](https://docs.nginx.com/nginx/admin-guide/web-server/)
-  :::
+
+:::
 
 ## `Nginx` 工作原理图
 

@@ -1,0 +1,85 @@
+# 极客兔笔记站（VitePress：apps/vitepress/docs）推送到 main 后构建并部署到 GitHub Pages。
+#
+# 与 apps/web 的「文档站点部署」workflow 区别：本 workflow 上传的是 docs 的 outDir（geektu）。
+# 同一仓库若两个 workflow 都部署到 GitHub Pages，后完成的会覆盖先完成的站点；请只启用其一，
+# 或合并构建产物为一次 upload（需自行调整）。
+#
+# 仓库设置（一次性）：
+# 1. Settings → Pages → Build and deployment → Source 选「GitHub Actions」。
+# 2. 若站点为 https://<用户>.github.io/<仓库名>/（项目页），请在 docs/.vitepress/config.ts 设置
+#    base: '/<仓库名>/'；用户主页或自定义域名一般保持 base: '/'。
+#
+# 依赖安装必须在仓库根目录执行（pnpm-lock.yaml、pnpm-workspace.yaml 与 patches 在根目录）。
+
+name: 极客兔笔记站部署
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/vitepress/docs/**'
+      - 'apps/vitepress/src/**'
+      - 'apps/vitepress/package.json'
+      - 'apps/vitepress/pnpm-workspace.yaml'
+      - 'apps/vitepress/patches/**'
+      - 'apps/vitepress/scripts/**'
+      - 'apps/vitepress/template/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/docs-vitepress-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-vitepress
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建 VitePress 笔记站
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 检出仓库
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+
+      - name: 🔧 使用 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: 📦 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔨 构建 VitePress 与文档
+        working-directory: apps/vitepress
+        run: pnpm run docs:build
+
+      - name: 📤 上传 Pages 构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/vitepress/docs/geektu
+
+  deploy:
+    name: 🚀 部署到 GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 🚀 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

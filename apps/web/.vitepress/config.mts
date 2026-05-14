@@ -1,7 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: '极客兔',
   titleTemplate: ':title 💖 极客兔',
@@ -85,11 +84,13 @@ export default defineConfig({
       {
         text: '博客',
         link: '/blogs/',
-        items: [{ text: '写作', collapsed: false, items: [{ text: '认知觉醒', link: '/blogs/articles/认知觉醒' }] }],
+        collapsed: false,
+        items: [{ text: '写作', collapsed: false, items: [{ text: '成长思考', link: '/blogs/articles/成长思考' }] }],
       },
       {
         text: '技术',
         link: '/docs/',
+        collapsed: false,
         items: [
           {
             text: '前端开发',
@@ -101,9 +102,10 @@ export default defineConfig({
             collapsed: false,
             items: [
               { text: 'DRF', link: '/docs/DRF' },
-              { text: 'nginx', link: '/docs/nginx' },
-              { text: 'docker', link: '/docs/docker' },
+              { text: 'Nginx', link: '/docs/Nginx' },
+              { text: 'Docker', link: '/docs/Docker' },
               { text: '爬虫', link: '/docs/爬虫' },
+              { text: 'Numpy', link: '/docs/Numpy' },
             ],
           },
           {

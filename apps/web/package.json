@@ -1,7 +1,7 @@
 {
   "name": "@jiketu/web",
   "version": "1.0.0",
-  "description": "",
+  "description": "一生只做一件事，用心创作优质内容。",
   "main": "index.js",
   "scripts": {
     "dev": "vitepress dev .",
