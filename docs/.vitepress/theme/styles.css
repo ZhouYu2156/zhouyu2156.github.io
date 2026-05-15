@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+
+@source "./**/*.{vue,css,ts,mts,js,jsx,tsx}";
+
+/*** 自定义：滚动条彩虹色 */
+html::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 2px;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+html::-webkit-scrollbar-track {
+  background-color: var(--vp-c-bg-soft);
+}
+
+html::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-image: linear-gradient(
+    120deg,
+    #ff00f2e6,
+    #0b94d3e6,
+    #ff50a0e6,
+    #0ccc92e6
+  );
+}
+
+@keyframes scrollbar-glow {
+  0% {
+    --scrollbar-thumb-color-1: #ff00f2e6;
+    --scrollbar-thumb-color-2: #1100ffe6;
+    --scrollbar-thumb-color-3: #ff50a0e6;
+    --scrollbar-thumb-color-4: #ff00f2e6;
+    --scrollbar-thumb-color-5: #a078ffe6;
+    --scrollbar-thumb-color-6: #00ffb4e6;
+  }
+  100% {
+    --scrollbar-thumb-color-1: #0ec374e6;
+    --scrollbar-thumb-color-2: #d78d0ee6;
+    --scrollbar-thumb-color-3: #3206ade6;
+    --scrollbar-thumb-color-4: #cc1029e6;
+    --scrollbar-thumb-color-5: #10d14de6;
+    --scrollbar-thumb-color-6: #dfbd11e6;
+  }
+}
+
+/* 添加 View Transition API 动画 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root),
+.dark::view-transition-new(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root),
+.dark::view-transition-old(root) {
+  z-index: 9999;
+}
+
+/** 自定义：首页 Hero 图片背景渐变色动画 */
+/**
+ * 自定义：首页 Hero 光晕渐变角度动画
+ * 整条 linear-gradient 字符串无法作为未注册自定义属性被插值，keyframes 往往无效。
+ * 使用 @property 将角度注册为 <angle>，再动画该变量即可（即 CSS Houdini 的 typed custom properties）。
+ */
+@property --vp-custom-hero-image-grad-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: -45deg;
+}
+@property --vp-custom-hero-image-color-1 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #bd34fe;
+}
+@property --vp-custom-hero-image-color-2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #47caff;
+}
+@keyframes vp-custom-hero-image-grad-angle {
+  0%,
+  100% {
+    --vp-custom-hero-image-grad-angle: -45deg;
+    --vp-custom-hero-image-color-1: #9e20d8;
+    --vp-custom-hero-image-color-2: #1b99cb;
+  }
+  50% {
+    --vp-custom-hero-image-grad-angle: 180deg;
+    --vp-custom-hero-image-color-1: #18d67a;
+    --vp-custom-hero-image-color-2: #e01238;
+  }
+}
+
+.VPHero .image .image-bg {
+  --vp-custom-hero-image-grad-angle: -45deg;
+  --vp-home-hero-image-filter: blur(45px);
+  --vp-home-hero-image-background-image: linear-gradient(
+    var(--vp-custom-hero-image-grad-angle),
+    var(--vp-custom-hero-image-color-1) 50%,
+    var(--vp-custom-hero-image-color-2) 50%
+  );
+  animation: vp-custom-hero-image-grad-angle 10s ease-in-out infinite;
+}
+
+.vp-doc > div > h1 {
+  /** 自定义：h1 标题渐变色 */
+  background: linear-gradient(to right, #d70783e6, #dfac06);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/** 自定义容器块边框样式 */
+/** 必须要使用 @property 来定义变量类型，不然没有动画渐变效果 */
+@property --custom-container-border-color {
+  syntax: '<color>';
+  initial-value: #05c7c7;
+  inherits: false;
+}
+
+/** 利用背景巧妙实现渐变边框 **/
+@property --custom-block-border-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+@keyframes autoRotate {
+  to {
+    --custom-block-border-angle: 360deg;
+  }
+}
+html.dark .custom-block.details,
+html.dark .custom-block.info,
+html.dark .custom-block.tip,
+html.dark .custom-block.warning,
+html.dark .custom-block.danger {
+  /* border-width: 3px; */
+  /* border-style: solid; */
+  /* border-color: var(--custom-container-border-color); */
+  /* animation: border-gradient 3s linear infinite alternate; */
+
+  position: relative;
+  background-color: #1b1930;
+  border-radius: 10px;
+
+  &::before,
+  &::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-image: conic-gradient(
+      from var(--custom-block-border-angle),
+      #ea2dd8,
+      #00b1f1,
+      #ea2dd8
+    );
+    animation: autoRotate 1s linear infinite;
+    z-index: -1;
+    padding: 5px;
+    box-sizing: unset;
+  }
+  &::after {
+    filter: blur(15px);
+  }
+}

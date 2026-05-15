@@ -1,20 +1,22 @@
-# 文档站点（VitePress @ apps/web）在推送到 main 后构建并部署到 GitHub Pages。
+# 极客兔笔记站：推送到 main 后构建 docs 工作区包并部署到 GitHub Pages。
 #
-# 仓库设置（一次性）：
-# 1. Settings → Pages → Build and deployment → Source 选择「GitHub Actions」。
-# 2. 若站点地址为 https://<用户>.github.io/<仓库名>/（项目页），请在 apps/web/.vitepress/config.mts
-#    中设置 base: '/<仓库名>/'；若为用户站点 root 域名或自定义域名，可保持默认 base: '/'.
+# 构建命令与根 package.json 一致：
+#   docs:build = pnpm build && pnpm docs:build:only
+#   docs:build:only = pnpm -F=docs build（即 docs 包内的 vitepress build）
 #
-# pnpm 工作区根目录即仓库根目录（与 pnpm-workspace.yaml 一致）。
+# 仓库设置：Settings → Pages → Source 选「GitHub Actions」。
 
-name: 文档站点部署
+name: 📖 文档站点部署
 
 on:
   push:
     branches: [main]
     paths:
-      - 'apps/web/**'
-      - 'packages/**'
+      - 'docs/**'
+      - 'src/**'
+      - 'patches/**'
+      - 'scripts/**'
+      - 'template/**'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - 'package.json'
@@ -43,7 +45,7 @@ jobs:
       - name: 🔧 安装 pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.17.1
+          version: 10.33.0
 
       - name: 🟢 使用 Node.js
         uses: actions/setup-node@v4
@@ -55,13 +57,13 @@ jobs:
       - name: 📦 安装依赖
         run: pnpm install --frozen-lockfile
 
-      - name: 🔨 构建 VitePress
-        run: pnpm run build
+      - name: 🔨 构建 VitePress 与文档站
+        run: pnpm run docs:build
 
       - name: 📤 上传 Pages 构建产物
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/web/company
+          path: docs/geektu
 
   deploy:
     name: 🚀 部署到 GitHub Pages
@@ -71,6 +73,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: 部署到 GitHub Pages
+      - name: 🚀 部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
