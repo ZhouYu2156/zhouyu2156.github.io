@@ -72,9 +72,24 @@ jobs:
       - name: 🔨 构建 VitePress 与文档站
         run: pnpm run docs:build
 
+      # GitHub 在部分环境下不允许在 if: 中直接使用 secrets；先输出布尔再条件执行 rsync。
+      - name: 检测是否已配置服务器部署 Secrets
+        id: deploy_remote
+        env:
+          D_HOST: ${{ secrets.DEPLOY_HOST }}
+          D_PATH: ${{ secrets.DEPLOY_PATH }}
+          D_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          if [ -n "$D_HOST" ] && [ -n "$D_PATH" ] && [ -n "$D_KEY" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "未配置 DEPLOY_HOST / DEPLOY_PATH / DEPLOY_SSH_KEY，跳过 rsync。"
+          fi
+
       # 与 docs/.vitepress 中 outDir: geektu 一致；同步到 DEPLOY_PATH 后 Nginx root 指向该目录即可。
       - name: 📡 rsync 到阿里云（deployer）
-        if: ${{ secrets.DEPLOY_HOST != '' && secrets.DEPLOY_PATH != '' && secrets.DEPLOY_SSH_KEY != '' }}
+        if: steps.deploy_remote.outputs.ready == 'true'
         uses: burnett01/rsync-deployments@v8
         with:
           switches: -avzr --delete
