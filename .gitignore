@@ -8,7 +8,7 @@
 .temp
 .vite_opt_cache
 .vscode
-dist
+dist/
 cache
 temp
 examples-temp
@@ -20,7 +20,8 @@ TODOs.md
 
 # 仅忽略仓库根目录的 build 输出；勿写裸的 build，否则会误忽略 src/node/build 源码
 /build
-company
+geektu/
+company/
 
 .env
 .env.local

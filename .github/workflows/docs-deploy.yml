@@ -1,12 +1,8 @@
-# 文档站：构建 VitePress →（可选）rsync 到自有服务器 → GitHub Pages
+# 文档站：构建 VitePress → rsync 到自有服务器 → GitHub Pages
 #
 # Repository secrets（Settings → Secrets and variables → Actions）：
-#   DEPLOY_HOST        服务器 IP 或域名
-#   DEPLOY_PATH        远端目录，如 /var/www/geektu/（与 Nginx root 一致，deployer 可写）
-#   SSH_PRIVATE_KEY    SSH 私钥全文（与服务器 authorized_keys 对应；常用 ed25519）
-# 三项齐全才 rsync；缺任一则跳过服务器同步，仍部署 Pages。
-# 服务器需：sshd、rsync；用户 deployer；详见仓库内运维文档。
-#
+#   DEPLOY_HOST、DEPLOY_PATH、SSH_PRIVATE_KEY（私钥须与 deployer 的 authorized_keys 成对）
+# 服务器：sshd、rsync；用户 deployer；运维说明见 docs 内「自动化部署」笔记。
 # Pages：Settings → Pages → Source 选 GitHub Actions。
 
 name: 📖 文档站点部署
@@ -37,61 +33,41 @@ concurrency:
 
 jobs:
   build:
-    name: 构建与分发
+    name: 🔧 构建与分发
     runs-on: ubuntu-latest
-    env:
-      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🔍 检出代码
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - name: 📌 安装 pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 10.33.0
 
-      - uses: actions/setup-node@v4
+      - name: 🟢 配置 Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
-      - name: 安装依赖
+      - name: 📦 安装依赖
         run: pnpm install --frozen-lockfile
 
-      - name: 构建（docs:build）
+      - name: 🔨 构建文档站
         run: pnpm run docs:build
 
-      # 不在 if: 中引用 secrets；用 job env 在 shell 内判断即可。
-      - name: 是否部署到自有服务器
-        id: remote
-        run: |
-          if [ -n "$DEPLOY_HOST" ] && [ -n "$DEPLOY_PATH" ] && [ -n "$SSH_PRIVATE_KEY" ]; then
-            echo "enabled=1" >> "$GITHUB_OUTPUT"
-            echo "::notice::已配置 DEPLOY_HOST、DEPLOY_PATH、SSH_PRIVATE_KEY，将执行 rsync。"
-          else
-            echo "enabled=0" >> "$GITHUB_OUTPUT"
-            [ -n "$DEPLOY_HOST" ] || echo "::warning::缺少 Repository secret: DEPLOY_HOST"
-            [ -n "$DEPLOY_PATH" ] || echo "::warning::缺少 Repository secret: DEPLOY_PATH"
-            [ -n "$SSH_PRIVATE_KEY" ] || echo "::warning::缺少 Repository secret: SSH_PRIVATE_KEY"
-            echo "::notice::跳过 rsync，仅上传 GitHub Pages。"
-          fi
-
-      - name: 校验构建产物（docs/geektu）
-        if: steps.remote.outputs.enabled == '1'
+      - name: ✅ 校验构建产物
         run: |
           set -euo pipefail
-          if [ ! -d docs/geektu ] || [ -z "$(ls -A docs/geektu 2>/dev/null)" ]; then
-            echo "::error::docs/geektu 为空，请检查 outDir 与构建日志。"
-            exit 1
-          fi
-          echo "rsync 文件数（约）: $(find docs/geektu -type f | wc -l)"
+          test -d docs/geektu
+          test -n "$(ls -A docs/geektu 2>/dev/null)"
+          echo "构建产物文件数: $(find docs/geektu -type f | wc -l)"
 
-      - name: Rsync → 服务器（deployer）
-        if: steps.remote.outputs.enabled == '1'
+      - name: 🚀 同步到服务器（rsync）
         uses: burnett01/rsync-deployments@v8
         with:
           switches: -avzr --delete
@@ -101,18 +77,19 @@ jobs:
           remote_user: deployer
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 上传 GitHub Pages 产物
+      - name: 📤 上传 GitHub Pages 产物
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/geektu
 
   deploy:
-    name: GitHub Pages
+    name: 🌐 发布 GitHub Pages
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: 🌍 部署 Pages
+        id: deployment
         uses: actions/deploy-pages@v4

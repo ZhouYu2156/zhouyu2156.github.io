@@ -57,7 +57,7 @@
           </div>
           <div class="intention-item">
             <span class="intention-label">城市</span>
-            <span class="intention-value">杭州</span>
+            <span class="intention-value">深圳/广州</span>
           </div>
           <div class="intention-item">
             <span class="intention-label">薪资</span>
