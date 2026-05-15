@@ -18,7 +18,8 @@ TODOs.md
 *.timestamp-*.mjs
 .claude
 
-build
+# 仅忽略仓库根目录的 build 输出；勿写裸的 build，否则会误忽略 src/node/build 源码
+/build
 company
 
 .env
