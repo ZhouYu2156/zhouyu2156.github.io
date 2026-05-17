@@ -19,7 +19,8 @@ const navMap = {
   技术: '🛠️ 技术',
   登录: '🔒 登录',
   简历: '📝 简历',
-  产品: '🚀 产品'
+  产品: '🚀 产品',
+  番茄时钟: '🍅 番茄时钟'
 }
 
 // 获取项目 src 目录
@@ -61,6 +62,13 @@ export default defineConfig({
     ],
     server: {
       port: 5174
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler'
+        }
+      }
     }
   },
 

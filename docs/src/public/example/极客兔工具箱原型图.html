@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>工具百宝箱 - 微信小程序原型</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .iphone-container {
+            width: 375px;
+            height: 812px;
+            background-color: #F5F5F7;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #1f2937;
+        }
+        .safe-area-top { height: 44px; flex-shrink: 0; }
+        .safe-area-bottom { height: 34px; flex-shrink: 0; }
+        .page-content { flex: 1; overflow-y: auto; padding-bottom: 80px; -ms-overflow-style: none; scrollbar-width: none; }
+        .page-content::-webkit-scrollbar { display: none; }
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 84px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+            z-index: 50;
+        }
+        .banner-track { display: flex; transition: transform 0.5s ease-in-out; }
+        .active-tab { color: #3B82F6; }
+        .inactive-tab { color: #9CA3AF; }
+        
+        /* 模拟页面切换 */
+        .page { display: none; height: 100%; flex-direction: column; }
+        .page.active { display: flex; }
+    </style>
+</head>
+<body>
+<div class="iphone-container">
+<!-- 顶部状态栏 -->
+<div class="safe-area-top bg-white flex justify-between items-center px-6">
+<span class="text-sm font-semibold">09:41</span>
+<div class="flex space-x-1.5 items-center">
+<iconify-icon icon="ion:cellular" width="16"></iconify-icon>
+<iconify-icon icon="ion:wifi" width="16"></iconify-icon>
+<iconify-icon icon="ion:battery-full" width="20"></iconify-icon>
+</div>
+</div>
+<!-- 主内容区 -->
+<div class="page-content" id="main-content">
+<!-- 1. 首页 -->
+<section class="page active" id="page-home">
+<header class="bg-white px-4 py-3 flex justify-between items-center sticky top-0 z-10">
+<h1 class="text-lg font-bold text-gray-800">工具百宝箱</h1>
+<div class="flex space-x-3">
+<iconify-icon class="text-gray-600" icon="lucide:search" width="22"></iconify-icon>
+<iconify-icon class="text-gray-600" icon="lucide:more-horizontal" width="22"></iconify-icon>
+</div>
+</header>
+<div class="p-4">
+<!-- Banner 轮播 -->
+<div class="relative overflow-hidden rounded-2xl h-36 mb-6">
+<div class="banner-track h-full" id="banner-track">
+<div class="min-w-full h-full relative">
+<img alt="Hot tools banner" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/9fddb912b83a4927b3e995937fabe986.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-transparent flex items-center p-6">
+<div class="text-white">
+<p class="text-xs font-medium opacity-80">本周热门</p>
+<h2 class="text-xl font-bold">全网视频去水印</h2>
+<p class="text-xs mt-1">支持抖音、B站、小红书等</p>
+</div>
+</div>
+</div>
+<div class="min-w-full h-full relative">
+<img alt="New features banner" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/6385814a988444abad51222a4a77757d.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-r from-indigo-600/80 to-transparent flex items-center p-6">
+<div class="text-white">
+<p class="text-xs font-medium opacity-80">新功能上线</p>
+<h2 class="text-xl font-bold">AI 智能人声消除</h2>
+<p class="text-xs mt-1">一键提取纯净伴奏</p>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+<div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-white/50"></div>
+</div>
+</div>
+<!-- 分类标签 -->
+<div class="flex space-x-4 overflow-x-auto pb-4 no-scrollbar">
+<button class="whitespace-nowrap px-4 py-1.5 bg-blue-500 text-white rounded-full text-sm font-medium">热门推荐</button>
+<button class="whitespace-nowrap px-4 py-1.5 bg-white text-gray-600 rounded-full text-sm border border-gray-100">视频工具</button>
+<button class="whitespace-nowrap px-4 py-1.5 bg-white text-gray-600 rounded-full text-sm border border-gray-100">音频提取</button>
+<button class="whitespace-nowrap px-4 py-1.5 bg-white text-gray-600 rounded-full text-sm border border-gray-100">图片处理</button>
+</div>
+<!-- 工具宫格 -->
+<div class="grid grid-cols-4 gap-y-6 gap-x-3 mt-4">
+<div class="flex flex-col items-center group active:scale-95 transition-transform" onclick="goToDetail('抖音去水印')">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon icon="logos:tiktok-icon" width="28"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">抖音去水印</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform" onclick="goToDetail('B站解析')">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon icon="logos:bilibili" width="28"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">B站解析</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon class="text-pink-500" icon="fluent:music-note-2-24-filled" width="32"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">免费听歌</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon class="text-green-500" icon="solar:gallery-bold" width="30"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">图片压缩</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon class="text-gray-800" icon="ion:qr-code-outline" width="30"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">二维码生成</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon class="text-orange-500" icon="material-symbols:text-rotation-none-rounded" width="30"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">文字识别</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon class="text-purple-500" icon="solar:wallpaper-bold" width="30"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">壁纸下载</span>
+</div>
+<div class="flex flex-col items-center group active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-2">
+<iconify-icon class="text-gray-400" icon="icon-park-solid:more-four" width="28"></iconify-icon>
+</div>
+<span class="text-xs text-gray-700 font-medium">更多工具</span>
+</div>
+</div>
+<!-- 底部推荐列表 -->
+<div class="mt-10">
+<h3 class="text-sm font-bold text-gray-800 mb-4 flex items-center">
+<span class="w-1 h-4 bg-blue-500 rounded-full mr-2"></span>
+                            猜你喜欢
+                        </h3>
+<div class="space-y-3">
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500 mr-3">
+<iconify-icon icon="solar:file-text-bold" width="24"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">PDF 转 Word</h4>
+<p class="text-xs text-gray-400 mt-0.5">高精度还原排版，支持大文件</p>
+</div>
+<iconify-icon class="text-gray-300" icon="lucide:chevron-right"></iconify-icon>
+</div>
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500 mr-3">
+<iconify-icon icon="solar:video-library-bold" width="24"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">视频格式转换</h4>
+<p class="text-xs text-gray-400 mt-0.5">支持 MP4, MKV, AVI 等多种格式</p>
+</div>
+<iconify-icon class="text-gray-300" icon="lucide:chevron-right"></iconify-icon>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. 工具详情页 -->
+<section class="page" id="page-detail">
+<header class="bg-white px-4 py-3 flex items-center sticky top-0 z-10">
+<button class="mr-4" onclick="switchPage('home')">
+<iconify-icon class="text-gray-800" icon="lucide:chevron-left" width="24"></iconify-icon>
+</button>
+<h1 class="text-lg font-bold text-gray-800" id="detail-title">工具详情</h1>
+<div class="ml-auto">
+<iconify-icon class="text-gray-400" icon="lucide:heart" id="fav-icon" onclick="toggleFav()" width="22"></iconify-icon>
+</div>
+</header>
+<div class="p-6">
+<div class="flex flex-col items-center mb-8">
+<div class="w-20 h-20 bg-white rounded-3xl shadow-md flex items-center justify-center mb-4">
+<iconify-icon icon="logos:tiktok-icon" id="detail-icon" width="40"></iconify-icon>
+</div>
+<h2 class="text-xl font-bold text-gray-800" id="detail-name">抖音去水印</h2>
+<p class="text-sm text-gray-500 mt-2">已累计为 12.5w 用户提供服务</p>
+</div>
+<div class="bg-white rounded-2xl p-5 shadow-sm mb-6">
+<h3 class="text-sm font-bold text-gray-800 mb-3">功能介绍</h3>
+<p class="text-sm text-gray-600 leading-relaxed">
+                            本工具支持一键解析抖音短视频，去除视频中的官方水印，保留超清原画质。支持复制链接自动识别，解析速度极快。
+                        </p>
+</div>
+<div class="bg-white rounded-2xl p-5 shadow-sm">
+<h3 class="text-sm font-bold text-gray-800 mb-4">使用步骤</h3>
+<div class="space-y-6">
+<div class="flex">
+<div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 shrink-0">1</div>
+<div>
+<h4 class="text-sm font-semibold">复制视频链接</h4>
+<p class="text-xs text-gray-400 mt-1">在抖音APP中点击分享，选择“复制链接”</p>
+</div>
+</div>
+<div class="flex">
+<div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 shrink-0">2</div>
+<div>
+<h4 class="text-sm font-semibold">粘贴并解析</h4>
+<p class="text-xs text-gray-400 mt-1">回到本工具，将链接粘贴进输入框并点击解析</p>
+</div>
+</div>
+<div class="flex">
+<div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-3 shrink-0">3</div>
+<div>
+<h4 class="text-sm font-semibold">保存到相册</h4>
+<p class="text-xs text-gray-400 mt-1">解析成功后，点击“保存视频”即可存入手机</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-6">
+<button class="w-full bg-blue-500 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 active:bg-blue-600 transition-colors" onclick="switchPage('result')">
+                        立即使用
+                    </button>
+</div>
+</section>
+<!-- 3. 工具结果页 (去水印示例) -->
+<section class="page" id="page-result">
+<header class="bg-white px-4 py-3 flex items-center sticky top-0 z-10">
+<button class="mr-4" onclick="switchPage('detail')">
+<iconify-icon class="text-gray-800" icon="lucide:chevron-left" width="24"></iconify-icon>
+</button>
+<h1 class="text-lg font-bold text-gray-800">抖音去水印</h1>
+</header>
+<div class="p-4">
+<div class="bg-white rounded-2xl p-4 shadow-sm mb-6">
+<div class="relative">
+<textarea class="w-full h-24 bg-gray-50 rounded-xl p-3 text-sm text-gray-700 border-none focus:ring-1 focus:ring-blue-500 outline-none" id="video-link" placeholder="请在此处粘贴视频分享链接..."></textarea>
+<button class="absolute top-2 right-2 text-gray-300" onclick="clearText()">
+<iconify-icon icon="ion:close-circle" width="20"></iconify-icon>
+</button>
+</div>
+<button class="w-full mt-4 bg-blue-500 text-white py-3 rounded-xl font-bold flex items-center justify-center space-x-2" onclick="startParse()">
+<iconify-icon icon="lucide:zap" width="18"></iconify-icon>
+<span>开始解析</span>
+</button>
+</div>
+<!-- 解析结果 (默认隐藏) -->
+<div class="hidden flex flex-col items-center py-10" id="parse-loading">
+<div class="w-10 h-10 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin"></div>
+<p class="text-sm text-gray-400 mt-4">正在解析中，请稍候...</p>
+</div>
+<div class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500" id="parse-result">
+<div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+<div class="relative h-48">
+<img alt="Video cover" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/03b3887625384a9784da4eaef48353c7.jpg"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50">
+<iconify-icon class="text-white ml-1" icon="ion:play" width="24"></iconify-icon>
+</div>
+</div>
+</div>
+<div class="p-4">
+<h3 class="text-sm font-bold text-gray-800 line-clamp-2">这届年轻人已经开始在工位上养鱼了？简直是打工人的治愈天堂！#办公室养鱼 #治愈系</h3>
+<div class="flex items-center mt-3 text-xs text-gray-400 space-x-4">
+<span class="flex items-center"><iconify-icon class="mr-1" icon="lucide:play" width="14"></iconify-icon> 24.5w</span>
+<span class="flex items-center"><iconify-icon class="mr-1" icon="lucide:heart" width="14"></iconify-icon> 1.2w</span>
+<span class="flex items-center"><iconify-icon class="mr-1" icon="lucide:clock" width="14"></iconify-icon> 15s</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<button class="bg-blue-50 text-blue-600 py-3 rounded-xl font-bold flex items-center justify-center space-x-2">
+<iconify-icon icon="lucide:download" width="18"></iconify-icon>
+<span>保存视频</span>
+</button>
+<button class="bg-blue-50 text-blue-600 py-3 rounded-xl font-bold flex items-center justify-center space-x-2">
+<iconify-icon icon="lucide:image" width="18"></iconify-icon>
+<span>保存封面</span>
+</button>
+</div>
+<button class="w-full mt-3 bg-gray-100 text-gray-600 py-3 rounded-xl font-bold flex items-center justify-center space-x-2">
+<iconify-icon icon="lucide:share-2" width="18"></iconify-icon>
+<span>分享给好友</span>
+</button>
+<button class="w-full mt-8 text-sm text-blue-500 font-medium text-center" onclick="switchPage('home')">
+                            返回首页
+                        </button>
+</div>
+</div>
+</section>
+<!-- 4. 收藏/历史记录页 -->
+<section class="page" id="page-favorites">
+<header class="bg-white sticky top-0 z-10">
+<div class="px-4 py-3 flex justify-center">
+<h1 class="text-lg font-bold text-gray-800">我的库</h1>
+</div>
+<div class="flex border-b border-gray-100">
+<button class="flex-1 py-3 text-sm font-bold border-b-2 border-blue-500 text-blue-500" id="tab-fav" onclick="toggleTab('fav')">我的收藏</button>
+<button class="flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400" id="tab-history" onclick="toggleTab('history')">使用记录</button>
+</div>
+</header>
+<div class="p-4 space-y-3" id="fav-list">
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mr-3">
+<iconify-icon icon="logos:tiktok-icon" width="24"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">抖音去水印</h4>
+<p class="text-xs text-gray-400 mt-0.5">常用工具 · 已收藏</p>
+</div>
+<iconify-icon class="text-red-400" icon="solar:heart-bold" width="20"></iconify-icon>
+</div>
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mr-3">
+<iconify-icon class="text-pink-500" icon="fluent:music-note-2-24-filled" width="28"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">免费听歌曲</h4>
+<p class="text-xs text-gray-400 mt-0.5">常用工具 · 已收藏</p>
+</div>
+<iconify-icon class="text-red-400" icon="solar:heart-bold" width="20"></iconify-icon>
+</div>
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mr-3">
+<iconify-icon class="text-orange-500" icon="material-symbols:text-rotation-none-rounded" width="24"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">文字识别 OCR</h4>
+<p class="text-xs text-gray-400 mt-0.5">常用工具 · 已收藏</p>
+</div>
+<iconify-icon class="text-red-400" icon="solar:heart-bold" width="20"></iconify-icon>
+</div>
+</div>
+<div class="hidden p-4 space-y-3" id="history-list">
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mr-3">
+<iconify-icon icon="logos:bilibili" width="24"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">B站解析</h4>
+<p class="text-xs text-gray-400 mt-0.5">今天 10:24 使用过</p>
+</div>
+</div>
+<div class="bg-white p-3 rounded-xl flex items-center shadow-sm">
+<div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mr-3">
+<iconify-icon class="text-green-500" icon="solar:gallery-bold" width="24"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-sm font-semibold">图片压缩</h4>
+<p class="text-xs text-gray-400 mt-0.5">昨天 18:45 使用过</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. 个人中心页 -->
+<section class="page" id="page-profile">
+<div class="bg-white px-6 pt-12 pb-8 rounded-b-[40px] shadow-sm mb-6">
+<div class="flex items-center">
+<div class="w-20 h-20 rounded-full border-4 border-blue-50 overflow-hidden shadow-inner">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-05-13/2dadd9cecbb3497c818f262a0c419af0.jpg"/>
+</div>
+<div class="ml-5">
+<h2 class="text-2xl font-bold text-gray-800">极客小助手</h2>
+<p class="text-sm text-gray-400 mt-1">ID: 10248866</p>
+</div>
+<div class="ml-auto">
+<iconify-icon class="text-gray-300" icon="lucide:chevron-right" width="24"></iconify-icon>
+</div>
+</div>
+<div class="flex mt-8 space-x-4">
+<div class="flex-1 bg-blue-50 p-3 rounded-2xl text-center">
+<p class="text-lg font-bold text-blue-600">12</p>
+<p class="text-[10px] text-blue-400 uppercase tracking-wider font-bold">已收藏</p>
+</div>
+<div class="flex-1 bg-orange-50 p-3 rounded-2xl text-center">
+<p class="text-lg font-bold text-orange-600">85</p>
+<p class="text-[10px] text-orange-400 uppercase tracking-wider font-bold">累计使用</p>
+</div>
+<div class="flex-1 bg-green-50 p-3 rounded-2xl text-center">
+<p class="text-lg font-bold text-green-600">VIP</p>
+<p class="text-[10px] text-green-400 uppercase tracking-wider font-bold">当前等级</p>
+</div>
+</div>
+</div>
+<div class="px-4 space-y-4">
+<div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+<div class="flex items-center p-4 active:bg-gray-50" onclick="switchPage('favorites')">
+<iconify-icon class="text-red-400 mr-4" icon="solar:heart-bold" width="22"></iconify-icon>
+<span class="text-sm font-medium text-gray-700">我的收藏</span>
+<iconify-icon class="ml-auto text-gray-300" icon="lucide:chevron-right" width="18"></iconify-icon>
+</div>
+<div class="flex items-center p-4 border-t border-gray-50 active:bg-gray-50" onclick="goToHistory()">
+<iconify-icon class="text-blue-400 mr-4" icon="solar:history-bold" width="22"></iconify-icon>
+<span class="text-sm font-medium text-gray-700">使用记录</span>
+<iconify-icon class="ml-auto text-gray-300" icon="lucide:chevron-right" width="18"></iconify-icon>
+</div>
+</div>
+<div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+<div class="flex items-center p-4 active:bg-gray-50">
+<iconify-icon class="text-green-400 mr-4" icon="solar:chat-line-bold" width="22"></iconify-icon>
+<span class="text-sm font-medium text-gray-700">意见反馈</span>
+<iconify-icon class="ml-auto text-gray-300" icon="lucide:chevron-right" width="18"></iconify-icon>
+</div>
+<div class="flex items-center p-4 border-t border-gray-50 active:bg-gray-50">
+<iconify-icon class="text-gray-400 mr-4" icon="solar:info-circle-bold" width="22"></iconify-icon>
+<span class="text-sm font-medium text-gray-700">关于我们</span>
+<iconify-icon class="ml-auto text-gray-300" icon="lucide:chevron-right" width="18"></iconify-icon>
+</div>
+<div class="flex items-center p-4 border-t border-gray-50 active:bg-gray-50">
+<iconify-icon class="text-gray-400 mr-4" icon="solar:settings-bold" width="22"></iconify-icon>
+<span class="text-sm font-medium text-gray-700">设置</span>
+<iconify-icon class="ml-auto text-gray-300" icon="lucide:chevron-right" width="18"></iconify-icon>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- 底部 TabBar -->
+<nav class="tab-bar">
+<button class="flex flex-col items-center active-tab" id="tab-btn-home" onclick="switchPage('home')">
+<iconify-icon icon="solar:home-2-bold" width="26"></iconify-icon>
+<span class="text-[10px] mt-1 font-bold">首页</span>
+</button>
+<button class="flex flex-col items-center inactive-tab" id="tab-btn-favorites" onclick="switchPage('favorites')">
+<iconify-icon icon="solar:heart-bold" width="26"></iconify-icon>
+<span class="text-[10px] mt-1 font-bold">收藏</span>
+</button>
+<button class="flex flex-col items-center inactive-tab" id="tab-btn-profile" onclick="switchPage('profile')">
+<iconify-icon icon="solar:user-bold" width="26"></iconify-icon>
+<span class="text-[10px] mt-1 font-bold">我的</span>
+</button>
+</nav>
+<!-- 底部 Home Indicator -->
+<div class="safe-area-bottom bg-white/90 flex justify-center items-center">
+<div class="w-32 h-1.5 bg-gray-200 rounded-full"></div>
+</div>
+</div>
+<script>
+        // 页面切换逻辑
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+            
+            // 显示目标页面
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // 更新 TabBar 状态
+            const tabButtons = document.querySelectorAll('.tab-bar button');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('inactive-tab');
+            });
+
+            if(pageId === 'home' || pageId === 'favorites' || pageId === 'profile') {
+                document.getElementById('tab-btn-' + pageId).classList.add('active-tab');
+                document.getElementById('tab-btn-' + pageId).classList.remove('inactive-tab');
+            }
+
+            // 滚动到顶部
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        // 详情页跳转
+        function goToDetail(name) {
+            document.getElementById('detail-title').innerText = name;
+            document.getElementById('detail-name').innerText = name;
+            
+            // 模拟不同图标
+            const icon = document.getElementById('detail-icon');
+            if(name === '抖音去水印') {
+                icon.setAttribute('icon', 'logos:tiktok-icon');
+            } else if(name === 'B站解析') {
+                icon.setAttribute('icon', 'logos:bilibili');
+            }
+            
+            switchPage('detail');
+        }
+
+        // 个人中心跳转历史记录
+        function goToHistory() {
+            switchPage('favorites');
+            toggleTab('history');
+        }
+
+        // 收藏页 Tab 切换
+        function toggleTab(type) {
+            const tabFav = document.getElementById('tab-fav');
+            const tabHistory = document.getElementById('tab-history');
+            const listFav = document.getElementById('fav-list');
+            const listHistory = document.getElementById('history-list');
+
+            if(type === 'fav') {
+                tabFav.className = "flex-1 py-3 text-sm font-bold border-b-2 border-blue-500 text-blue-500";
+                tabHistory.className = "flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400";
+                listFav.classList.remove('hidden');
+                listHistory.classList.add('hidden');
+            } else {
+                tabHistory.className = "flex-1 py-3 text-sm font-bold border-b-2 border-blue-500 text-blue-500";
+                tabFav.className = "flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400";
+                listHistory.classList.remove('hidden');
+                listFav.classList.add('hidden');
+            }
+        }
+
+        // 收藏状态切换
+        let isFav = false;
+        function toggleFav() {
+            isFav = !isFav;
+            const icon = document.getElementById('fav-icon');
+            if(isFav) {
+                icon.setAttribute('icon', 'solar:heart-bold');
+                icon.className = "text-red-500";
+            } else {
+                icon.setAttribute('icon', 'lucide:heart');
+                icon.className = "text-gray-400";
+            }
+        }
+
+        // 模拟 Banner 轮播
+        let currentBanner = 0;
+        const bannerTrack = document.getElementById('banner-track');
+        setInterval(() => {
+            currentBanner = (currentBanner + 1) % 2;
+            bannerTrack.style.transform = `translateX(-${currentBanner * 100}%)`;
+        }, 3000);
+
+        // 模拟解析逻辑
+        function startParse() {
+            const link = document.getElementById('video-link').value;
+            if(!link) {
+                alert('请先粘贴链接');
+                return;
+            }
+
+            document.getElementById('parse-loading').classList.remove('hidden');
+            document.getElementById('parse-result').classList.add('hidden');
+
+            setTimeout(() => {
+                document.getElementById('parse-loading').classList.add('hidden');
+                document.getElementById('parse-result').classList.remove('hidden');
+            }, 1500);
+        }
+
+        function clearText() {
+            document.getElementById('video-link').value = '';
+            document.getElementById('parse-result').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

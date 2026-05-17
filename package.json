@@ -189,6 +189,7 @@
     "rollup": "^4.60.1",
     "rollup-plugin-dts": "6.1.1",
     "rollup-plugin-esbuild": "^6.2.1",
+    "sass": "^1.99.0",
     "semver": "^7.7.4",
     "simple-git-hooks": "^2.13.1",
     "sirv": "^3.0.2",

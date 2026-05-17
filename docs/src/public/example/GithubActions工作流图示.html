@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Actions 工作流可视化</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg2: #0d1321;
+      --bg3: #111927;
+      --panel: #131c2e;
+      --border: #1e2d47;
+      --accent: #00d4ff;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --orange: #ffa657;
+      --text: #cdd9e5;
+      --text2: #768390;
+      --text3: #444c56;
+      --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+      --glow-g: 0 0 20px rgba(63, 185, 80, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── Grid bg ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ─── Header ─── */
+    header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .gh-icon {
+      width: 44px;
+      height: 44px;
+      fill: var(--text);
+    }
+
+    .header-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(120deg, var(--accent), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-sub {
+      color: var(--text2);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Section labels ─── */
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── Panel ─── */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.4;
+    }
+
+    /* ─── SECTION 1: Trigger Chain ─── */
+    .trigger-section {
+      margin-bottom: 48px;
+    }
+
+    .trigger-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      padding: 8px 0;
+    }
+
+    .trigger-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-width: 110px;
+      transition: all 0.3s;
+      cursor: default;
+      position: relative;
+    }
+
+    .trigger-node:hover {
+      border-color: var(--accent);
+      box-shadow: var(--glow);
+      transform: translateY(-2px);
+    }
+
+    .trigger-node .icon {
+      font-size: 26px;
+    }
+
+    .trigger-node .name {
+      font-size: 11px;
+      color: var(--text2);
+    }
+
+    .trigger-node .tag {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      background: rgba(0, 212, 255, 0.12);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
+    .trigger-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      color: var(--text3);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .trigger-arrow.animated {
+      animation: pulse-right 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-right {
+
+      0%,
+      100% {
+        color: var(--text3);
+        transform: translateX(0);
+      }
+
+      50% {
+        color: var(--accent);
+        transform: translateX(4px);
+      }
+    }
+
+    .event-node {
+      border-color: rgba(188, 140, 255, 0.4);
+    }
+
+    .event-node .tag {
+      background: rgba(188, 140, 255, 0.12);
+      color: var(--purple);
+    }
+
+    .dispatch-node {
+      border-color: rgba(255, 166, 87, 0.4);
+    }
+
+    .dispatch-node .tag {
+      background: rgba(255, 166, 87, 0.12);
+      color: var(--orange);
+    }
+
+    /* ─── SECTION 2: YAML + Flow ─── */
+    .yaml-flow-section {
+      margin-bottom: 48px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .yaml-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 12px;
+      line-height: 1.8;
+      overflow: auto;
+    }
+
+    .yaml-block .k {
+      color: var(--accent);
+    }
+
+    .yaml-block .v {
+      color: var(--green);
+    }
+
+    .yaml-block .c {
+      color: var(--text3);
+      font-style: italic;
+    }
+
+    .yaml-block .s {
+      color: var(--orange);
+    }
+
+    .yaml-block .n {
+      color: var(--purple);
+    }
+
+    .yaml-block .h {
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    .yaml-block .e {
+      color: var(--red);
+    }
+
+    .yaml-block .ind0 {
+      margin-left: 0;
+    }
+
+    .yaml-block .ind1 {
+      margin-left: 16px;
+    }
+
+    .yaml-block .ind2 {
+      margin-left: 32px;
+    }
+
+    .yaml-block .ind3 {
+      margin-left: 48px;
+    }
+
+    /* Bracket labels */
+    .brace-label {
+      position: relative;
+      display: inline-block;
+      background: rgba(0, 212, 255, 0.08);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+      padding-left: 6px;
+      color: var(--accent);
+      font-size: 10px;
+      margin: 2px 0;
+    }
+
+    /* ─── Flow diagram (right col) ─── */
+    .flow-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .flow-node {
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .flow-node:hover {
+      transform: translateX(4px);
+    }
+
+    .flow-node.trigger-type {
+      background: rgba(188, 140, 255, 0.1);
+      border-color: rgba(188, 140, 255, 0.3);
+    }
+
+    .flow-node.workflow-type {
+      background: rgba(0, 212, 255, 0.08);
+      border-color: rgba(0, 212, 255, 0.2);
+    }
+
+    .flow-node.job-type {
+      background: rgba(63, 185, 80, 0.08);
+      border-color: rgba(63, 185, 80, 0.2);
+    }
+
+    .flow-node.step-type {
+      background: rgba(255, 166, 87, 0.08);
+      border-color: rgba(255, 166, 87, 0.2);
+    }
+
+    .flow-node .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .flow-node.trigger-type .dot {
+      background: var(--purple);
+      box-shadow: 0 0 8px var(--purple);
+    }
+
+    .flow-node.workflow-type .dot {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .flow-node.job-type .dot {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .flow-node.step-type .dot {
+      background: var(--orange);
+      box-shadow: 0 0 8px var(--orange);
+    }
+
+    .flow-connector {
+      width: 2px;
+      height: 10px;
+      background: var(--border);
+      margin-left: 18px;
+      border-radius: 1px;
+    }
+
+    .flow-connector.indent1 {
+      margin-left: 34px;
+    }
+
+    .flow-connector.indent2 {
+      margin-left: 50px;
+    }
+
+    .flow-label {
+      font-size: 11px;
+      color: var(--text2);
+      margin-left: 4px;
+    }
+
+    .badge {
+      font-size: 9px;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      margin-left: auto;
+    }
+
+    .badge.p {
+      background: rgba(188, 140, 255, 0.2);
+      color: var(--purple);
+    }
+
+    .badge.b {
+      background: rgba(0, 212, 255, 0.2);
+      color: var(--accent);
+    }
+
+    .badge.g {
+      background: rgba(63, 185, 80, 0.2);
+      color: var(--green);
+    }
+
+    .badge.o {
+      background: rgba(255, 166, 87, 0.2);
+      color: var(--orange);
+    }
+
+    /* ─── SECTION 3: Runner Execution ─── */
+    .runner-section {
+      margin-bottom: 48px;
+    }
+
+    .runner-container {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 700px) {
+      .runner-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Runner VM card */
+    .runner-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: sticky;
+      top: 20px;
+    }
+
+    .runner-header {
+      background: linear-gradient(135deg, #1a2744, #0d1321);
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .runner-os {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 4px;
+    }
+
+    .runner-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .runner-body {
+      padding: 14px 16px;
+    }
+
+    .runner-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text2);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .runner-stat:last-child {
+      border: none;
+    }
+
+    .runner-stat .val {
+      color: var(--text);
+    }
+
+    .runner-status {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .runner-status.idle {
+      background: rgba(118, 131, 144, 0.15);
+      color: var(--text2);
+    }
+
+    .runner-status.running {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--green);
+    }
+
+    .runner-status.done {
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      animation: blink 1s step-end infinite;
+    }
+
+    .runner-status.idle .status-dot {
+      background: var(--text3);
+      animation: none;
+    }
+
+    .runner-status.running .status-dot {
+      background: var(--green);
+    }
+
+    .runner-status.done .status-dot {
+      background: var(--accent);
+      animation: none;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.2
+      }
+    }
+
+    /* Steps timeline */
+    .steps-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 14px;
+      position: relative;
+    }
+
+    .step-item::after {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 36px;
+      width: 2px;
+      bottom: 0;
+      background: var(--border);
+    }
+
+    .step-item:last-child::after {
+      display: none;
+    }
+
+    .step-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 28px;
+    }
+
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      transition: all 0.4s;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .step-circle.pending {
+      border-color: var(--border);
+      color: var(--text3);
+    }
+
+    .step-circle.running {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(63, 185, 80, 0.1);
+      box-shadow: 0 0 12px rgba(63, 185, 80, 0.4);
+      animation: spin-ring 1s linear infinite;
+    }
+
+    .step-circle.success {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(63, 185, 80, 0.1);
+    }
+
+    .step-circle.skipped {
+      border-color: var(--text3);
+      color: var(--text3);
+    }
+
+    @keyframes spin-ring {
+      0% {
+        box-shadow: 0 0 12px rgba(63, 185, 80, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 20px rgba(63, 185, 80, 0.8);
+      }
+
+      100% {
+        box-shadow: 0 0 12px rgba(63, 185, 80, 0.4);
+      }
+    }
+
+    .step-body {
+      flex: 1;
+      padding: 4px 0 20px;
+    }
+
+    .step-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+
+    .step-log {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--text2);
+      line-height: 1.7;
+      display: none;
+      max-height: 140px;
+      overflow: auto;
+      position: relative;
+    }
+
+    .step-log.visible {
+      display: block;
+    }
+
+    .step-log .log-line {
+      display: flex;
+      gap: 8px;
+    }
+
+    .step-log .log-time {
+      color: var(--text3);
+      flex-shrink: 0;
+    }
+
+    .step-log .log-ok {
+      color: var(--green);
+    }
+
+    .step-log .log-cmd {
+      color: var(--accent);
+    }
+
+    .step-log .log-out {
+      color: var(--text2);
+    }
+
+    .step-log .log-err {
+      color: var(--red);
+    }
+
+    .step-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+    }
+
+    .step-tag.uses {
+      background: rgba(188, 140, 255, 0.15);
+      color: var(--purple);
+    }
+
+    .step-tag.run {
+      background: rgba(0, 212, 255, 0.12);
+      color: var(--accent);
+    }
+
+    .step-tag.env {
+      background: rgba(255, 166, 87, 0.15);
+      color: var(--orange);
+    }
+
+    /* ─── SECTION 4: Jobs Parallel ─── */
+    .jobs-section {
+      margin-bottom: 48px;
+    }
+
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .job-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .job-card:hover {
+      border-color: var(--green);
+      box-shadow: var(--glow-g);
+    }
+
+    .job-card-header {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(63, 185, 80, 0.1), transparent);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .job-card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .job-status-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .job-status-badge.queued {
+      background: rgba(118, 131, 144, 0.2);
+      color: var(--text2);
+    }
+
+    .job-status-badge.running {
+      background: rgba(63, 185, 80, 0.2);
+      color: var(--green);
+    }
+
+    .job-status-badge.success {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--green);
+    }
+
+    .job-status-badge.waiting {
+      background: rgba(210, 153, 34, 0.2);
+      color: var(--yellow);
+    }
+
+    .job-card-body {
+      padding: 12px 16px;
+    }
+
+    .job-meta {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 10px;
+    }
+
+    .job-meta span {
+      color: var(--text);
+    }
+
+    .job-mini-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mini-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text2);
+      padding: 3px 0;
+    }
+
+    .mini-step .mini-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .mini-step.done .mini-dot {
+      background: var(--green);
+    }
+
+    .mini-step.run .mini-dot {
+      background: var(--green);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    .mini-step.wait .mini-dot {
+      background: var(--text3);
+    }
+
+    .needs-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--text3);
+      padding: 0 4px;
+    }
+
+    /* ─── Controls ─── */
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .btn.primary:hover {
+      box-shadow: var(--glow);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .btn.secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ─── Progress bar ─── */
+    .progress-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 0%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* ─── Footer note ─── */
+    .arch-note {
+      background: rgba(0, 212, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.15);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .arch-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .arch-item .arch-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .arch-item .arch-desc {
+      font-size: 11px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .tag-inline {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- Header -->
+    <header>
+      <div class="logo-row">
+        <svg class="gh-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+        </svg>
+        <h1 class="header-title">GitHub Actions 工作流</h1>
+      </div>
+      <p class="header-sub">// Workflow · Job · Step · Runner — 完整执行流程可视化</p>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+       SECTION 1: Triggers
+  ══════════════════════════════════════════ -->
+    <div class="trigger-section">
+      <div class="section-label">01 — 触发器 Triggers</div>
+      <div class="panel">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:20px;">当以下事件发生时，GitHub 自动检测并触发对应的 workflow 文件（<span
+            style="color:var(--accent)">.github/workflows/*.yml</span>）</div>
+        <div class="trigger-chain">
+          <div class="trigger-node event-node">
+            <span class="icon">⬆️</span>
+            <span style="font-size:12px;font-weight:600;">git push</span>
+            <span class="name">推送代码</span>
+            <span class="tag">on: push</span>
+          </div>
+          <div class="trigger-arrow animated">→</div>
+          <div class="trigger-node event-node">
+            <span class="icon">🔀</span>
+            <span style="font-size:12px;font-weight:600;">Pull Request</span>
+            <span class="name">合并请求</span>
+            <span class="tag">on: pull_request</span>
+          </div>
+          <div class="trigger-arrow animated">→</div>
+          <div class="trigger-node">
+            <span class="icon">⏰</span>
+            <span style="font-size:12px;font-weight:600;">定时任务</span>
+            <span class="name">Cron 表达式</span>
+            <span class="tag">on: schedule</span>
+          </div>
+          <div class="trigger-arrow animated">→</div>
+          <div class="trigger-node dispatch-node">
+            <span class="icon">🖱️</span>
+            <span style="font-size:12px;font-weight:600;">手动触发</span>
+            <span class="name">UI / API</span>
+            <span class="tag">workflow_dispatch</span>
+          </div>
+          <div class="trigger-arrow" style="color:var(--green);font-size:22px;">⟹</div>
+          <div class="trigger-node" style="border-color:rgba(63,185,80,0.5);background:rgba(63,185,80,0.05);">
+            <span class="icon">📋</span>
+            <span style="font-size:12px;font-weight:600;">Workflow 启动</span>
+            <span class="name">解析 YAML</span>
+            <span class="tag" style="background:rgba(63,185,80,0.15);color:var(--green);">Jobs 入队</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       SECTION 2: YAML Structure
+  ══════════════════════════════════════════ -->
+    <div class="yaml-flow-section">
+      <div class="section-label">02 — YAML 结构解析</div>
+      <div class="two-col">
+        <!-- Left: YAML -->
+        <div class="panel">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+            <span style="color:var(--green)">📄</span> .github/workflows/ci.yml
+          </div>
+          <div class="yaml-block" id="yamlBlock">
+            <div class="ind0"><span class="c"># ── 工作流名称</span></div>
+            <div class="ind0"><span class="k">name</span>: <span class="v">CI Pipeline</span></div>
+            <div class="ind0">&nbsp;</div>
+            <div class="ind0"><span class="c"># ── 触发条件</span></div>
+            <div class="ind0"><span class="h">on</span>:</div>
+            <div class="ind1"><span class="k">push</span>:</div>
+            <div class="ind2"><span class="k">branches</span>: [<span class="s">"main"</span>, <span
+                class="s">"dev"</span>]</div>
+            <div class="ind1"><span class="k">pull_request</span>:</div>
+            <div class="ind2"><span class="k">branches</span>: [<span class="s">"main"</span>]</div>
+            <div class="ind0">&nbsp;</div>
+            <div class="ind0"><span class="c"># ── 全局环境变量</span></div>
+            <div class="ind0"><span class="k">env</span>:</div>
+            <div class="ind1"><span class="k">NODE_VERSION</span>: <span class="s">'20'</span></div>
+            <div class="ind0">&nbsp;</div>
+            <div class="ind0"><span class="c"># ── 任务定义</span></div>
+            <div class="ind0"><span class="h">jobs</span>:</div>
+            <div class="ind0">&nbsp;</div>
+            <div class="ind1"><span class="n">test</span>: <span class="c"># Job 1</span></div>
+            <div class="ind2"><span class="k">runs-on</span>: <span class="s">ubuntu-latest</span></div>
+            <div class="ind2"><span class="k">steps</span>:</div>
+            <div class="ind3"><span class="e">- name</span>: <span class="v">Checkout</span></div>
+            <div class="ind3 ind3"> <span class="k">uses</span>: <span class="s">actions/checkout@v4</span></div>
+            <div class="ind3"><span class="e">- name</span>: <span class="v">Setup Node</span></div>
+            <div class="ind3"> <span class="k">uses</span>: <span class="s">actions/setup-node@v4</span></div>
+            <div class="ind3"> <span class="k">with</span>:</div>
+            <div class="ind3"> <span class="k">node-version</span>: <span class="s">${{ env.NODE_VERSION }}</span></div>
+            <div class="ind3"><span class="e">- name</span>: <span class="v">Install &amp; Test</span></div>
+            <div class="ind3"> <span class="k">run</span>: |</div>
+            <div class="ind3"> <span class="s">npm ci</span></div>
+            <div class="ind3"> <span class="s">npm test</span></div>
+            <div class="ind0">&nbsp;</div>
+            <div class="ind1"><span class="n">deploy</span>: <span class="c"># Job 2</span></div>
+            <div class="ind2"><span class="k">needs</span>: <span class="s">test</span> <span class="c"># 依赖 test</span>
+            </div>
+            <div class="ind2"><span class="k">runs-on</span>: <span class="s">ubuntu-latest</span></div>
+            <div class="ind2"><span class="k">steps</span>:</div>
+            <div class="ind3"><span class="e">- name</span>: <span class="v">Deploy to Prod</span></div>
+            <div class="ind3"> <span class="k">run</span>: <span class="s">./deploy.sh</span></div>
+          </div>
+        </div>
+
+        <!-- Right: Flow breakdown -->
+        <div class="panel">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:14px;">📊 层级结构说明</div>
+          <div class="flow-diagram">
+
+            <div class="flow-node trigger-type">
+              <span class="dot"></span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--purple)">Trigger 触发器</div>
+                <div class="flow-label">on: push / pull_request / schedule…</div>
+              </div>
+              <span class="badge p">EVENT</span>
+            </div>
+            <div class="flow-connector"></div>
+
+            <div class="flow-node workflow-type">
+              <span class="dot"></span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--accent)">Workflow 工作流</div>
+                <div class="flow-label">整个 .yml 文件 = 一个 Workflow</div>
+              </div>
+              <span class="badge b">YAML</span>
+            </div>
+            <div class="flow-connector indent1"></div>
+
+            <div class="flow-node job-type" style="margin-left:16px;">
+              <span class="dot"></span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--green)">Job 任务</div>
+                <div class="flow-label">独立 Runner 上运行，可并行/串行</div>
+              </div>
+              <span class="badge g">JOB</span>
+            </div>
+            <div class="flow-connector indent2"></div>
+
+            <div class="flow-node step-type" style="margin-left:32px;">
+              <span class="dot"></span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--orange)">Step 步骤</div>
+                <div class="flow-label">uses: action 或 run: shell cmd</div>
+              </div>
+              <span class="badge o">STEP</span>
+            </div>
+            <div class="flow-connector indent2"></div>
+            <div class="flow-node step-type" style="margin-left:32px;">
+              <span class="dot"></span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--orange)">Step 步骤</div>
+                <div class="flow-label">同一 Job 内顺序执行，共享文件系统</div>
+              </div>
+              <span class="badge o">STEP</span>
+            </div>
+
+            <div
+              style="margin-top:20px;padding:12px;background:rgba(210,153,34,0.07);border:1px solid rgba(210,153,34,0.2);border-radius:8px;">
+              <div style="font-size:11px;font-weight:700;color:var(--yellow);margin-bottom:8px;">⚡ 关键概念</div>
+              <div style="font-size:11px;color:var(--text2);line-height:2;">
+                <span class="tag-inline">needs</span> 控制 Job 间的依赖与执行顺序<br>
+                <span class="tag-inline">uses</span> 引用可复用的 Action（来自市场）<br>
+                <span class="tag-inline">run</span> 直接在 Runner shell 中执行命令<br>
+                <span class="tag-inline">env</span> 注入环境变量到当前 step / job<br>
+                <span class="tag-inline">if</span> 条件控制 step / job 是否执行
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       SECTION 3: Runner Execution (Animated)
+  ══════════════════════════════════════════ -->
+    <div class="runner-section">
+      <div class="section-label">03 — Runner 执行过程（动态演示）</div>
+      <div class="panel">
+        <div class="controls">
+          <button class="btn primary" id="btnRun" onclick="startAnimation()">▶ 运行 Workflow</button>
+          <button class="btn secondary" id="btnReset" onclick="resetAnimation()">↺ 重置</button>
+          <div style="flex:1;"></div>
+          <div style="font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px;">
+            进度 <span id="progressPct" style="color:var(--accent)">0%</span>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="runner-container">
+          <!-- Runner card -->
+          <div>
+            <div class="runner-card" id="runnerCard">
+              <div class="runner-header">
+                <div class="runner-os">🐧 ubuntu-latest · x64</div>
+                <div class="runner-name">GitHub-hosted Runner</div>
+              </div>
+              <div class="runner-body">
+                <div class="runner-stat">CPU <span class="val">2-core</span></div>
+                <div class="runner-stat">RAM <span class="val">7 GB</span></div>
+                <div class="runner-stat">Disk <span class="val">14 GB SSD</span></div>
+                <div class="runner-stat">Node <span class="val" id="nodeVer">—</span></div>
+                <div class="runner-stat">Git <span class="val">2.43.0</span></div>
+                <div class="runner-stat" style="border:none;">
+                  工作目录
+                  <span class="val" style="font-size:10px;">/home/runner/work</span>
+                </div>
+                <div class="runner-status idle" id="runnerStatus">
+                  <span class="status-dot"></span> 等待任务
+                </div>
+              </div>
+            </div>
+            <div
+              style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--text2);">
+              <div style="color:var(--text);font-weight:600;margin-bottom:6px;">🔒 隔离环境</div>
+              每次 Job 都在全新的虚拟机中运行，执行完毕后 Runner 销毁，确保环境干净可复现。
+            </div>
+          </div>
+
+          <!-- Steps timeline -->
+          <div class="steps-timeline" id="stepsTimeline">
+
+            <div class="step-item" id="step0">
+              <div class="step-left">
+                <div class="step-circle pending" id="sc0">0</div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">🖥️ Runner 分配 &amp; 虚拟机启动 <span class="step-tag run">SYSTEM</span></div>
+                <div class="step-desc">GitHub 从资源池中分配一台 ubuntu-latest 虚拟机，初始化运行环境</div>
+                <div class="step-log" id="log0">
+                  <div class="log-line"><span class="log-time">00:00</span><span class="log-ok">✓</span><span
+                      class="log-out">Requested labels: ubuntu-latest</span></div>
+                  <div class="log-line"><span class="log-time">00:01</span><span class="log-ok">✓</span><span
+                      class="log-out">Job defined in .github/workflows/ci.yml</span></div>
+                  <div class="log-line"><span class="log-time">00:02</span><span class="log-ok">✓</span><span
+                      class="log-out">Image: ubuntu-22.04</span></div>
+                  <div class="log-line"><span class="log-time">00:03</span><span class="log-ok">✓</span><span
+                      class="log-out">Runner started successfully</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item" id="step1">
+              <div class="step-left">
+                <div class="step-circle pending" id="sc1">1</div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">📦 actions/checkout@v4 <span class="step-tag uses">uses</span></div>
+                <div class="step-desc">从 GitHub 仓库克隆代码到 Runner 工作目录，使后续步骤能访问源代码</div>
+                <div class="step-log" id="log1">
+                  <div class="log-line"><span class="log-time">00:05</span><span class="log-cmd">$</span><span
+                      class="log-out">git version 2.43.0</span></div>
+                  <div class="log-line"><span class="log-time">00:06</span><span class="log-cmd">$</span><span
+                      class="log-out">git clone https://github.com/user/repo</span></div>
+                  <div class="log-line"><span class="log-time">00:08</span><span class="log-ok">✓</span><span
+                      class="log-out">Cloning into '/home/runner/work/repo'</span></div>
+                  <div class="log-line"><span class="log-time">00:09</span><span class="log-ok">✓</span><span
+                      class="log-out">HEAD is now at a3f8c2d feat: add new feature</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item" id="step2">
+              <div class="step-left">
+                <div class="step-circle pending" id="sc2">2</div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">⚙️ actions/setup-node@v4 <span class="step-tag uses">uses</span></div>
+                <div class="step-desc">安装指定版本的 Node.js，并自动配置 PATH，支持缓存加速</div>
+                <div class="step-log" id="log2">
+                  <div class="log-line"><span class="log-time">00:11</span><span class="log-out">with:</span></div>
+                  <div class="log-line"><span class="log-time">00:11</span><span class="log-out"> node-version:
+                      20</span></div>
+                  <div class="log-line"><span class="log-time">00:12</span><span class="log-ok">✓</span><span
+                      class="log-out">Found in tool cache: node-20.11.0-linux-x64</span></div>
+                  <div class="log-line"><span class="log-time">00:13</span><span class="log-ok">✓</span><span
+                      class="log-out">Added node to PATH</span></div>
+                  <div class="log-line"><span class="log-time">00:13</span><span class="log-cmd">$</span><span
+                      class="log-out">node --version → v20.11.0</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item" id="step3">
+              <div class="step-left">
+                <div class="step-circle pending" id="sc3">3</div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">📥 npm ci <span class="step-tag run">run</span></div>
+                <div class="step-desc">根据 package-lock.json 精确安装依赖，比 npm install 更快且可靠</div>
+                <div class="step-log" id="log3">
+                  <div class="log-line"><span class="log-time">00:16</span><span class="log-cmd">$</span><span
+                      class="log-out">npm ci</span></div>
+                  <div class="log-line"><span class="log-time">00:17</span><span class="log-out">npm warn deprecated
+                      xxx@1.0.0</span></div>
+                  <div class="log-line"><span class="log-time">00:22</span><span class="log-ok">✓</span><span
+                      class="log-out">added 348 packages in 5.8s</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item" id="step4">
+              <div class="step-left">
+                <div class="step-circle pending" id="sc4">4</div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">🧪 npm test <span class="step-tag run">run</span></div>
+                <div class="step-desc">执行测试套件，失败时 step 退出码非 0，Job 标记为失败并停止后续 steps</div>
+                <div class="step-log" id="log4">
+                  <div class="log-line"><span class="log-time">00:24</span><span class="log-cmd">$</span><span
+                      class="log-out">npm test</span></div>
+                  <div class="log-line"><span class="log-time">00:25</span><span class="log-out">> jest
+                      --coverage</span></div>
+                  <div class="log-line"><span class="log-time">00:28</span><span class="log-ok">✓</span><span
+                      class="log-out">PASS src/__tests__/app.test.ts (12 tests)</span></div>
+                  <div class="log-line"><span class="log-time">00:28</span><span class="log-ok">✓</span><span
+                      class="log-out">Coverage: 94.3% statements</span></div>
+                  <div class="log-line"><span class="log-time">00:29</span><span class="log-ok">✓</span><span
+                      class="log-out">All tests passed!</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item" id="step5">
+              <div class="step-left">
+                <div class="step-circle pending" id="sc5">✓</div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">🏁 Job 完成 &amp; Runner 销毁 <span class="step-tag env">SYSTEM</span></div>
+                <div class="step-desc">上报执行结果，虚拟机销毁回收，触发下游依赖（needs: test）的 Job 入队</div>
+                <div class="step-log" id="log5">
+                  <div class="log-line"><span class="log-time">00:30</span><span class="log-ok">✓</span><span
+                      class="log-out">Job succeeded</span></div>
+                  <div class="log-line"><span class="log-time">00:30</span><span class="log-ok">✓</span><span
+                      class="log-out">Post job cleanup</span></div>
+                  <div class="log-line"><span class="log-time">00:31</span><span class="log-ok">✓</span><span
+                      class="log-out">Triggering downstream job: deploy</span></div>
+                  <div class="log-line"><span class="log-time">00:31</span><span class="log-out">Cleaning up orphan
+                      processes</span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       SECTION 4: Parallel Jobs
+  ══════════════════════════════════════════ -->
+    <div class="jobs-section">
+      <div class="section-label">04 — Job 并行 &amp; 串行（needs 依赖链）</div>
+      <div class="panel">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:20px;">
+          无 <span class="tag-inline">needs</span> 的 Jobs 并行运行，有 <span class="tag-inline">needs</span> 的 Jobs 等待依赖完成后才启动
+        </div>
+        <div class="jobs-grid">
+
+          <div class="job-card" id="jc-lint">
+            <div class="job-card-header">
+              <div class="job-card-name">🔍 lint</div>
+              <span class="job-status-badge running" id="js-lint">● running</span>
+            </div>
+            <div class="job-card-body">
+              <div class="job-meta">runs-on: <span>ubuntu-latest</span></div>
+              <div class="job-mini-steps" id="jsteps-lint">
+                <div class="mini-step done"><span class="mini-dot"></span>Checkout</div>
+                <div class="mini-step run"><span class="mini-dot"></span>ESLint check</div>
+                <div class="mini-step wait"><span class="mini-dot"></span>Type check</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card" id="jc-test">
+            <div class="job-card-header">
+              <div class="job-card-name">🧪 test</div>
+              <span class="job-status-badge running" id="js-test">● running</span>
+            </div>
+            <div class="job-card-body">
+              <div class="job-meta">runs-on: <span>ubuntu-latest</span></div>
+              <div class="job-mini-steps" id="jsteps-test">
+                <div class="mini-step done"><span class="mini-dot"></span>Checkout</div>
+                <div class="mini-step done"><span class="mini-dot"></span>Setup Node 20</div>
+                <div class="mini-step run"><span class="mini-dot"></span>npm ci &amp; test</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-card" id="jc-build">
+            <div class="job-card-header">
+              <div class="job-card-name">🏗️ build</div>
+              <span class="job-status-badge running" id="js-build">● running</span>
+            </div>
+            <div class="job-card-body">
+              <div class="job-meta">runs-on: <span>ubuntu-latest</span></div>
+              <div class="job-mini-steps" id="jsteps-build">
+                <div class="mini-step done"><span class="mini-dot"></span>Checkout</div>
+                <div class="mini-step run"><span class="mini-dot"></span>npm run build</div>
+                <div class="mini-step wait"><span class="mini-dot"></span>Upload artifact</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--text3);">
+            ↓ <span style="font-size:12px;color:var(--yellow);margin-left:8px;">needs: [lint, test, build]</span>
+          </div>
+
+          <div class="job-card" id="jc-deploy" style="grid-column: span 2;">
+            <div class="job-card-header">
+              <div class="job-card-name">🚀 deploy</div>
+              <span class="job-status-badge waiting" id="js-deploy">⏳ waiting</span>
+            </div>
+            <div class="job-card-body">
+              <div class="job-meta">runs-on: <span>ubuntu-latest</span> &nbsp;|&nbsp; needs: <span>lint, test,
+                  build</span></div>
+              <div class="job-mini-steps">
+                <div class="mini-step wait"><span class="mini-dot"></span>Download artifact</div>
+                <div class="mini-step wait"><span class="mini-dot"></span>Deploy to production</div>
+                <div class="mini-step wait"><span class="mini-dot"></span>Notify Slack</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div style="margin-top:16px;font-size:11px;color:var(--text2);text-align:center;">
+          lint / test / build 在三台独立的 Runner 上并行执行 → 全部成功后 → deploy 启动
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       Footer Architecture Notes
+  ══════════════════════════════════════════ -->
+    <div>
+      <div class="section-label">05 — 架构要点速查</div>
+      <div class="arch-note">
+        <div class="arch-item">
+          <div class="arch-title">📁 存储位置</div>
+          <div class="arch-desc">.github/workflows/ 目录下的 .yml 或 .yaml 文件，每个文件是一个独立的 Workflow</div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-title">🖥️ Runner 类型</div>
+          <div class="arch-desc">GitHub-hosted（免费额度）或 Self-hosted（自建服务器），通过 runs-on 指定标签</div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-title">♻️ 缓存策略</div>
+          <div class="arch-desc">actions/cache 缓存 node_modules、pip 包等，大幅减少重复下载时间</div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-title">🔐 Secrets 管理</div>
+          <div class="arch-desc">敏感信息存在仓库 / Org Secrets，通过 ${{ secrets.NAME }} 注入，日志中自动脱敏</div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-title">📤 Artifacts</div>
+          <div class="arch-desc">upload-artifact / download-artifact 在不同 Job 间传递文件（如构建产物）</div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-title">🔁 矩阵策略</div>
+          <div class="arch-desc">strategy: matrix 自动展开多个变体（不同 Node 版本 / OS），并行运行所有组合</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Animation state
+    let animRunning = false;
+    let animTimer = null;
+
+    const steps = [
+      { id: 0, delay: 400, duration: 1200 },
+      { id: 1, delay: 1800, duration: 1500 },
+      { id: 2, delay: 3500, duration: 1200 },
+      { id: 3, delay: 4900, duration: 1800 },
+      { id: 4, delay: 6900, duration: 2000 },
+      { id: 5, delay: 9100, duration: 1000 },
+    ];
+    const totalDuration = 10500;
+
+    function setRunnerStatus(status) {
+      const el = document.getElementById('runnerStatus');
+      el.className = 'runner-status ' + status;
+      const labels = { idle: '等待任务', running: '执行中…', done: '任务完成 ✓' };
+      el.innerHTML = '<span class="status-dot"></span> ' + labels[status];
+    }
+
+    function setStepState(id, state) {
+      const sc = document.getElementById('sc' + id);
+      const log = document.getElementById('log' + id);
+      sc.className = 'step-circle ' + state;
+      const icons = { running: '⟳', success: '✓', pending: id === 5 ? '✓' : id };
+      if (state === 'running') sc.textContent = '⟳';
+      else if (state === 'success') sc.textContent = '✓';
+      else sc.textContent = (id === 5 ? '✓' : id);
+      if (state === 'running') {
+        log.className = 'step-log visible';
+      }
+    }
+
+    function updateProgress(pct) {
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressPct').textContent = Math.round(pct) + '%';
+    }
+
+    let progressInterval;
+
+    function startAnimation() {
+      if (animRunning) return;
+      animRunning = true;
+      document.getElementById('btnRun').disabled = true;
+
+      setRunnerStatus('running');
+      document.getElementById('nodeVer').textContent = 'v20.11.0';
+
+      // progress
+      let prog = 0;
+      progressInterval = setInterval(() => {
+        prog = Math.min(prog + (100 / (totalDuration / 60)), 98);
+        updateProgress(prog);
+      }, 60);
+
+      steps.forEach(s => {
+        setTimeout(() => setStepState(s.id, 'running'), s.delay);
+        setTimeout(() => setStepState(s.id, 'success'), s.delay + s.duration);
+      });
+
+      setTimeout(() => {
+        clearInterval(progressInterval);
+        updateProgress(100);
+        setRunnerStatus('done');
+        animRunning = false;
+        document.getElementById('btnRun').disabled = false;
+
+        // Trigger deploy job animation
+        animDeployUnlock();
+      }, totalDuration + 400);
+    }
+
+    function animDeployUnlock() {
+      // Mark parallel jobs done
+      ['lint', 'test', 'build'].forEach((j, i) => {
+        setTimeout(() => {
+          document.getElementById('js-' + j).className = 'job-status-badge success';
+          document.getElementById('js-' + j).textContent = '✓ success';
+          const steps = document.getElementById('jsteps-' + j);
+          if (steps) {
+            steps.querySelectorAll('.mini-step').forEach(s => {
+              s.className = 'mini-step done';
+              s.querySelector('.mini-dot').style.background = 'var(--green)';
+            });
+          }
+        }, i * 400);
+      });
+      setTimeout(() => {
+        const ds = document.getElementById('js-deploy');
+        ds.className = 'job-status-badge running';
+        ds.textContent = '● running';
+        document.getElementById('jc-deploy').style.borderColor = 'rgba(63,185,80,0.5)';
+        document.getElementById('jc-deploy').querySelectorAll('.mini-step').forEach((s, i) => {
+          setTimeout(() => {
+            s.className = 'mini-step run';
+            s.querySelector('.mini-dot').style.background = 'var(--green)';
+          }, i * 600);
+        });
+        setTimeout(() => {
+          ds.className = 'job-status-badge success';
+          ds.textContent = '✓ success';
+          document.getElementById('jc-deploy').querySelectorAll('.mini-step').forEach(s => {
+            s.className = 'mini-step done';
+          });
+        }, 2200);
+      }, 1600);
+    }
+
+    function resetAnimation() {
+      if (animRunning) return;
+      clearInterval(progressInterval);
+      updateProgress(0);
+      setRunnerStatus('idle');
+      document.getElementById('nodeVer').textContent = '—';
+      document.getElementById('btnRun').disabled = false;
+      for (let i = 0; i < 6; i++) {
+        const sc = document.getElementById('sc' + i);
+        sc.className = 'step-circle pending';
+        sc.textContent = i === 5 ? '✓' : i;
+        document.getElementById('log' + i).className = 'step-log';
+      }
+      ['lint', 'test', 'build'].forEach(j => {
+        const b = document.getElementById('js-' + j);
+        b.className = 'job-status-badge running';
+        b.textContent = '● running';
+      });
+      const dd = document.getElementById('js-deploy');
+      dd.className = 'job-status-badge waiting';
+      dd.textContent = '⏳ waiting';
+      document.getElementById('jc-deploy').style.borderColor = '';
+      document.getElementById('jc-deploy').querySelectorAll('.mini-step').forEach(s => {
+        s.className = 'mini-step wait';
+        s.querySelector('.mini-dot').style.background = '';
+      });
+      ['lint', 'test', 'build'].forEach(j => {
+        const steps = document.getElementById('jsteps-' + j);
+        if (steps) {
+          steps.querySelectorAll('.mini-step').forEach((s, i) => {
+            if (j === 'lint') s.className = i === 0 ? 'mini-step done' : (i === 1 ? 'mini-step run' : 'mini-step wait');
+            if (j === 'test') s.className = i < 2 ? 'mini-step done' : 'mini-step run';
+            if (j === 'build') s.className = i === 0 ? 'mini-step done' : (i === 1 ? 'mini-step run' : 'mini-step wait');
+            s.querySelector('.mini-dot').style.background = '';
+          });
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

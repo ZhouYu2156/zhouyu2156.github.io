@@ -13,8 +13,13 @@ import './styles.css'
 
 // 导入自定义的组件
 import Layout from './Layout.vue'
+import BibleCollection from './components/BibleCollection.vue'
+import ClassicsCollection from './components/ClassicsCollection.vue'
+import Clock from './components/Clock.vue'
 import Login from './components/Login.vue'
 import Music from './components/Music.vue'
+import PoetryCollection from './components/PoetryCollection.vue'
+import References from './components/References.vue'
 import Resume from './components/Resume.vue'
 import Sponsors from './components/Sponsors.vue'
 import UtilityTools from './components/UtilityTools.vue'
@@ -30,5 +35,10 @@ export default {
     app.component('Resume', Resume)
     app.component('Music', Music)
     app.component('UtilityTools', UtilityTools)
+    app.component('Clock', Clock)
+    app.component('BibleCollection', BibleCollection)
+    app.component('ClassicsCollection', ClassicsCollection)
+    app.component('PoetryCollection', PoetryCollection)
+    app.component('References', References)
   }
 } satisfies Theme

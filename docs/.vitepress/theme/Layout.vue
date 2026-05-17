@@ -5,6 +5,7 @@ import ContactCardList from './components/ContactCardList.vue';
 import MusicPlayerBar from './components/MusicPlayerBar.vue';
 import ProjectCardList from './components/ProjectCardList.vue';
 import Sponsors from './components/Sponsors.vue';
+import WorkList from './components/WorkList.vue';
 import { useTreasuredMusicPlayer } from './composables/treasuredMusicPlayer';
 
 /** 可以获取每个页面的 frontmatter，向组件注入数据 */
@@ -18,6 +19,7 @@ const { playerBarExpanded, playbackEngaged } = useTreasuredMusicPlayer()
     <template #home-features-after>
       <Sponsors />
       <ProjectCardList />
+      <WorkList />
       <ContactCardList />
     </template>
     <template #aside-ads-before>

@@ -32,8 +32,9 @@ const projects: ProjectCardItem[] = [
     logo: undefined,
     techStack: ['JavaScript', 'HTML', 'CSS', 'D3.js'],
     featured: false,
-    previewUrl: 'https://zhouyu2156.github.io/prototype-chain/',
-  }
+    previewUrl: '/example/prototype/index.html',
+  },
+
 ]
 </script>
 

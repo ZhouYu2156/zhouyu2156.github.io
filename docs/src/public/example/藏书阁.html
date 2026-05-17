@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>藏书阁 · 古籍珍本在线阅览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <style>
+    :root {
+      --wood-dark: #1a1208;
+      --wood: #2c1f12;
+      --wood-light: #4a3520;
+      --paper: #e8dcc4;
+      --paper-warm: #f0e6d0;
+      --ink: #1f1810;
+      --ink-muted: #5a4a38;
+      --cinnabar: #9b2d1f;
+      --gold: #c4a35a;
+      --gold-dim: rgba(196, 163, 90, 0.35);
+      --jade: #3d5c4a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
+      min-height: 100%;
+      min-height: 100dvh;
+      max-width: 100vw;
+      overflow: hidden;
+      overflow-x: clip;
+      font-family: 'Noto Serif SC', 'ZCOOL XiaoWei', serif;
+      background: #080604;
+      color: var(--paper);
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* ========== 典籍密室氛围层 ========== */
+    .chamber-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .chamber-wall {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 40% at 50% 100%, rgba(180, 50, 15, 0.35) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 30% at 15% 95%, rgba(220, 60, 20, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 30% at 85% 92%, rgba(200, 45, 15, 0.22) 0%, transparent 50%),
+        radial-gradient(ellipse 120% 80% at 50% 100%, #1a0e08 0%, #0a0504 70%),
+        linear-gradient(180deg, #140a08 0%, #0c0605 45%, #060303 100%);
+    }
+
+    .chamber-wall::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+      background:
+        repeating-linear-gradient(90deg,
+          transparent 0,
+          transparent 48px,
+          rgba(0, 0, 0, 0.4) 48px,
+          rgba(0, 0, 0, 0.4) 52px),
+        repeating-linear-gradient(180deg,
+          transparent 0,
+          transparent 72px,
+          rgba(30, 22, 14, 0.5) 72px,
+          rgba(30, 22, 14, 0.5) 76px);
+    }
+
+    .chamber-wall::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 35% 25% at 12% 35%, rgba(255, 90, 30, 0.1), transparent),
+        radial-gradient(ellipse 30% 22% at 88% 40%, rgba(255, 70, 20, 0.09), transparent),
+        radial-gradient(ellipse 60% 35% at 50% 100%, rgba(255, 50, 10, 0.15), transparent 55%);
+    }
+
+    /* 远处战火 / 烟火地平线 */
+    .war-horizon {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 45% 18% at 8% 88%, rgba(255, 80, 20, 0.45) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 16% at 92% 90%, rgba(255, 60, 15, 0.4) 0%, transparent 68%),
+        radial-gradient(ellipse 55% 20% at 35% 95%, rgba(255, 100, 30, 0.3) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 18% at 68% 93%, rgba(255, 70, 25, 0.35) 0%, transparent 65%),
+        radial-gradient(ellipse 70% 25% at 50% 100%, rgba(200, 40, 10, 0.5) 0%, transparent 60%);
+      animation: warHorizonPulse 3.5s ease-in-out infinite alternate;
+      filter: blur(2px);
+    }
+
+    @keyframes warHorizonPulse {
+      0% {
+        opacity: 0.65;
+        transform: scaleY(1);
+      }
+
+      40% {
+        opacity: 0.95;
+        transform: scaleY(1.03);
+      }
+
+      70% {
+        opacity: 0.75;
+        transform: scaleY(0.98);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scaleY(1.05);
+      }
+    }
+
+    /* 硝烟 — 多层浓密烟尘 */
+    .war-smoke {
+      position: absolute;
+      width: 180%;
+      height: 85%;
+      bottom: -18%;
+      left: -40%;
+      background:
+        radial-gradient(ellipse 50% 40% at 30% 100%, rgba(95, 72, 58, 0.7) 0%, transparent 52%),
+        radial-gradient(ellipse 45% 35% at 70% 100%, rgba(88, 58, 45, 0.65) 0%, transparent 48%),
+        radial-gradient(ellipse 85% 55% at 50% 100%, rgba(75, 58, 50, 0.58) 0%, transparent 58%);
+      filter: blur(38px);
+      animation: smokeDrift 14s ease-in-out infinite;
+      opacity: 0.95;
+    }
+
+    .war-smoke--2 {
+      left: -25%;
+      height: 90%;
+      animation-duration: 20s;
+      animation-delay: -6s;
+      opacity: 0.88;
+      background:
+        radial-gradient(ellipse 60% 45% at 20% 100%, rgba(100, 50, 35, 0.4) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 40% at 80% 95%, rgba(70, 45, 35, 0.35) 0%, transparent 50%);
+      filter: blur(42px);
+    }
+
+    .war-smoke--3 {
+      position: absolute;
+      width: 120%;
+      height: 100%;
+      top: -20%;
+      left: -10%;
+      background:
+        radial-gradient(ellipse 40% 30% at 15% 60%, rgba(55, 48, 42, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse 35% 28% at 85% 55%, rgba(50, 42, 38, 0.32) 0%, transparent 48%),
+        radial-gradient(ellipse 50% 35% at 50% 40%, rgba(45, 40, 36, 0.28) 0%, transparent 55%);
+      filter: blur(50px);
+      animation: smokeDriftSlow 28s ease-in-out infinite;
+      opacity: 0.7;
+    }
+
+    .war-smoke--4 {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+          rgba(38, 32, 30, 0.22) 0%,
+          rgba(55, 45, 40, 0.45) 38%,
+          rgba(72, 58, 48, 0.68) 72%,
+          rgba(90, 68, 55, 0.78) 100%);
+      animation: fogPulse 10s ease-in-out infinite alternate;
+    }
+
+    .smoke-fog {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(58, 48, 42, 0.48) 0%, transparent 18%, transparent 82%, rgba(58, 48, 42, 0.48) 100%),
+        linear-gradient(0deg, rgba(78, 62, 52, 0.62) 0%, rgba(50, 42, 38, 0.38) 35%, rgba(40, 35, 32, 0.2) 55%, transparent 72%);
+      mix-blend-mode: multiply;
+      opacity: 0.88;
+    }
+
+    .smoke-field {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .smoke-wisp {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(130, 108, 95, 0.48) 0%, transparent 68%);
+      filter: blur(14px);
+      animation: wispRise linear infinite;
+    }
+
+    @keyframes smokeDrift {
+
+      0%,
+      100% {
+        transform: translateX(0) scale(1);
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: translateX(6%) scale(1.08);
+        opacity: 0.95;
+      }
+    }
+
+    @keyframes smokeDriftSlow {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(3%, -2%) scale(1.05);
+      }
+    }
+
+    @keyframes fogPulse {
+      0% {
+        opacity: 0.55;
+      }
+
+      100% {
+        opacity: 0.85;
+      }
+    }
+
+    @keyframes wispRise {
+      0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0;
+      }
+
+      15% {
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: translateY(-80vh) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    /* 首页：更明显的上升烟缕 */
+    @keyframes wispRiseHall {
+      0% {
+        transform: translateY(8vh) scale(0.45);
+        opacity: 0;
+      }
+
+      12% {
+        opacity: 0.75;
+      }
+
+      88% {
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: translateY(-105vh) scale(1.55);
+        opacity: 0;
+      }
+    }
+
+    @keyframes smokeColumnRise {
+      0% {
+        transform: translateY(0) scaleX(0.85);
+        opacity: 0.25;
+      }
+
+      40% {
+        opacity: 0.55;
+      }
+
+      100% {
+        transform: translateY(-55vh) scaleX(1.15);
+        opacity: 0;
+      }
+    }
+
+    .smoke-column {
+      display: none;
+      position: absolute;
+      bottom: -8%;
+      width: clamp(80px, 12vw, 160px);
+      height: 45vh;
+      background: linear-gradient(180deg,
+          transparent 0%,
+          rgba(115, 95, 82, 0.2) 25%,
+          rgba(130, 108, 92, 0.42) 55%,
+          rgba(100, 85, 75, 0.15) 100%);
+      filter: blur(22px);
+      border-radius: 50%;
+      animation: smokeColumnRise linear infinite;
+      pointer-events: none;
+    }
+
+    /* 偶发烟火闪照 */
+    .war-flash {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 80%, rgba(255, 120, 40, 0.2) 0%, transparent 50%);
+      opacity: 0;
+      animation: warFlashBurst 7s ease-out infinite;
+    }
+
+    .war-flash--2 {
+      animation-delay: 3.2s;
+      background: radial-gradient(ellipse at 20% 70%, rgba(255, 80, 30, 0.25) 0%, transparent 45%);
+    }
+
+    @keyframes warFlashBurst {
+
+      0%,
+      88%,
+      100% {
+        opacity: 0;
+      }
+
+      90% {
+        opacity: 0.5;
+      }
+
+      93% {
+        opacity: 0.15;
+      }
+
+      96% {
+        opacity: 0.35;
+      }
+    }
+
+    .chamber-embers,
+    .chamber-sparks {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .chamber-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 50% at 50% 42%, transparent 25%, rgba(0, 0, 0, 0.5) 70%, rgba(0, 0, 0, 0.85) 100%),
+        radial-gradient(ellipse 100% 40% at 50% 100%, transparent 20%, rgba(0, 0, 0, 0.6) 100%);
+    }
+
+    .chamber-flicker {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 28% 35% at 8% 55%, rgba(255, 120, 40, 0.18), transparent 55%),
+        radial-gradient(ellipse 25% 32% at 92% 50%, rgba(255, 80, 30, 0.16), transparent 52%),
+        radial-gradient(ellipse 50% 30% at 50% 95%, rgba(255, 60, 15, 0.2), transparent 55%),
+        radial-gradient(ellipse 30% 20% at 25% 85%, rgba(255, 50, 10, 0.12), transparent 50%),
+        radial-gradient(ellipse 30% 20% at 75% 88%, rgba(255, 45, 10, 0.12), transparent 50%);
+      animation: ambientFlicker 1.8s ease-in-out infinite alternate;
+    }
+
+    .chamber-flicker--alt {
+      animation-delay: -1.4s;
+      opacity: 0.6;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes ambientFlicker {
+      0% {
+        opacity: 0.6;
+        filter: brightness(0.88) hue-rotate(0deg);
+      }
+
+      20% {
+        opacity: 0.95;
+        filter: brightness(1.15) hue-rotate(-4deg);
+      }
+
+      45% {
+        opacity: 0.7;
+        filter: brightness(0.92);
+      }
+
+      65% {
+        opacity: 1;
+        filter: brightness(1.2) hue-rotate(3deg);
+      }
+
+      100% {
+        opacity: 0.75;
+        filter: brightness(1);
+      }
+    }
+
+    .chamber-dust {
+      position: absolute;
+      inset: 0;
+    }
+
+    .dust-mote {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 160, 80, 0.55);
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(255, 100, 30, 0.5);
+      animation: dustFloat linear infinite;
+    }
+
+    @keyframes dustFloat {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.75;
+      }
+
+      90% {
+        opacity: 0.35;
+      }
+
+      100% {
+        transform: translateY(-100vh) translateX(30px);
+        opacity: 0;
+      }
+    }
+
+    /* 火星 / 余烬 */
+    .ember {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff8e0 0%, #ff6b20 40%, #c41c00 100%);
+      box-shadow: 0 0 8px #ff4500, 0 0 16px rgba(255, 80, 0, 0.5);
+      animation: emberRise linear infinite;
+    }
+
+    @keyframes emberRise {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+      }
+
+      8% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 0.85;
+      }
+
+      100% {
+        transform: translateY(-110vh) translateX(var(--drift, 40px)) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    /* 烟火碎屑 — 快速飞溅 */
+    .spark {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #ffcc66;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ff6600, 0 0 20px rgba(255, 100, 0, 0.8);
+      animation: sparkFly ease-out infinite;
+    }
+
+    .spark--trail {
+      width: 2px;
+      height: 8px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, transparent, #ff8800, #ff2200);
+      animation: sparkTrail ease-out infinite;
+    }
+
+    @keyframes sparkFly {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+      }
+
+      5% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(var(--sx, 80px), var(--sy, -120px)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes sparkTrail {
+      0% {
+        transform: translate(0, 0) rotate(var(--rot, 0deg)) scaleY(0.3);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.9;
+      }
+
+      100% {
+        transform: translate(var(--sx, 60px), var(--sy, -100px)) rotate(var(--rot, 0deg)) scaleY(1);
+        opacity: 0;
+      }
+    }
+
+    /* 柱形火炬 / 火柱 */
+    .candles-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .torch {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform-origin: bottom center;
+    }
+
+    .torch-base {
+      width: 56px;
+      height: 14px;
+      background: linear-gradient(180deg, #5a4a3a 0%, #2a2218 60%, #1a1510 100%);
+      border-radius: 4px 4px 2px 2px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .torch-pillar {
+      width: 26px;
+      height: var(--pillar-h, 150px);
+      background:
+        linear-gradient(90deg, #1a1008 0%, #3d2010 20%, #5c3018 50%, #3d2010 80%, #1a1008 100%);
+      border-radius: 3px;
+      position: relative;
+      box-shadow:
+        inset 0 0 20px rgba(255, 80, 20, 0.25),
+        0 0 30px rgba(255, 60, 10, 0.2);
+      animation: pillarBurn 2.2s ease-in-out infinite alternate;
+    }
+
+    .torch-pillar::before {
+      content: '';
+      position: absolute;
+      inset: 8% 20%;
+      background: repeating-linear-gradient(180deg,
+          transparent 0,
+          transparent 12px,
+          rgba(255, 120, 40, 0.15) 12px,
+          rgba(255, 80, 20, 0.25) 14px);
+      border-radius: 2px;
+      animation: emberCrackle 1.5s ease-in-out infinite alternate;
+    }
+
+    .torch-pillar::after {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 80px;
+      background: linear-gradient(180deg, rgba(80, 70, 65, 0.5) 0%, transparent 100%);
+      filter: blur(8px);
+      animation: torchSmokeCol 3s ease-in-out infinite;
+    }
+
+    @keyframes pillarBurn {
+      0% {
+        filter: brightness(0.95);
+        box-shadow: inset 0 0 18px rgba(255, 80, 20, 0.2), 0 0 25px rgba(255, 50, 10, 0.15);
+      }
+
+      100% {
+        filter: brightness(1.12);
+        box-shadow: inset 0 0 28px rgba(255, 100, 30, 0.35), 0 0 45px rgba(255, 60, 15, 0.3);
+      }
+    }
+
+    @keyframes emberCrackle {
+      0% {
+        opacity: 0.6;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes torchSmokeCol {
+
+      0%,
+      100% {
+        opacity: 0.35;
+        transform: translateX(-50%) scaleX(1);
+      }
+
+      50% {
+        opacity: 0.65;
+        transform: translateX(-50%) scaleX(1.3);
+      }
+    }
+
+    .torch-flame-wrap {
+      position: relative;
+      width: 56px;
+      height: 78px;
+      margin-bottom: -8px;
+      z-index: 2;
+    }
+
+    .torch-flame {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+      filter: blur(0.8px);
+      animation: torchFlame 0.1s ease-in-out infinite alternate;
+    }
+
+    .torch-flame--outer {
+      width: 42px;
+      height: 72px;
+      background: radial-gradient(ellipse at 50% 85%, #fff8e0 0%, #ff9800 30%, #e65100 55%, rgba(180, 30, 0, 0.4) 80%, transparent 100%);
+      opacity: 0.9;
+    }
+
+    .torch-flame--mid {
+      width: 26px;
+      height: 42px;
+      background: radial-gradient(ellipse at 50% 80%, #fffde7 0%, #ffc107 45%, #ff6f00 75%, transparent 100%);
+      animation-duration: 0.08s;
+      animation-delay: 0.03s;
+    }
+
+    .torch-flame--core {
+      width: 14px;
+      height: 24px;
+      background: radial-gradient(ellipse at 50% 75%, #ffffff 0%, #ffeb3b 50%, transparent 100%);
+      animation-duration: 0.06s;
+      animation-delay: 0.05s;
+    }
+
+    @keyframes torchFlame {
+      0% {
+        transform: translateX(-50%) scale(1, 1) rotate(-3deg);
+      }
+
+      100% {
+        transform: translateX(-50%) scale(1.08, 1.15) rotate(3deg);
+      }
+    }
+
+    .torch-glow {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 280px;
+      background: radial-gradient(ellipse at 50% 80%,
+          rgba(255, 120, 40, 0.45) 0%,
+          rgba(255, 60, 15, 0.2) 35%,
+          transparent 65%);
+      animation: torchGlow 2s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes torchGlow {
+      0% {
+        opacity: 0.65;
+        transform: translateX(-50%) scale(0.92);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.08);
+      }
+    }
+
+    .torch--l {
+      left: 0;
+      --pillar-h: 160px;
+    }
+
+    .torch--r {
+      right: 0;
+      --pillar-h: 160px;
+    }
+
+    .torch--c1 {
+      left: 10%;
+      --pillar-h: 140px;
+    }
+
+    .torch--c2 {
+      right: 10%;
+      --pillar-h: 140px;
+    }
+
+    .torch--c1 .torch-flame-wrap,
+    .torch--c2 .torch-flame-wrap {
+      transform: scale(0.92);
+    }
+
+    @media (max-width: 767px) {
+
+      .torch--c1,
+      .torch--c2 {
+        display: none;
+      }
+
+      .torch--l {
+        left: 2px;
+      }
+
+      .torch--r {
+        right: 2px;
+      }
+
+      .torch--l,
+      .torch--r {
+        --pillar-h: 72px;
+      }
+
+      .torch-glow {
+        width: 90px;
+        height: 110px;
+        opacity: 0.75;
+      }
+
+      .torch-base {
+        width: 36px;
+        height: 10px;
+      }
+
+      .torch-pillar {
+        width: 18px;
+      }
+
+      .torch-flame-wrap {
+        width: 40px;
+        height: 52px;
+      }
+
+      .torch-flame--outer {
+        width: 32px;
+        height: 48px;
+      }
+
+      .war-smoke--3 {
+        opacity: 0.5;
+      }
+
+      .war-smoke--4 {
+        opacity: 0.65;
+      }
+
+      .smoke-fog {
+        opacity: 0.72;
+      }
+    }
+
+    .view {
+      display: none;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+    }
+
+    .view.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========== 藏书阁大厅 ========== */
+    #view-hall {
+      background: transparent;
+    }
+
+    /* 桌面端：全屏背景图（移动端不展示） */
+    .hall-scene {
+      display: none;
+    }
+
+    /* 首页烟尘层：叠在背景图之上、内容之下 */
+    .hall-atmosphere {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    body.view-hall-active .hall-atmosphere {
+      display: block;
+    }
+
+    body.view-reader-active .hall-atmosphere {
+      display: none !important;
+    }
+
+    /* 首页不用 chamber 大雾，只保留火星点 */
+    body.view-hall-active .chamber-bg .war-smoke,
+    body.view-hall-active .chamber-bg .war-smoke--2,
+    body.view-hall-active .chamber-bg .war-smoke--3,
+    body.view-hall-active .chamber-bg .war-smoke--4,
+    body.view-hall-active .chamber-bg .smoke-fog,
+    body.view-hall-active .chamber-bg .smoke-field {
+      display: none !important;
+    }
+
+    /* 首页：与阅读页相同的烟火碎屑层 */
+    .hall-sparks,
+    .hall-embers,
+    .hall-dust {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    body.view-hall-active .chamber-embers,
+    body.view-hall-active .chamber-sparks,
+    body.view-hall-active .chamber-dust {
+      visibility: hidden;
+    }
+
+    .hall-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    #view-hall .hall-tools,
+    #view-hall .category-tabs,
+    #view-hall .shelves-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      #view-hall.active {
+        overflow: hidden;
+      }
+
+      .hall-scene {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .hall-atmosphere {
+        z-index: 1;
+      }
+
+      .hall-body {
+        z-index: 2;
+      }
+
+      .hall-scene img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        display: block;
+      }
+
+      .hall-scene-shade,
+      .hall-scene-glow {
+        display: none;
+      }
+
+      /* 桌面大厅用 hall-atmosphere，避免被 view-hall 挡住 */
+      body.view-hall-active .chamber-bg {
+        visibility: hidden;
+      }
+
+      body.view-hall-active .candles-layer {
+        visibility: visible;
+        z-index: 1;
+        opacity: 0.15;
+      }
+
+      .hall-body {
+        flex: 1;
+        min-height: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding:
+          calc(env(safe-area-inset-top) + 35px) clamp(20px, 4vw, 48px) 0;
+        box-sizing: border-box;
+      }
+
+      .hall-header {
+        display: block;
+      }
+
+      .hall-tools {
+        flex-shrink: 0;
+        padding: 0 0 10px;
+        justify-content: center;
+      }
+
+      .hall-tools input {
+        width: min(480px, 100%);
+        background: rgba(12, 8, 4, 0.62);
+        border-color: rgba(196, 163, 90, 0.45);
+      }
+
+      .category-tabs {
+        flex-shrink: 0;
+        padding: 0 0 14px;
+      }
+
+      .shelves-wrap {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 0 0 max(190px, env(safe-area-inset-bottom));
+        scrollbar-width: thin;
+        scrollbar-color: rgba(196, 163, 90, 0.4) transparent;
+      }
+
+      .shelves {
+        max-width: 1280px;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .shelf-label,
+      .book-card .meta,
+      .book-card .mode-tag {
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.65);
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 20px;
+      }
+    }
+
+    .hall-header {
+      text-align: center;
+      padding: 28px 20px 16px;
+      position: relative;
+    }
+
+    .hall-plaque {
+      display: inline-block;
+      padding: 12px 48px;
+      border: 2px solid var(--gold-dim);
+      background: linear-gradient(180deg, rgba(74, 53, 32, 0.92), rgba(26, 18, 8, 0.96));
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(196, 163, 90, 0.2),
+        0 0 60px rgba(255, 120, 40, 0.06);
+    }
+
+    .hall-plaque h1 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      color: var(--gold);
+      letter-spacing: 0.35em;
+      text-indent: 0.35em;
+    }
+
+    .theme-motto {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.95rem !important;
+      color: rgba(255, 130, 50, 0.9) !important;
+      letter-spacing: 0.45em !important;
+      text-shadow: 0 0 28px rgba(255, 60, 15, 0.5), 0 0 8px rgba(255, 100, 30, 0.3);
+    }
+
+    .hall-plaque p {
+      font-size: 0.8rem;
+      color: rgba(232, 220, 196, 0.5);
+      letter-spacing: 0.4em;
+      margin-top: 6px;
+    }
+
+    .hall-tools {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 20px 8px;
+    }
+
+    .hall-tools input {
+      width: min(320px, 90vw);
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--gold-dim);
+      color: var(--paper);
+      font-family: inherit;
+      font-size: 0.9rem;
+      border-radius: 2px;
+    }
+
+    .hall-tools input::placeholder {
+      color: rgba(232, 220, 196, 0.35);
+    }
+
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px 16px;
+    }
+
+    .category-tabs button {
+      font-family: inherit;
+      font-size: 0.82rem;
+      padding: 6px 16px;
+      background: transparent;
+      border: 1px solid rgba(196, 163, 90, 0.25);
+      color: rgba(232, 220, 196, 0.7);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-tabs button:hover,
+    .category-tabs button.active {
+      background: rgba(155, 45, 31, 0.35);
+      border-color: var(--cinnabar);
+      color: var(--gold);
+    }
+
+    .shelves-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 8px 20px 40px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--wood-light) transparent;
+      /*background: linear-gradient(180deg, transparent, rgba(12, 8, 4, 0.55) 12%, rgba(12, 8, 4, 0.65));
+      border-top: 1px solid rgba(255, 140, 50, 0.06);
+      box-shadow: inset 0 24px 48px rgba(255, 100, 30, 0.03);*/
+    }
+
+    .shelves {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .shelf-row {
+      margin-bottom: 28px;
+    }
+
+    .shelf-label {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      margin-bottom: 12px;
+      padding-left: 8px;
+      border-left: 3px solid var(--cinnabar);
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+    }
+
+    .book-card {
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.25s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-6px);
+      filter: drop-shadow(0 0 12px rgba(255, 140, 50, 0.25));
+    }
+
+    .book-spine {
+      height: 168px;
+      margin: 0 auto;
+      width: 52px;
+      background: linear-gradient(90deg, #1a1008 0%, var(--spine, #4a2812) 15%, var(--spine-light, #6b3d1e) 50%, var(--spine, #4a2812) 85%, #1a1008 100%);
+      border-radius: 3px 6px 6px 3px;
+      box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.5), inset 2px 0 4px rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.05rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      padding: 12px 4px;
+      position: relative;
+    }
+
+    .book-spine::after {
+      content: '';
+      position: absolute;
+      right: 6px;
+      top: 20%;
+      bottom: 20%;
+      width: 1px;
+      background: rgba(196, 163, 90, 0.3);
+    }
+
+    .book-card .meta {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: rgba(232, 220, 196, 0.55);
+    }
+
+    .book-card .mode-tag {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 0.62rem;
+      padding: 2px 8px;
+      border: 1px solid rgba(196, 163, 90, 0.3);
+      color: var(--gold);
+    }
+
+    /* ========== 阅读器 ========== */
+    #view-reader {
+      background: transparent;
+    }
+
+    .reader-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: rgba(15, 10, 6, 0.88);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--gold-dim);
+      flex-shrink: 0;
+    }
+
+    .reader-header .title-block h2 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.25rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+    }
+
+    .reader-header .title-block span {
+      font-size: 0.72rem;
+      color: rgba(232, 220, 196, 0.45);
+    }
+
+    .reader-toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .reader-toolbar button {
+      font-family: inherit;
+      font-size: 0.78rem;
+      padding: 6px 12px;
+      background: rgba(196, 163, 90, 0.08);
+      border: 1px solid var(--gold-dim);
+      color: var(--paper);
+      cursor: pointer;
+    }
+
+    .reader-toolbar button:hover {
+      background: rgba(155, 45, 31, 0.3);
+    }
+
+    .reader-main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    /* --- 典籍翻页 --- */
+    .reader-book {
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reader-book.active {
+      display: flex;
+    }
+
+    .book-stage {
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+      contain: layout style paint;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 28px rgba(255, 120, 40, 0.12));
+    }
+
+    .book-stage .stf__wrapper,
+    .book-stage .stf__parent {
+      overflow: hidden !important;
+    }
+
+    .page {
+      background: linear-gradient(135deg, #ebe0c8, #e0d4b8);
+      color: var(--ink);
+      border: 1px solid rgba(90, 74, 56, 0.15);
+    }
+
+    .page-inner {
+      height: 100%;
+      padding: 24px 28px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page.cover-front,
+    .page.cover-back {
+      background: linear-gradient(145deg, #3d2818, #1f1208);
+      color: var(--gold);
+    }
+
+    .page.cover-front .page-inner,
+    .page.cover-back .page-inner {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .cover-title {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: 0.15em;
+    }
+
+    .chapter-tag {
+      font-size: 0.7rem;
+      color: var(--cinnabar);
+      letter-spacing: 0.15em;
+      margin-bottom: 6px;
+    }
+
+    .page h3 {
+      font-size: 1rem;
+      color: var(--wood-light);
+      margin-bottom: 12px;
+    }
+
+    .page p {
+      font-size: clamp(0.85rem, 1vw, 0.95rem);
+      line-height: 1.9;
+      text-indent: 2em;
+      text-align: justify;
+      margin-bottom: 0.6em;
+    }
+
+    .page .lead {
+      font-weight: 600;
+      text-indent: 0;
+      color: var(--ink-muted);
+    }
+
+    .page-num {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.65rem;
+      opacity: 0.5;
+    }
+
+    /* --- 古卷 --- */
+    .reader-scroll {
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .reader-scroll.active {
+      display: flex;
+    }
+
+    .scroll-assembly {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      max-height: calc(100dvh - var(--reader-chrome, 120px));
+      width: min(720px, 100%);
+      max-width: 100%;
+    }
+
+    .scroll-rod {
+      width: 100%;
+      height: 22px;
+      background: linear-gradient(180deg, #5c4030, #3d2818 40%, #2a1a10);
+      border-radius: 11px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .scroll-rod::before,
+    .scroll-rod::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #8b6914, #4a3010);
+      box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .scroll-rod::before {
+      left: -6px;
+    }
+
+    .scroll-rod::after {
+      right: -6px;
+    }
+
+    .scroll-body {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background:
+        url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+        linear-gradient(180deg, #d9cbb0 0%, #ebe3d0 8%, #e8dcc4 50%, #ebe3d0 92%, #d9cbb0 100%);
+      border-left: 3px solid rgba(90, 74, 56, 0.2);
+      border-right: 3px solid rgba(90, 74, 56, 0.2);
+      box-shadow: inset 0 0 60px rgba(139, 115, 80, 0.15);
+      scrollbar-width: thin;
+      scrollbar-color: #8b7350 transparent;
+    }
+
+    .scroll-content {
+      padding: 36px 40px 48px;
+      color: var(--ink);
+      position: relative;
+    }
+
+    .scroll-content.vertical {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      min-height: 480px;
+      padding: 40px 48px;
+      line-height: 2;
+      letter-spacing: 0.08em;
+    }
+
+    .scroll-content h2 {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.5rem;
+      color: var(--cinnabar);
+      margin-bottom: 1em;
+      writing-mode: horizontal-tb;
+      text-align: center;
+    }
+
+    .scroll-content.vertical h2 {
+      writing-mode: vertical-rl;
+      margin: 0 0 0 1.5em;
+      display: inline-block;
+    }
+
+    .scroll-content p {
+      font-size: 1rem;
+      margin-bottom: 0.5em;
+    }
+
+    .scroll-content .chapter {
+      font-family: 'Ma Shan Zheng', cursive;
+      color: var(--cinnabar);
+      font-size: 1.1rem;
+      margin: 1.2em 0 0.6em;
+    }
+
+    .scroll-seal {
+      position: absolute;
+      bottom: 24px;
+      right: 28px;
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--cinnabar);
+      color: var(--cinnabar);
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-8deg);
+      opacity: 0.75;
+      border-radius: 4px;
+    }
+
+    .scroll-hint {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      color: rgba(232, 220, 196, 0.4);
+      padding: 8px;
+      text-align: center;
+    }
+
+    .page-indicator {
+      font-size: 0.78rem;
+      color: rgba(232, 220, 196, 0.65);
+      min-width: 72px;
+      text-align: center;
+    }
+
+    @media (max-width: 767px) {
+      body.view-hall-active .chamber-bg {
+        visibility: visible;
+      }
+
+      body.view-hall-active .chamber-wall {
+        opacity: 0.35;
+      }
+
+      .hall-scene {
+        display: none !important;
+      }
+
+      .hall-header {
+        padding: max(12px, env(safe-area-inset-top)) 12px 10px;
+      }
+
+      .hall-header .hall-plaque {
+        display: inline-block;
+      }
+
+      .hall-header::before,
+      .hall-header::after {
+        display: none;
+      }
+
+      .hall-plaque {
+        padding: 10px 16px;
+        max-width: calc(100vw - 24px);
+      }
+
+      .hall-plaque h1 {
+        font-size: clamp(1.75rem, 9vw, 2.4rem);
+        letter-spacing: 0.22em;
+        text-indent: 0.22em;
+      }
+
+      .theme-motto {
+        font-size: 0.78rem !important;
+        letter-spacing: 0.18em !important;
+        line-height: 1.5;
+      }
+
+      .hall-tools {
+        padding: 8px 12px 6px;
+      }
+
+      .hall-tools input {
+        width: 100%;
+        max-width: none;
+        font-size: 16px;
+      }
+
+      .category-tabs {
+        padding: 6px 10px 10px;
+        gap: 6px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .category-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .category-tabs button {
+        flex-shrink: 0;
+        font-size: 0.78rem;
+        padding: 8px 14px;
+      }
+
+      .shelves-wrap {
+        padding: 6px 12px max(24px, env(safe-area-inset-bottom));
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+        gap: 12px;
+      }
+
+      .book-spine {
+        height: 128px;
+        width: 40px;
+        font-size: 0.85rem;
+        padding: 10px 3px;
+      }
+
+      .book-card .meta {
+        font-size: 0.65rem;
+      }
+
+      .reader-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: max(8px, env(safe-area-inset-top)) 10px 8px;
+      }
+
+      .reader-header .title-block {
+        min-width: 0;
+      }
+
+      .reader-header .title-block h2 {
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .reader-header .title-block span {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .reader-toolbar {
+        width: 100%;
+        justify-content: space-between;
+        gap: 6px;
+      }
+
+      .reader-toolbar button {
+        flex: 1;
+        min-height: 44px;
+        padding: 10px 8px;
+        font-size: 0.75rem;
+      }
+
+      .reader-toolbar button .btn-label-long {
+        display: none;
+      }
+
+      .reader-toolbar #btnBack {
+        flex: 1.2;
+      }
+
+      .page-indicator {
+        flex: 0 0 100%;
+        order: -1;
+        min-width: 0;
+        margin-bottom: 2px;
+      }
+
+      .reader-main {
+        padding: 4px;
+        min-height: 0;
+      }
+
+      .reader-book,
+      .reader-scroll {
+        width: 100%;
+        max-width: 100%;
+        padding: 4px;
+      }
+
+      .book-stage {
+        max-width: 100%;
+      }
+
+      .page-inner {
+        padding: 14px 16px 20px;
+      }
+
+      .page p {
+        font-size: 0.82rem;
+        line-height: 1.75;
+      }
+
+      .scroll-content {
+        padding: 20px 18px 36px;
+      }
+
+      .scroll-content.vertical {
+        min-height: 360px;
+        padding: 24px 20px;
+      }
+
+      .scroll-hint {
+        font-size: 0.65rem;
+        padding: 6px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .book-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .reader-toolbar button {
+        font-size: 0.7rem;
+        padding: 10px 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chamber-bg" aria-hidden="true">
+    <div class="chamber-wall"></div>
+    <div class="war-horizon"></div>
+    <div class="war-smoke"></div>
+    <div class="war-smoke war-smoke--2"></div>
+    <div class="war-smoke war-smoke--3"></div>
+    <div class="war-smoke war-smoke--4"></div>
+    <div class="smoke-fog"></div>
+    <div class="smoke-field" id="smokeField"></div>
+    <div class="war-flash"></div>
+    <div class="war-flash war-flash--2"></div>
+    <div class="chamber-vignette"></div>
+    <div class="chamber-flicker"></div>
+    <div class="chamber-flicker chamber-flicker--alt"></div>
+    <div class="chamber-embers" id="chamberEmbers"></div>
+    <div class="chamber-sparks" id="chamberSparks"></div>
+    <div class="chamber-dust" id="chamberDust"></div>
+  </div>
+
+  <div class="candles-layer" aria-hidden="true" id="candlesLayer"></div>
+
+  <!-- 藏书阁大厅：https://www.shidianguji.com/ -->
+  <div id="view-hall" class="view active">
+
+    <div class="hall-scene" aria-hidden="true">
+      <!-- <img src="藏书阁.png" alt="" width="1920" height="1080" decoding="async" fetchpriority="high" /> -->
+      <video id="bgVideo" src="/medias/02-浴火重生.mp4" autoplay muted loop fetchpriority="high"
+        style="object-fit: cover; width: 100vw; height: 100vh;"></video>
+    </div>
+
+    <div class="hall-atmosphere" id="hallAtmosphere" aria-hidden="true">
+      <div class="hall-sparks" id="hallSparks"></div>
+      <div class="hall-embers" id="hallEmbers"></div>
+      <div class="hall-dust" id="hallDust"></div>
+    </div>
+
+    <div class="hall-body">
+      <header class="hall-header">
+        <div class="hall-plaque">
+          <h1>藏书阁</h1>
+          <p class="theme-motto">烽火烟尘 · 典藏犹存</p>
+        </div>
+      </header>
+
+      <div class="hall-tools">
+        <input type="search" id="searchBooks" placeholder="搜寻书名、作者、卷帙…" autocomplete="off" />
+      </div>
+
+      <div class="category-tabs" id="categoryTabs"></div>
+
+      <div class="shelves-wrap">
+        <div class="shelves" id="shelves"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 阅读器 -->
+  <div id="view-reader" class="view">
+    <header class="reader-header">
+      <div class="title-block">
+        <h2 id="readerTitle">—</h2>
+        <span id="readerMeta">—</span>
+      </div>
+      <div class="reader-toolbar">
+        <span class="page-indicator" id="pageIndicator"></span>
+        <button type="button" id="btnPrev" aria-label="上一页">← <span class="btn-label-long">上一页</span></button>
+        <button type="button" id="btnNext" aria-label="下一页"><span class="btn-label-long">下一页</span> →</button>
+        <button type="button" id="btnBack" aria-label="返回藏书阁">返回<span class="btn-label-long">藏书阁</span></button>
+      </div>
+    </header>
+
+    <div class="reader-main">
+      <div class="reader-book" id="readerBook">
+        <div class="book-stage" id="bookStage">
+          <div id="book"></div>
+        </div>
+      </div>
+
+      <div class="reader-scroll" id="readerScroll">
+        <div class="scroll-assembly">
+          <div class="scroll-rod"></div>
+          <div class="scroll-body" id="scrollBody">
+            <div class="scroll-content" id="scrollContent"></div>
+          </div>
+          <div class="scroll-rod"></div>
+          <p class="scroll-hint">上下滚动展卷 · 古卷竖排典籍</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const CATEGORIES = ['全部', '经部', '子部', '史部', '集部', '杂录'];
+
+      const LIBRARY = [
+        {
+          id: 'lunyu',
+          title: '论语',
+          author: '孔子及弟子',
+          era: '春秋',
+          category: '经部',
+          mode: 'scroll',
+          vertical: false,
+          spine: '#3d2818',
+          spineLight: '#5c4030',
+          scroll: [
+            { chapter: '学而第一', text: '子曰：「学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？」' },
+            { chapter: '', text: '有子曰：「其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！」' },
+            { chapter: '', text: '子曰：「巧言令色，鲜矣仁！」' },
+            { chapter: '', text: '曾子曰：「吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？」' },
+            { chapter: '为政第二', text: '子曰：「为政以德，譬如北辰，居其所而众星共之。」' },
+            { chapter: '', text: '子曰：「诗三百，一言以蔽之，曰：思无邪。」' },
+          ],
+        },
+        {
+          id: 'daode',
+          title: '道德经',
+          author: '老子',
+          era: '春秋',
+          category: '子部',
+          mode: 'scroll',
+          vertical: true,
+          spine: '#2a3d32',
+          spineLight: '#3d5c4a',
+          scroll: [
+            { chapter: '道经 · 第一章', text: '道可道，非常道。名可名，非常名。无名天地之始，有名万物之母。' },
+            { chapter: '', text: '故常无欲，以观其妙；常有欲，以观其徼。此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。' },
+            { chapter: '第二章', text: '天下皆知美之为美，斯恶已；皆知善之为善，斯不善已。故有无相生，难易相成，长短相较，高下相倾。' },
+            { chapter: '', text: '是以圣人处无为之事，行不言之教；万物作焉而不辞，生而不有，为而不恃，功成而弗居。夫唯弗居，是以不去。' },
+          ],
+        },
+        {
+          id: 'shijing',
+          title: '诗经',
+          author: '佚名',
+          era: '先秦',
+          category: '经部',
+          mode: 'scroll',
+          vertical: false,
+          spine: '#4a3020',
+          spineLight: '#6b4530',
+          scroll: [
+            { chapter: '国风 · 周南 · 关雎', text: '关关雎鸠，在河之洲。窈窕淑女，君子好逑。' },
+            { text: '参差荇菜，左右流之。窈窕淑女，寤寐求之。' },
+            { text: '求之不得，寤寐思服。悠哉悠哉，辗转反侧。' },
+            { text: '参差荇菜，左右采之。窈窕淑女，琴瑟友之。' },
+            { text: '参差荇菜，左右芼之。窈窕淑女，钟鼓乐之。' },
+          ],
+        },
+        {
+          id: 'tengwang',
+          title: '滕王阁序',
+          author: '王勃',
+          era: '唐',
+          category: '集部',
+          mode: 'scroll',
+          vertical: false,
+          spine: '#1f2840',
+          spineLight: '#2d3d5c',
+          scroll: [
+            { chapter: '滕王阁序', text: '豫章故郡，洪都新府。星分翼轸，地接衡庐。襟三江而带五湖，控蛮荆而引瓯越。物华天宝，龙光射牛斗之墟；人杰地灵，徐孺下陈蕃之榻。' },
+            { text: '雄州雾列，俊采星驰。台隍枕夷夏之交，宾主尽东南之美。都督阎公之雅望，棨戟遥临；宇文新州之懿范，襜帷暂驻。十旬休假，胜友如云；千里逢迎，高朋满座。' },
+            { text: '落霞与孤鹜齐飞，秋水共长天一色。渔舟唱晚，响穷彭蠡之滨；雁阵惊寒，声断衡阳之浦。' },
+            { text: '嗟乎！时运不齐，命途多舛。冯唐易老，李广难封。屈贾谊于长沙，非无圣主；窜梁鸿于海曲，岂乏明时？' },
+          ],
+        },
+        {
+          id: 'chengnan',
+          title: '城南旧事',
+          author: '林海音',
+          era: '现代',
+          category: '杂录',
+          mode: 'book',
+          spine: '#5c3018',
+          spineLight: '#7a4528',
+          pages: [
+            { type: 'cover', title: '城南旧事', sub: '林海音 著 · 节选' },
+            { chapter: '第一章', title: '惠安馆', lead: '太阳从大玻璃窗透进来，照到大白纸糊的墙上，照到三屉桌上，照到我的小床上来了。', paras: ['我醒了，还躺在床上，看那道太阳光里飞舞着的许多小小的、小小的尘埃。宋妈过来掸窗台，扫灰尘，嘴里念念有词，我仍躺在床上，呆呆地看着那道阳光。', '妈妈对我说："英子，别懒，快起来，你今天不是要去看疯子吗？"'] },
+            { paras: ['我已经能够分辨疯子了。要是她在疯的时候，看见我会使劲地招手叫我进去，我就轻轻地走进门去，站在她的身边。', '她有时会把脸贴在玻璃上，对着街上的人笑。宋妈说："英子，疯子会传染的。"我说："我不怕，她对我很好。"'] },
+            { chapter: '第二章', title: '我们看海去', lead: '夏天过去，秋天过去，冬天又来了，骆驼队又来了，但是童年却一去不还。', paras: ['我站在骆驼的面前，看它们咀嚼丑的脸，那白沫子沾在胡须上。老师教给我说，要学骆驼，沉得住气。'] },
+            { paras: ['海是阔大的，天是蓝蓝的，阳光照在海面上，像撒了一层金子。爸爸说："英子，你以后还会再来吗？"我说："会，我还会带妞儿一起来。"', '童年就像一本书，翻过一页，就少了一页，却永远留在心里。'] },
+            { type: 'back', title: '全书完' },
+          ],
+        },
+        {
+          id: 'honglou',
+          title: '红楼梦',
+          author: '曹雪芹',
+          era: '清',
+          category: '集部',
+          mode: 'book',
+          spine: '#4a1830',
+          spineLight: '#6b2848',
+          pages: [
+            { type: 'cover', title: '红楼梦', sub: '曹雪芹 著 · 第一回节选' },
+            { chapter: '第一回', title: '甄士隐梦幻识通灵', lead: '此开卷第一回也。作者自云：因曾历过一番梦幻之后，故将真事隐去，而借通灵之说，撰此《石头记》一书也。', paras: ['看官：你道此书从何而来？说起根由虽近荒唐，细谙则颇有趣味。'] },
+            { paras: ['原来女娲氏炼石补天之时，在大荒山无稽崖炼成高经十二丈、方经二十四丈顽石三万六千五百零一块。娲皇氏只用了三万六千五百块，只单单剩了一块未用，便弃在此山青埂峰下。'] },
+            { paras: ['谁知此石自经锻炼之后，灵性已通，因见众石俱得补天，独自己无材不堪入选，遂自怨自叹，日夜悲号惭愧。'] },
+            { type: 'back', title: '待续' },
+          ],
+        },
+        {
+          id: 'shanhai',
+          title: '山海经',
+          author: '佚名',
+          era: '先秦',
+          category: '史部',
+          mode: 'scroll',
+          vertical: false,
+          spine: '#283838',
+          spineLight: '#3d5050',
+          scroll: [
+            { chapter: '南山经 · 鹊山', text: '鹊山之首，曰招摇之山，临于西海之上，多桂，多金玉。有草焉，其状如韭而青华，其名曰祝余，食之不饥。' },
+            { text: '其木多构，其状如谷而黑理，其华四照，其名曰迷谷，佩之不迷。' },
+            { text: '有兽焉，其状如禺而白耳，伏行人走，其名曰狌狌，食之善走。' },
+            { chapter: '海外南经', text: '海外自西南陬至东南陬者。结匈国在其西南，其为人结匈。' },
+          ],
+        },
+        {
+          id: 'lanting',
+          title: '兰亭集序',
+          author: '王羲之',
+          era: '东晋',
+          category: '集部',
+          mode: 'scroll',
+          vertical: false,
+          spine: '#3a3020',
+          spineLight: '#524530',
+          scroll: [
+            { chapter: '兰亭集序', text: '永和九年，岁在癸丑，暮春之初，会于会稽山阴之兰亭，修禊事也。群贤毕至，少长咸集。此地有崇山峻岭，茂林修竹，又有清流激湍，映带左右。' },
+            { text: '是日也，天朗气清，惠风和畅。仰观宇宙之大，俯察品类之盛，所以游目骋怀，足以极视听之娱，信可乐也。' },
+            { text: '夫人之相与，俯仰一世。或取诸怀抱，悟言一室之内；或因寄所托，放浪形骸之外。' },
+            { text: '后之视今，亦犹今之视昔，悲夫！故列叙时人，录其所述，虽世殊事异，所以兴怀，其致一也。后之览者，亦将有感于斯文。' },
+          ],
+        },
+      ];
+
+      let activeCategory = '全部';
+      let currentBook = null;
+      let pageFlip = null;
+
+      const viewHall = document.getElementById('view-hall');
+      const viewReader = document.getElementById('view-reader');
+      const shelvesEl = document.getElementById('shelves');
+      const categoryTabs = document.getElementById('categoryTabs');
+      const searchInput = document.getElementById('searchBooks');
+
+      function escapeHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      function renderTabs() {
+        categoryTabs.innerHTML = CATEGORIES.map(cat =>
+          `<button type="button" data-cat="${cat}" class="${cat === activeCategory ? 'active' : ''}">${cat}</button>`
+        ).join('');
+        categoryTabs.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activeCategory = btn.dataset.cat;
+            renderTabs();
+            renderShelves();
+          });
+        });
+      }
+
+      function filterBooks() {
+        const q = searchInput.value.trim().toLowerCase();
+        return LIBRARY.filter(b => {
+          const matchCat = activeCategory === '全部' || b.category === activeCategory;
+          const matchQ = !q || [b.title, b.author, b.era, b.category].join(' ').toLowerCase().includes(q);
+          return matchCat && matchQ;
+        });
+      }
+
+      function renderShelves() {
+        const books = filterBooks();
+        const grouped = {};
+        books.forEach(b => {
+          if (!grouped[b.category]) grouped[b.category] = [];
+          grouped[b.category].push(b);
+        });
+
+        if (!books.length) {
+          shelvesEl.innerHTML = '<p style="text-align:center;color:rgba(232,220,196,0.4);padding:40px">未寻得相关典籍</p>';
+          return;
+        }
+
+        shelvesEl.innerHTML = Object.entries(grouped).map(([cat, list]) => `
+          <section class="shelf-row">
+            <h3 class="shelf-label">${cat}</h3>
+            <div class="book-grid">
+              ${list.map(b => `
+                <article class="book-card" data-id="${b.id}">
+                  <div class="book-spine" style="--spine:${b.spine};--spine-light:${b.spineLight}">${escapeHtml(b.title)}</div>
+                  <p class="meta">${escapeHtml(b.author)} · ${escapeHtml(b.era)}</p>
+                  <span class="mode-tag">${b.mode === 'scroll' ? '古卷' : '典籍'}</span>
+                </article>
+              `).join('')}
+            </div>
+          </section>
+        `).join('');
+
+        shelvesEl.querySelectorAll('.book-card').forEach(card => {
+          card.addEventListener('click', () => openBook(card.dataset.id));
+        });
+      }
+
+      function showView(name) {
+        viewHall.classList.toggle('active', name === 'hall');
+        viewReader.classList.toggle('active', name === 'reader');
+        document.body.classList.toggle('view-hall-active', name === 'hall');
+        document.body.classList.toggle('view-reader-active', name === 'reader');
+      }
+
+      function buildBookPages(book) {
+        const frag = document.createDocumentFragment();
+        let pageNum = 0;
+
+        book.pages.forEach((p, i) => {
+          if (p.type === 'cover') {
+            const el = document.createElement('div');
+            el.className = 'page cover-front';
+            el.dataset.density = 'hard';
+            el.innerHTML = `<div class="page-inner"><p style="opacity:0.7;font-size:0.8rem">藏书阁珍本</p><h1 class="cover-title">${escapeHtml(p.title)}</h1><p style="margin-top:1em;opacity:0.8">${escapeHtml(p.sub || '')}</p></div>`;
+            frag.appendChild(el);
+            return;
+          }
+          if (p.type === 'back') {
+            const el = document.createElement('div');
+            el.className = 'page cover-back';
+            el.dataset.density = 'hard';
+            el.innerHTML = `<div class="page-inner"><h1 class="cover-title">${escapeHtml(p.title)}</h1><p style="margin-top:1em;opacity:0.7">藏书阁</p></div>`;
+            frag.appendChild(el);
+            return;
+          }
+
+          const el = document.createElement('div');
+          el.className = 'page';
+          pageNum++;
+          let html = '<div class="page-inner">';
+          if (p.chapter) html += `<p class="chapter-tag">${escapeHtml(p.chapter)}</p>`;
+          if (p.title) html += `<h3>${escapeHtml(p.title)}</h3>`;
+          if (p.lead) html += `<p class="lead">${escapeHtml(p.lead)}</p>`;
+          (p.paras || []).forEach(t => { html += `<p>${escapeHtml(t)}</p>`; });
+          html += `<p class="page-num">— ${pageNum} —</p></div>`;
+          el.innerHTML = html;
+          frag.appendChild(el);
+        });
+
+        return frag;
+      }
+
+      function buildScrollContent(book) {
+        const el = document.getElementById('scrollContent');
+        el.className = 'scroll-content' + (book.vertical ? ' vertical' : '');
+        let html = `<h2>${escapeHtml(book.title)}</h2>`;
+        book.scroll.forEach(block => {
+          if (block.chapter) html += `<p class="chapter">${escapeHtml(block.chapter)}</p>`;
+          html += `<p>${escapeHtml(block.text)}</p>`;
+        });
+        html += '<div class="scroll-seal">藏书阁</div>';
+        el.innerHTML = html;
+      }
+
+      const MOBILE_BP = 768;
+
+      function getViewport() {
+        const vv = window.visualViewport;
+        if (vv) return { w: vv.width, h: vv.height };
+        return { w: window.innerWidth, h: window.innerHeight };
+      }
+
+      function isMobile() { return getViewport().w < MOBILE_BP; }
+      function isPortrait() { return isMobile(); }
+
+      function measureReaderChrome() {
+        const header = document.querySelector('.reader-header');
+        const main = document.querySelector('.reader-main');
+        if (!header || !viewReader.classList.contains('active')) {
+          return isMobile() ? 148 : 108;
+        }
+        const mainPad = main
+          ? parseFloat(getComputedStyle(main).paddingTop) + parseFloat(getComputedStyle(main).paddingBottom)
+          : 16;
+        return Math.ceil(header.getBoundingClientRect().height + mainPad + 6);
+      }
+
+      function syncReaderChrome() {
+        const h = measureReaderChrome();
+        document.documentElement.style.setProperty('--reader-chrome', h + 'px');
+        return h;
+      }
+
+      function calcBookSize() {
+        const { w: vw, h: vh } = getViewport();
+        const mobile = vw < MOBILE_BP;
+        const padX = mobile ? 12 : 32;
+        const chromeH = syncReaderChrome();
+        const availW = Math.max(200, vw - padX);
+        const availH = Math.max(240, vh - chromeH);
+        const ratio = 4 / 5;
+        const spread = isPortrait() ? 1 : 2;
+        let pageH = Math.floor(availH * (mobile ? 0.92 : 0.88));
+        let pageW = Math.floor((availW * (mobile ? 0.98 : 0.92)) / spread);
+        if (pageW / pageH > ratio) pageW = Math.floor(pageH * ratio);
+        else pageH = Math.floor(pageW / ratio);
+        const minW = mobile ? Math.min(220, Math.floor(availW - 4)) : 280;
+        const minH = mobile ? Math.min(300, Math.floor(availH * 0.72)) : 380;
+        const maxW = mobile ? Math.floor(availW) : 680;
+        const maxH = mobile ? Math.floor(availH * 0.96) : 900;
+        pageW = Math.min(Math.max(pageW, minW), maxW);
+        pageH = Math.min(Math.max(pageH, minH), maxH);
+        return { w: pageW, h: pageH, spread, minW, minH, maxW, maxH };
+      }
+
+      function applyBookStageSize(s) {
+        const bookStage = document.getElementById('bookStage');
+        bookStage.style.width = (s.w * s.spread) + 'px';
+        bookStage.style.height = s.h + 'px';
+        bookStage.style.maxWidth = '100%';
+      }
+
+      function resizeBookReader() {
+        if (!currentBook || currentBook.mode !== 'book' || !pageFlip) return;
+        const s = calcBookSize();
+        applyBookStageSize(s);
+        pageFlip.update({
+          width: s.w,
+          height: s.h,
+          usePortrait: isPortrait(),
+          minWidth: s.minW,
+          maxWidth: s.maxW,
+          minHeight: s.minH,
+          maxHeight: s.maxH,
+        });
+      }
+
+      function destroyPageFlip() {
+        if (pageFlip) {
+          try { pageFlip.destroy(); } catch (_) { }
+          pageFlip = null;
+        }
+      }
+
+      function initBookReader(book) {
+        const bookEl = document.getElementById('book');
+        const bookStage = document.getElementById('bookStage');
+        bookEl.innerHTML = '';
+        bookEl.appendChild(buildBookPages(book));
+
+        const s = calcBookSize();
+        applyBookStageSize(s);
+
+        pageFlip = new St.PageFlip(bookEl, {
+          width: s.w,
+          height: s.h,
+          size: 'fixed',
+          minWidth: s.minW,
+          maxWidth: s.maxW,
+          minHeight: s.minH,
+          maxHeight: s.maxH,
+          maxShadowOpacity: 0.55,
+          showCover: true,
+          mobileScrollSupport: false,
+          drawShadow: true,
+          flippingTime: 700,
+          usePortrait: isPortrait(),
+          autoSize: false,
+        });
+
+        pageFlip.loadFromHTML(bookEl.querySelectorAll('.page'));
+
+        const updateInd = () => {
+          document.getElementById('pageIndicator').textContent =
+            (pageFlip.getCurrentPageIndex() + 1) + ' / ' + pageFlip.getPageCount();
+        };
+        pageFlip.on('flip', updateInd);
+        pageFlip.on('changeState', updateInd);
+        updateInd();
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(resizeBookReader);
+        });
+      }
+
+      function openBook(id) {
+        const book = LIBRARY.find(b => b.id === id);
+        if (!book) return;
+        currentBook = book;
+
+        document.getElementById('readerTitle').textContent = book.title;
+        document.getElementById('readerMeta').textContent =
+          `${book.author} · ${book.era} · ${book.category} · ${book.mode === 'scroll' ? '古卷阅览' : '典籍翻页'}`;
+
+        const readerBook = document.getElementById('readerBook');
+        const readerScroll = document.getElementById('readerScroll');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+
+        destroyPageFlip();
+
+        if (book.mode === 'scroll') {
+          readerBook.classList.remove('active');
+          readerScroll.classList.add('active');
+          buildScrollContent(book);
+          document.getElementById('pageIndicator').textContent = '古卷';
+          btnPrev.innerHTML = '↑ <span class="btn-label-long">向上</span>';
+          btnNext.innerHTML = '<span class="btn-label-long">向下</span> ↓';
+        } else {
+          readerScroll.classList.remove('active');
+          readerBook.classList.add('active');
+          btnPrev.innerHTML = '← <span class="btn-label-long">上一页</span>';
+          btnNext.innerHTML = '<span class="btn-label-long">下一页</span> →';
+        }
+
+        showView('reader');
+        syncReaderChrome();
+
+        if (book.mode === 'scroll') {
+          document.getElementById('scrollBody').scrollTop = 0;
+        } else {
+          initBookReader(book);
+        }
+
+        history.replaceState({ book: id }, '', '#read/' + id);
+      }
+
+      function closeReader() {
+        destroyPageFlip();
+        currentBook = null;
+        showView('hall');
+        history.replaceState({}, '', location.pathname);
+      }
+
+      document.getElementById('btnBack').addEventListener('click', closeReader);
+
+      document.getElementById('btnPrev').addEventListener('click', () => {
+        if (!currentBook) return;
+        if (currentBook.mode === 'scroll') {
+          document.getElementById('scrollBody').scrollBy({ top: -280, behavior: 'smooth' });
+        } else if (pageFlip) pageFlip.flipPrev();
+      });
+
+      document.getElementById('btnNext').addEventListener('click', () => {
+        if (!currentBook) return;
+        if (currentBook.mode === 'scroll') {
+          document.getElementById('scrollBody').scrollBy({ top: 280, behavior: 'smooth' });
+        } else if (pageFlip) pageFlip.flipNext();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!viewReader.classList.contains('active')) return;
+        if (e.key === 'Escape') closeReader();
+        if (e.key === 'ArrowLeft') { e.preventDefault(); document.getElementById('btnPrev').click(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); document.getElementById('btnNext').click(); }
+      });
+
+      let resizeTimer;
+      function onViewportChange() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (viewReader.classList.contains('active')) syncReaderChrome();
+          resizeBookReader();
+        }, 150);
+      }
+
+      window.addEventListener('resize', onViewportChange);
+      window.addEventListener('orientationchange', onViewportChange);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', onViewportChange);
+        window.visualViewport.addEventListener('scroll', onViewportChange);
+      }
+
+      searchInput.addEventListener('input', renderShelves);
+
+      window.addEventListener('popstate', () => {
+        const m = location.hash.match(/^#read\/(.+)$/);
+        if (m) openBook(m[1]);
+        else if (viewReader.classList.contains('active')) closeReader();
+      });
+
+      function createTorch(className, delay) {
+        const el = document.createElement('div');
+        el.className = 'torch ' + className;
+        el.innerHTML = [
+          '<div class="torch-glow"></div>',
+          '<div class="torch-flame-wrap">',
+          '  <div class="torch-flame torch-flame--outer"></div>',
+          '  <div class="torch-flame torch-flame--mid"></div>',
+          '  <div class="torch-flame torch-flame--core"></div>',
+          '</div>',
+          '<div class="torch-pillar"></div>',
+          '<div class="torch-base"></div>',
+        ].join('');
+        el.querySelectorAll('.torch-flame').forEach((f, i) => {
+          f.style.animationDelay = (delay + i * 0.02) + 's';
+        });
+        return el;
+      }
+
+      function fillSmokeParticles(container, mobileFx) {
+        if (!container) return;
+        container.innerHTML = '';
+        const wispCount = mobileFx ? 14 : 22;
+        for (let i = 0; i < wispCount; i++) {
+          const w = document.createElement('span');
+          w.className = 'smoke-wisp';
+          w.style.width = (40 + Math.random() * 60) + 'px';
+          w.style.height = (30 + Math.random() * 50) + 'px';
+          w.style.left = (Math.random() * 100) + '%';
+          w.style.bottom = (-5 + Math.random() * 25) + '%';
+          w.style.opacity = '0.35';
+          w.style.animationDuration = (14 + Math.random() * 12) + 's';
+          w.style.animationDelay = (-Math.random() * 20) + 's';
+          container.appendChild(w);
+        }
+      }
+
+      function fillEmbers(container, mobileFx) {
+        if (!container) return;
+        container.innerHTML = '';
+        const emberCount = mobileFx ? 28 : 80;
+        for (let i = 0; i < emberCount; i++) {
+          const e = document.createElement('span');
+          e.className = 'ember';
+          const sz = 2 + Math.random() * 4;
+          e.style.width = e.style.height = sz + 'px';
+          e.style.left = (Math.random() * 100) + '%';
+          e.style.bottom = (Math.random() * 25) + '%';
+          e.style.setProperty('--drift', (Math.random() * 120 - 60) + 'px');
+          e.style.animationDuration = (4 + Math.random() * 8) + 's';
+          e.style.animationDelay = (-Math.random() * 12) + 's';
+          container.appendChild(e);
+        }
+      }
+
+      function fillDust(container, mobileFx) {
+        if (!container) return;
+        container.innerHTML = '';
+        const count = mobileFx ? 40 : 72;
+        for (let i = 0; i < count; i++) {
+          const m = document.createElement('span');
+          m.className = 'dust-mote';
+          m.style.left = (5 + Math.random() * 90) + '%';
+          m.style.bottom = (-10 + Math.random() * 30) + '%';
+          m.style.animationDuration = (10 + Math.random() * 16) + 's';
+          m.style.animationDelay = (-Math.random() * 18) + 's';
+          const sz = 1 + Math.random() * 2.5;
+          m.style.width = m.style.height = sz + 'px';
+          container.appendChild(m);
+        }
+      }
+
+      function spawnSparkInto(container) {
+        if (!container) return;
+        const fromBottom = Math.random() > 0.35;
+        const el = document.createElement('span');
+        const trail = Math.random() > 0.55;
+        el.className = trail ? 'spark spark--trail' : 'spark';
+        const x = 10 + Math.random() * 80;
+        el.style.left = x + '%';
+        el.style.bottom = fromBottom ? (5 + Math.random() * 35) + '%' : (30 + Math.random() * 50) + '%';
+        const sx = (Math.random() * 160 - 80) + 'px';
+        const sy = (-60 - Math.random() * 140) + 'px';
+        el.style.setProperty('--sx', sx);
+        el.style.setProperty('--sy', sy);
+        el.style.setProperty('--rot', (Math.random() * 60 - 30) + 'deg');
+        el.style.animationDuration = (0.6 + Math.random() * 1.4) + 's';
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 2200);
+      }
+
+      function getActiveSparkContainer() {
+        if (document.body.classList.contains('view-hall-active')) {
+          return document.getElementById('hallSparks');
+        }
+        if (document.body.classList.contains('view-reader-active')) {
+          return document.getElementById('chamberSparks');
+        }
+        return null;
+      }
+
+      function startSparkSystem(mobileFx) {
+        const sparkInterval = mobileFx ? 360 : 160;
+        setInterval(() => {
+          const container = getActiveSparkContainer();
+          if (container) spawnSparkInto(container);
+        }, sparkInterval);
+        for (let i = 0; i < 12; i++) {
+          setTimeout(() => {
+            const container = getActiveSparkContainer();
+            if (container) spawnSparkInto(container);
+          }, i * 120);
+        }
+      }
+
+      function initHallAtmosphere(mobileFx) {
+        fillEmbers(document.getElementById('hallEmbers'), mobileFx);
+        fillDust(document.getElementById('hallDust'), mobileFx);
+      }
+
+      function initChamberAmbience() {
+        const layer = document.getElementById('candlesLayer');
+        layer.innerHTML = '';
+        const mobileFx = isMobile();
+        const positions = mobileFx
+          ? ['torch--l', 'torch--r']
+          : ['torch--l', 'torch--r', 'torch--c1', 'torch--c2'];
+        positions.forEach((cls, i) => layer.appendChild(createTorch(cls, i * 0.25)));
+
+        initHallAtmosphere(mobileFx);
+        fillEmbers(document.getElementById('chamberEmbers'), mobileFx);
+        fillDust(document.getElementById('chamberDust'), mobileFx);
+        fillSmokeParticles(document.getElementById('smokeField'), mobileFx);
+        startSparkSystem(mobileFx);
+      }
+
+      renderTabs();
+      renderShelves();
+      initChamberAmbience();
+      document.body.classList.add('view-hall-active');
+
+      const hashMatch = location.hash.match(/^#read\/(.+)$/);
+      if (hashMatch && LIBRARY.some(b => b.id === hashMatch[1])) {
+        openBook(hashMatch[1]);
+      }
+    })();
+  </script>
+
+  <script>
+    const bgVideo = document.getElementById('bgVideo')
+    document.addEventListener('click', () => {
+      bgVideo.muted = false
+      console.log(bgVideo.muted)
+    })
+  </script>
+</body>
+
+</html>
