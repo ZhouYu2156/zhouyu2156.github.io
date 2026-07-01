@@ -33,10 +33,10 @@ const toggleAppearance = inject('toggle-appearance', async ({ clientX: x, client
   document.documentElement.animate(
     { clipPath: isDark.value ? clipPath.reverse() : clipPath },
     {
-      duration: 300,
-      easing: 'ease-in',
-      fill: 'forwards',
-      pseudoElement: `::view-transition-${isDark.value ? 'old' : 'new'}(root)`
+      duration: 400,
+      easing: 'ease-in-out',
+      fill: 'both',
+      pseudoElement: isDark.value ? '::view-transition-old(root)' : '::view-transition-new(root)'
     }
   )
 })
@@ -52,12 +52,7 @@ watchPostEffect(() => {
 </script>
 
 <template>
-  <VPSwitch
-    :title="switchTitle"
-    class="VPSwitchAppearance"
-    :aria-checked="isDark"
-    @click="toggleAppearance"
-  >
+  <VPSwitch :title="switchTitle" class="VPSwitchAppearance" :aria-checked="isDark" @click="toggleAppearance">
     <span class="vpi-sun sun" />
     <span class="vpi-moon moon" />
   </VPSwitch>
@@ -84,5 +79,4 @@ watchPostEffect(() => {
   /*rtl:ignore*/
   transform: translateX(18px);
 }
-
 </style>

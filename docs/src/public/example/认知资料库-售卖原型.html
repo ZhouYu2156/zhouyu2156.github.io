@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>开窍资料库 · 认知提升数字资料售卖原型</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --bg-elevated: #1a222d;
+      --bg-card: #232d3b;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f0f4f8;
+      --text-muted: #8b9cb3;
+      --accent: #3dd6c6;
+      --accent-dim: rgba(61, 214, 198, 0.15);
+      --accent-hover: #2eb8aa;
+      --gold: #e8c547;
+      --gold-dim: rgba(232, 197, 71, 0.12);
+      --danger: #f07178;
+      --success: #7fd962;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      --max-w: 1120px;
+      --proto-h: 52px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: calc(var(--proto-h) + 16px);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ========== 原型导航条 ========== */
+    .proto-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--proto-h);
+      background: linear-gradient(180deg, #1e2836 0%, #151c26 100%);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 12px;
+      z-index: 9999;
+      overflow-x: auto;
+    }
+
+    .proto-bar span {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+
+    .proto-btn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .proto-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .proto-btn.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ========== 页面容器 ========== */
+    .screen {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ========== 顶栏 ========== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 20, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent) 0%, #2a8f9e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #2a9d8f 100%);
+      color: #0a1218;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #c9a227 100%);
+      color: #1a1508;
+    }
+
+    .btn-lg {
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* ========== 首页 Hero ========== */
+    .hero {
+      padding: 56px 0 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -80px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(61, 214, 198, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--gold-dim);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 480px;
+      margin-bottom: 28px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 32px;
+    }
+
+    .hero-stats div strong {
+      display: block;
+      font-size: 22px;
+      color: var(--text);
+    }
+
+    .hero-stats div span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual h3 {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .flow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .flow-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .flow-step strong {
+      font-size: 14px;
+    }
+
+    .flow-step p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ========== 商品卡片 ========== */
+    .section {
+      padding: 48px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-head h2 {
+      font-size: 24px;
+    }
+
+    .section-head p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 8px 16px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .filter-tab.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(61, 214, 198, 0.35);
+    }
+
+    .product-cover {
+      height: 140px;
+      background: linear-gradient(145deg, #1e3a4a 0%, #0f2027 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+    }
+
+    .product-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--gold);
+    }
+
+    .product-body {
+      padding: 18px;
+    }
+
+    .product-body h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .product-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .price small {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 400;
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+
+    /* ========== 详情页 ========== */
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 40px;
+      padding: 32px 0 48px;
+    }
+
+    @media (max-width: 900px) {
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .breadcrumb {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-muted);
+    }
+
+    .detail-cover {
+      aspect-ratio: 16/10;
+      background: linear-gradient(145deg, #1e3a4a 0%, #152028 100%);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .detail-content h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .detail-desc {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .detail-list {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .detail-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .detail-list li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .purchase-card {
+      position: sticky;
+      top: 80px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .purchase-card .price-lg {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .purchase-card .hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .purchase-features {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 20px 0;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .purchase-features div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* ========== 结算页 ========== */
+    .checkout-layout {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .checkout-layout h1 {
+      font-size: 24px;
+      margin-bottom: 28px;
+    }
+
+    .checkout-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .checkout-card h3 {
+      font-size: 15px;
+      margin-bottom: 16px;
+      color: var(--text-muted);
+    }
+
+    .order-item {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .order-item-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .order-item-info {
+      flex: 1;
+    }
+
+    .order-item-info h4 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .order-item-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .form-row {
+      margin-bottom: 16px;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-row input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .pay-methods {
+      display: flex;
+      gap: 12px;
+    }
+
+    .pay-method {
+      flex: 1;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .pay-method.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .checkout-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .checkout-total span:last-child {
+      color: var(--accent);
+      font-size: 24px;
+    }
+
+    /* ========== 购买成功 / 网盘链接 ========== */
+    .success-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px 48px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: rgba(127, 217, 98, 0.15);
+      color: var(--success);
+      font-size: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-wrap h1 {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .success-wrap > p {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .pan-card {
+      text-align: left;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .pan-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .pan-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #2932e1;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pan-logo.quark {
+      background: linear-gradient(135deg, #6b4eff, #00d4aa);
+    }
+
+    .pan-field {
+      margin-bottom: 16px;
+    }
+
+    .pan-field label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .pan-value-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pan-value {
+      flex: 1;
+      padding: 12px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      word-break: break-all;
+      color: var(--accent);
+    }
+
+    .copy-btn {
+      padding: 12px 16px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pan-tips {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 14px;
+      background: var(--gold-dim);
+      border-radius: 10px;
+      border-left: 3px solid var(--gold);
+      line-height: 1.7;
+    }
+
+    .pan-tips strong {
+      color: var(--gold);
+    }
+
+    /* ========== 我的订单 ========== */
+    .orders-layout {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .orders-layout h1 {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .order-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .order-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .order-no {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 999px;
+      background: rgba(127, 217, 98, 0.15);
+      color: var(--success);
+    }
+
+    .order-card-body {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .order-card-body .thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .order-card-body .info {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .order-card-body .info h4 {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .order-card-body .info p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ========== 登录弹层示意 ========== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .modal h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .modal > p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .divider {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin: 16px 0;
+    }
+
+    /* ========== 页脚 ========== */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 20px;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .proto-label {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 10px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 6px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================== 屏幕 1：首页 ==================== -->
+  <div id="screen-home" class="screen active">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo" onclick="showScreen('home')">
+          <span class="logo-icon">🧠</span>
+          开窍资料库
+        </div>
+        <ul class="nav-links">
+          <li><a href="#" onclick="showScreen('home'); return false;">全部资料</a></li>
+          <li><a href="#">认知思维</a></li>
+          <li><a href="#">财富方法论</a></li>
+          <li><a href="#" onclick="showScreen('orders'); return false;">我的订单</a></li>
+        </ul>
+        <div class="header-actions">
+          <button class="btn btn-ghost" onclick="openLogin()">登录</button>
+          <button class="btn btn-primary" onclick="showScreen('home')">浏览资料</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="hero-badge">认知升级 · 即买即得网盘链接</span>
+          <h1>把多年整理的<em>开窍干货</em><br>一次交付，永久下载</h1>
+          <p class="hero-desc">精选洞见类长文、思维模型笔记、写作方法论合集。下单后自动展示百度网盘 / 夸克网盘链接与提取码，无需等待人工发货。</p>
+          <button class="btn btn-primary btn-lg" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">查看全部资料 →</button>
+          <div class="hero-stats">
+            <div><strong>12+</strong><span>套精品合集</span></div>
+            <div><strong>3.2k</strong><span>位读者已购</span></div>
+            <div><strong>即时</strong><span>网盘直链交付</span></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <h3>购买流程（原型示意）</h3>
+          <div class="flow-steps">
+            <div class="flow-step">
+              <span class="flow-num">1</span>
+              <div><strong>选择资料包</strong>
+                <p>浏览分类，查看目录与样章说明</p>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="flow-num">2</span>
+              <div><strong>在线支付</strong>
+                <p>微信 / 支付宝，支付成功即解锁</p>
+              </div>
+            </div>
+            <div class="flow-step">
+              <span class="flow-num">3</span>
+              <div><strong>获取网盘链接</strong>
+                <p>展示链接、提取码，一键复制下载</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="catalog">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>热门资料</h2>
+            <p>均为网盘打包 PDF / Markdown 合集，购买后永久有效</p>
+          </div>
+          <div class="filter-tabs">
+            <button class="filter-tab active">全部</button>
+            <button class="filter-tab">认知思维</button>
+            <button class="filter-tab">财富开窍</button>
+            <button class="filter-tab">写作方法论</button>
+          </div>
+        </div>
+        <div class="product-grid">
+          <article class="product-card" onclick="showScreen('detail')">
+            <div class="product-cover">📚<span class="product-tag">畅销</span></div>
+            <div class="product-body">
+              <h3>认知升级长文合集 · 50 篇精选</h3>
+              <div class="product-meta"><span>PDF + MD</span><span>约 120 页</span><span>328 人已购</span></div>
+              <div class="product-footer">
+                <span class="price">¥49<small>¥99</small></span>
+                <button class="btn btn-ghost" style="padding:8px 14px;font-size:13px">查看详情</button>
+              </div>
+            </div>
+          </article>
+          <article class="product-card" onclick="showScreen('detail')">
+            <div class="product-cover" style="background:linear-gradient(145deg,#2a2438,#151018)">💡</div>
+            <div class="product-body">
+              <h3>财富思维「操作系统」笔记包</h3>
+              <div class="product-meta"><span>PDF</span><span>8 大模块</span><span>156 人已购</span></div>
+              <div class="product-footer">
+                <span class="price">¥39</span>
+                <button class="btn btn-ghost" style="padding:8px 14px;font-size:13px">查看详情</button>
+              </div>
+            </div>
+          </article>
+          <article class="product-card" onclick="showScreen('detail')">
+            <div class="product-cover" style="background:linear-gradient(145deg,#1a3328,#0d1812)">✍️</div>
+            <div class="product-body">
+              <h3>洞见类公众号写作要求 + 范例</h3>
+              <div class="product-meta"><span>MD + 范例</span><span>含 AI 提示词</span><span>89 人已购</span></div>
+              <div class="product-footer">
+                <span class="price">¥29</span>
+                <button class="btn btn-ghost" style="padding:8px 14px;font-size:13px">查看详情</button>
+              </div>
+            </div>
+          </article>
+          <article class="product-card" onclick="showScreen('detail')">
+            <div class="product-cover" style="background:linear-gradient(145deg,#3a2a1a,#1a1208)">🎯</div>
+            <div class="product-body">
+              <h3>人生方法论 · 戒掉 X 换上 Y 全集</h3>
+              <div class="product-meta"><span>PDF</span><span>35 节</span><span>201 人已购</span></div>
+              <div class="product-footer">
+                <span class="price">¥59<small>¥128</small></span>
+                <button class="btn btn-ghost" style="padding:8px 14px;font-size:13px">查看详情</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>开窍资料库 · 数字资料售卖原型 · 仅供产品评审</p>
+      <span class="proto-label">HTML 原型 v1.0</span>
+    </footer>
+  </div>
+
+  <!-- ==================== 屏幕 2：商品详情 ==================== -->
+  <div id="screen-detail" class="screen">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo" onclick="showScreen('home')">
+          <span class="logo-icon">🧠</span>
+          开窍资料库
+        </div>
+        <ul class="nav-links">
+          <li><a href="#" onclick="showScreen('home'); return false;">返回首页</a></li>
+          <li><a href="#" onclick="showScreen('orders'); return false;">我的订单</a></li>
+        </ul>
+        <div class="header-actions">
+          <button class="btn btn-ghost" onclick="openLogin()">登录</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container detail-layout">
+      <div>
+        <div class="breadcrumb">
+          <a href="#" onclick="showScreen('home'); return false;">首页</a> / 认知思维 / 认知升级长文合集
+        </div>
+        <div class="detail-cover">📚</div>
+        <div class="detail-content">
+          <h1>认知升级长文合集 · 50 篇精选</h1>
+          <p class="detail-desc">多年阅读与整理的洞见类长文，涵盖「开窍」「操作系统隐喻」「戒掉 X 换上 Y」等固定骨架写作范式。适合想系统提升认知、做自媒体或知识输出的读者。</p>
+          <ul class="detail-list">
+            <li>50 篇完整长文 PDF，排版清晰可打印</li>
+            <li>附带 Markdown 源文件，便于二次编辑</li>
+            <li>按主题分类索引（财富 / 人际 / 情绪 / 长期主义）</li>
+            <li>购买后百度网盘 + 夸克网盘双链接，永久有效</li>
+            <li>支持在个人中心随时回看下载链接</li>
+          </ul>
+          <h3 style="font-size:16px;margin-bottom:12px">资料目录预览</h3>
+          <p style="font-size:14px;color:var(--text-muted);line-height:2">
+            01 戒掉情绪内耗，换上目标思维<br>
+            02 放下面子执念，拾起价值思维<br>
+            03 戒掉短视消费，换上复利滚雪球 …<br>
+            <em style="color:var(--accent)">（完整目录购买后可在网盘内查看）</em>
+          </p>
+        </div>
+      </div>
+
+      <aside class="purchase-card">
+        <div class="price-lg">¥49</div>
+        <p class="hint">限时优惠，原价 ¥99 · 网盘即时交付</p>
+        <button class="btn btn-gold btn-block btn-lg" onclick="showScreen('checkout')">立即购买</button>
+        <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="showScreen('success')">预览：购买成功页</button>
+        <div class="purchase-features">
+          <div><span>☁️</span> 百度网盘 + 夸克网盘双备份</div>
+          <div><span>⚡</span> 支付成功秒显链接</div>
+          <div><span>📋</span> 支持一键复制链接与提取码</div>
+          <div><span>🔒</span> 订单永久保存在「我的订单」</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ==================== 屏幕 3：结算 ==================== -->
+  <div id="screen-checkout" class="screen">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo" onclick="showScreen('home')">
+          <span class="logo-icon">🧠</span>
+          开窍资料库
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-ghost" onclick="showScreen('detail')">← 返回</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="checkout-layout">
+      <h1>确认订单</h1>
+
+      <div class="checkout-card">
+        <h3>商品信息</h3>
+        <div class="order-item">
+          <div class="order-item-thumb">📚</div>
+          <div class="order-item-info">
+            <h4>认知升级长文合集 · 50 篇精选</h4>
+            <p>PDF + Markdown · 网盘交付</p>
+          </div>
+          <span class="price">¥49</span>
+        </div>
+      </div>
+
+      <div class="checkout-card">
+        <h3>接收方式</h3>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px">支付成功后，将在此账号的「订单详情」与「我的订单」中展示网盘链接，请使用常用邮箱注册以便找回。</p>
+        <div class="form-row">
+          <label>邮箱（用于接收订单通知，可选）</label>
+          <input type="email" placeholder="you@example.com" value="reader@example.com">
+        </div>
+      </div>
+
+      <div class="checkout-card">
+        <h3>支付方式</h3>
+        <div class="pay-methods">
+          <div class="pay-method selected">💚 微信支付</div>
+          <div class="pay-method">🔵 支付宝</div>
+        </div>
+      </div>
+
+      <div class="checkout-card">
+        <div class="checkout-total">
+          <span>应付金额</span>
+          <span>¥49.00</span>
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" onclick="showScreen('success')">确认支付 ¥49</button>
+        <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px">点击即模拟支付成功，进入网盘链接页</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 屏幕 4：购买成功 + 网盘链接 ==================== -->
+  <div id="screen-success" class="screen">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo" onclick="showScreen('home')">
+          <span class="logo-icon">🧠</span>
+          开窍资料库
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-ghost" onclick="showScreen('orders')">我的订单</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="success-wrap">
+      <div class="success-icon">✓</div>
+      <h1>支付成功！</h1>
+      <p>您购买的资料已解锁，请复制下方网盘链接下载。链接已同步至「我的订单」，可随时回看。</p>
+
+      <div class="pan-card">
+        <div class="pan-card-header">
+          <div class="pan-logo">百度</div>
+          <div>
+            <strong>百度网盘</strong>
+            <p style="font-size:13px;color:var(--text-muted)">认知升级长文合集 · 50 篇精选</p>
+          </div>
+        </div>
+        <div class="pan-field">
+          <label>分享链接</label>
+          <div class="pan-value-row">
+            <div class="pan-value" id="link-baidu">https://pan.baidu.com/s/1abc123xyz_example</div>
+            <button class="copy-btn" onclick="copyText('link-baidu', this)">复制</button>
+          </div>
+        </div>
+        <div class="pan-field">
+          <label>提取码</label>
+          <div class="pan-value-row">
+            <div class="pan-value" id="code-baidu" style="color:var(--gold)">k9x2</div>
+            <button class="copy-btn" onclick="copyText('code-baidu', this)">复制</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pan-card">
+        <div class="pan-card-header">
+          <div class="pan-logo quark">夸克</div>
+          <div>
+            <strong>夸克网盘（备用）</strong>
+            <p style="font-size:13px;color:var(--text-muted)">同一套资料，双盘备份</p>
+          </div>
+        </div>
+        <div class="pan-field">
+          <label>分享链接</label>
+          <div class="pan-value-row">
+            <div class="pan-value" id="link-quark">https://pan.quark.cn/s/xyz789_example</div>
+            <button class="copy-btn" onclick="copyText('link-quark', this)">复制</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pan-tips">
+        <strong>下载提示：</strong> 建议在电脑端打开链接保存到网盘后再下载；链接长期有效，请勿公开传播。如遇失效请联系客服凭订单号补发。
+      </div>
+
+      <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="window.open('#','_blank')">打开百度网盘</button>
+        <button class="btn btn-ghost" onclick="showScreen('orders')">查看我的订单</button>
+        <button class="btn btn-ghost" onclick="showScreen('home')">继续逛资料</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 屏幕 5：我的订单 ==================== -->
+  <div id="screen-orders" class="screen">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo" onclick="showScreen('home')">
+          <span class="logo-icon">🧠</span>
+          开窍资料库
+        </div>
+        <ul class="nav-links">
+          <li><a href="#" onclick="showScreen('home'); return false;">首页</a></li>
+        </ul>
+        <div class="header-actions">
+          <span style="font-size:14px;color:var(--text-muted)">reader@example.com</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="orders-layout">
+      <h1>我的订单</h1>
+
+      <div class="order-card">
+        <div class="order-card-head">
+          <span class="order-no">订单号：ORD202605200001 · 2026-05-20 14:32</span>
+          <span class="status-badge">已支付 · 可下载</span>
+        </div>
+        <div class="order-card-body">
+          <div class="thumb">📚</div>
+          <div class="info">
+            <h4>认知升级长文合集 · 50 篇精选</h4>
+            <p>实付 ¥49.00 · 网盘交付</p>
+          </div>
+          <button class="btn btn-primary" onclick="showScreen('success')">查看网盘链接</button>
+        </div>
+      </div>
+
+      <div class="order-card">
+        <div class="order-card-head">
+          <span class="order-no">订单号：ORD202604150088 · 2026-04-15 09:18</span>
+          <span class="status-badge">已支付 · 可下载</span>
+        </div>
+        <div class="order-card-body">
+          <div class="thumb">💡</div>
+          <div class="info">
+            <h4>财富思维「操作系统」笔记包</h4>
+            <p>实付 ¥39.00 · 网盘交付</p>
+          </div>
+          <button class="btn btn-ghost" onclick="showScreen('success')">查看网盘链接</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登录弹层 -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeLogin()">×</button>
+      <h2>登录 / 注册</h2>
+      <p>登录后可查看订单与网盘下载链接</p>
+      <div class="form-row">
+        <label>邮箱</label>
+        <input type="email" placeholder="请输入邮箱">
+      </div>
+      <div class="form-row">
+        <label>验证码</label>
+        <input type="text" placeholder="6 位验证码">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="closeLogin(); showScreen('orders')">登录（原型）</button>
+      <div class="divider">或使用</div>
+      <button class="btn btn-ghost btn-block">微信扫码登录</button>
+    </div>
+  </div>
+
+  <!-- 原型底部导航 -->
+  <nav class="proto-bar" aria-label="原型页面切换">
+    <span>原型导航：</span>
+    <button class="proto-btn active" data-screen="home" onclick="showScreen('home')">① 首页</button>
+    <button class="proto-btn" data-screen="detail" onclick="showScreen('detail')">② 商品详情</button>
+    <button class="proto-btn" data-screen="checkout" onclick="showScreen('checkout')">③ 结算支付</button>
+    <button class="proto-btn" data-screen="success" onclick="showScreen('success')">④ 网盘链接</button>
+    <button class="proto-btn" data-screen="orders" onclick="showScreen('orders')">⑤ 我的订单</button>
+  </nav>
+
+  <script>
+    function showScreen(name) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('screen-' + name);
+      if (target) target.classList.add('active');
+      document.querySelectorAll('.proto-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.screen === name);
+      });
+      window.scrollTo(0, 0);
+    }
+
+    function openLogin() {
+      document.getElementById('loginModal').classList.add('show');
+    }
+
+    function closeLogin() {
+      document.getElementById('loginModal').classList.remove('show');
+    }
+
+    function copyText(id, btn) {
+      const text = document.getElementById(id).textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '已复制';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+      }).catch(() => alert('已复制：' + text));
+    }
+
+    document.getElementById('loginModal').addEventListener('click', function (e) {
+      if (e.target === this) closeLogin();
+    });
+
+    document.querySelectorAll('.pay-method').forEach(el => {
+      el.addEventListener('click', function () {
+        document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+  </script>
+</body>
+
+</html>

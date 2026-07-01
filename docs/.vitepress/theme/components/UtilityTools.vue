@@ -20,6 +20,54 @@ interface ToolItem {
 }
 
 const tools = ref<ToolItem[]>([
+{
+    link: {
+      title: '觅知网',
+      href: 'https://www.51miz.com/',
+      target: '_blank',
+      description: '海量图片和设计素材。',
+    },
+    img: {
+      src: 'https://www.51miz.com/favicon.ico',
+      alt: '觅知网',
+    }
+},
+{
+    link: {
+      title: '草料二维码',
+      href: 'https://cli.im/',
+      target: '_blank',
+      description: '将各种内容一键转换成二维码。',
+    },
+    img: {
+      src: 'https://static.clewm.net/static/images/favicon.ico',
+      alt: '草料二维码',
+    }
+},
+{
+    link: {
+      title: '微信读书',
+      href: 'https://weread.qq.com/',
+      target: '_blank',
+      description: '微信读书App在线网站。',
+    },
+    img: {
+      src: 'https://rescdn.qqmail.com/node/wr/wrpage/style/images/independent/favicon/favicon_32h.png',
+      alt: '微信读书',
+    }
+},
+{
+    link: {
+      title: '播客',
+      href: 'https://podcasts.apple.com/',
+      target: '_blank',
+      description: '苹果官方播客。',
+    },
+    img: {
+      src: 'https://podcasts.apple.com/assets/app-icons/podcasts-icon_512.png',
+      alt: '播客',
+    }
+},
   {
     link: {
       title: 'Excalidraw',
@@ -59,7 +107,19 @@ const tools = ref<ToolItem[]>([
       src: 'https://images.modao.cc/images/favicon.ico',
       alt: '墨刀',
     }
-  }
+  },
+  {
+    link: {
+      title: 'Unsplash',
+      href: 'https://unsplash.com/',
+      target: '_blank',
+      description: '一个免费的高质量图片网站。',
+    },
+    img: {
+      src: 'https://unsplash.com/favicon.ico',
+      alt: 'Unsplash',
+    }
+  },
 ])
 
 function linkRel(item: ToolItem) {

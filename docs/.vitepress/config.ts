@@ -9,7 +9,6 @@ import {
 
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { collectGroupIconTabLabels } from './plugins/collectGroupIconLabels'
 import { resolveDirectories } from './plugins/resolveDirectories'
 
 /** 需要做映射的导航菜单 */
@@ -25,11 +24,7 @@ const navMap = {
 
 // 获取项目 src 目录
 const vitepressDir = path.dirname(fileURLToPath(import.meta.url))
-
 const srcDir = path.resolve(vitepressDir, '../src')
-
-/** 供 group-icons 生产构建：避免 virtual:group-icons.css 首次 load 时 matches 仍为空 */
-const groupIconDefaultLabels = collectGroupIconTabLabels(srcDir)
 
 let { nav, sidebar, rewrites } = resolveDirectories(srcDir)
 
@@ -55,27 +50,31 @@ export default defineConfig({
   rewrites,
 
   vite: {
-    /** 显示代码块的图标；`defaultLabels` 修复生产构建时虚拟 CSS 早于 md transform 被缓存导致无图标 */
     plugins: [
-      groupIconVitePlugin({ defaultLabels: groupIconDefaultLabels }),
+      groupIconVitePlugin({
+        customIcon: {
+          '.sh': 'vscode-icons:file-type-shell'
+        }
+      }),
       tailwindcss()
     ],
     server: {
       port: 5174
-    },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: 'modern-compiler'
-        }
-      }
     }
   },
 
   markdown: {
     math: true,
+    theme: {
+      light: 'github-light',
+      dark: 'github-dark'
+    },
     config(md) {
-      md.use(groupIconMdPlugin)
+      md.use(
+        groupIconMdPlugin /*{
+        titleBar: { includeSnippet: true }
+      }*/
+      )
     },
     container: {
       tipLabel: '提示',
@@ -86,15 +85,13 @@ export default defineConfig({
     },
     lineNumbers: true,
     theme: {
-      light: 'one-light',
+      light: 'github-light',
       dark: 'github-dark'
     },
     codeCopyButtonTitle: '复制代码',
     codeTransformers: [
       transformerTwoslash({ typesCache: createFileSystemTypesCache() })
-    ],
-    // Explicitly load these languages for types hightlighting
-    languages: ['js', 'jsx', 'ts', 'tsx']
+    ]
   },
 
   head: [
@@ -109,7 +106,7 @@ export default defineConfig({
     darkModeSwitchTitle: '切换到深色模式',
 
     logo: {
-      src: '/favicon.png',
+      src: '/logo.svg',
       alt: '极客兔',
       style: 'width: 36px; height: 36px;'
     },

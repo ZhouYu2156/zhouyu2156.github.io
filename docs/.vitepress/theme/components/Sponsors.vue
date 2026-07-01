@@ -1,7 +1,6 @@
 <script setup lang='ts'>import VPTeamMembersItem from 'vitepress/dist/client/theme-default/components/VPTeamMembersItem.vue';
 import HeroWrapper from './HeroWrapper.vue';
 
-
 const members = [{
   name: '尤雨溪',
   avatar: 'https://avatars.githubusercontent.com/u/499550?v=4',

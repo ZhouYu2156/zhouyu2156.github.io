@@ -23,21 +23,22 @@ const { isHome, hasSidebar } = useLayout()
 </script>
 
 <template>
-  <div
-    class="VPNavBar"
-    :class="{
-      'has-sidebar': hasSidebar,
-      'home': isHome,
-      'top': y === 0,
-      'screen-open': isScreenOpen
-    }"
-  >
+  <div class="VPNavBar" :class="{
+    'has-sidebar': hasSidebar,
+    'home': isHome,
+    'top': y === 0,
+    'screen-open': isScreenOpen
+  }">
     <div class="wrapper">
       <div class="container">
         <div class="title">
           <VPNavBarTitle>
-            <template #nav-bar-title-before><slot name="nav-bar-title-before" /></template>
-            <template #nav-bar-title-after><slot name="nav-bar-title-after" /></template>
+            <template #nav-bar-title-before>
+              <slot name="nav-bar-title-before" />
+            </template>
+            <template #nav-bar-title-after>
+              <slot name="nav-bar-title-after" />
+            </template>
           </VPNavBarTitle>
         </div>
 
@@ -51,11 +52,7 @@ const { isHome, hasSidebar } = useLayout()
             <VPNavBarSocialLinks class="social-links" />
             <VPNavBarExtra class="extra" />
             <slot name="nav-bar-content-after" />
-            <VPNavBarHamburger
-              class="hamburger"
-              :active="isScreenOpen"
-              @click="$emit('toggle-screen')"
-            />
+            <VPNavBarHamburger class="hamburger" :active="isScreenOpen" @click="$emit('toggle-screen')" />
           </div>
         </div>
       </div>
@@ -92,7 +89,8 @@ const { isHome, hasSidebar } = useLayout()
   }
 
   .VPNavBar:not(.has-sidebar):not(.home.top) {
-    background-color: var(--vp-nav-bg-color);
+    /** 继承使用透明背景 */
+    /* background-color: var(--vp-nav-bg-color); */
   }
 }
 
@@ -112,6 +110,13 @@ const { isHome, hasSidebar } = useLayout()
   }
 }
 
+.wrapper {
+  background-image: radial-gradient(transparent 1px, var(--vp-nav-bg-color) 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(8px);
+  -webkit-backdrop-filter: saturate(50%) blur(8px);
+}
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -121,8 +126,8 @@ const { isHome, hasSidebar } = useLayout()
   pointer-events: none;
 }
 
-.container > .title,
-.container > .content {
+.container>.title,
+.container>.content {
   pointer-events: none;
 }
 
@@ -206,11 +211,11 @@ const { isHome, hasSidebar } = useLayout()
   }
 }
 
-.menu + .translations::before,
-.menu + .appearance::before,
-.menu + .social-links::before,
-.translations + .appearance::before,
-.appearance + .social-links::before {
+.menu+.translations::before,
+.menu+.appearance::before,
+.menu+.social-links::before,
+.translations+.appearance::before,
+.appearance+.social-links::before {
   margin-right: 8px;
   margin-left: 8px;
   width: 1px;
@@ -219,12 +224,12 @@ const { isHome, hasSidebar } = useLayout()
   content: "";
 }
 
-.menu + .appearance::before,
-.translations + .appearance::before {
+.menu+.appearance::before,
+.translations+.appearance::before {
   margin-right: 16px;
 }
 
-.appearance + .social-links::before {
+.appearance+.social-links::before {
   margin-left: 16px;
 }
 

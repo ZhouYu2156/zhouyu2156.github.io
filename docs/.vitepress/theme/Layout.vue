@@ -4,7 +4,6 @@ import DefaultTheme, { VPSponsors } from 'vitepress/theme';
 import ContactCardList from './components/ContactCardList.vue';
 import MusicPlayerBar from './components/MusicPlayerBar.vue';
 import ProjectCardList from './components/ProjectCardList.vue';
-import Sponsors from './components/Sponsors.vue';
 import WorkList from './components/WorkList.vue';
 import { useTreasuredMusicPlayer } from './composables/treasuredMusicPlayer';
 
@@ -17,12 +16,22 @@ const { playerBarExpanded, playbackEngaged } = useTreasuredMusicPlayer()
 <template>
   <DefaultTheme.Layout>
     <template #home-features-after>
-      <Sponsors />
+      <!-- <Sponsors /> -->
       <ProjectCardList />
       <WorkList />
       <ContactCardList />
     </template>
     <template #aside-ads-before>
+      <VPSponsors :size="'big'" :mode="'aside'" :tier="'扫码关注'" :data="[
+        {
+          name: '扫码关注',
+          // img: isDark === true ? '/payment/AdmireCode-dark.jpg' : '/payment/AdmireCode-light.jpg',
+          img: '/contact/引导微信扫码关注.png',
+          url: '/contact/引导微信扫码关注.png',
+        },
+      ]" />
+    </template>
+    <template #aside-ads-after>
       <VPSponsors :size="'big'" :mode="'aside'" :tier="'感谢赞赏'" :data="[
         {
           name: '微信',
@@ -33,15 +42,6 @@ const { playerBarExpanded, playbackEngaged } = useTreasuredMusicPlayer()
           name: '支付宝',
           img: '/payment/alipay.jpg',
           url: 'https://www.alipay.com',
-        },
-      ]" />
-    </template>
-    <template #aside-ads-after>
-      <VPSponsors :size="'big'" :mode="'aside'" :tier="'感谢赞赏'" :data="[
-        {
-          name: '赞赏码',
-          img: isDark === true ? '/payment/AdmireCode-dark.jpg' : '/payment/AdmireCode-light.jpg',
-          url: 'https://www.wechat.com',
         },
       ]" />
     </template>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+  <title>微聊 · 移动端原型</title>
+  <style>
+    :root {
+      --wx-green: #07c160;
+      --wx-green-dark: #06ad56;
+      --wx-bg: #ededed;
+      --wx-card: #ffffff;
+      --wx-text: #191919;
+      --wx-sub: #888888;
+      --wx-border: rgba(0, 0, 0, 0.08);
+      --wx-bubble-me: #95ec69;
+      --wx-bubble-other: #ffffff;
+      --phone-w: 390px;
+      --phone-h: 844px;
+      --header-h: 48px;
+      --dock-h: 64px;
+      --safe-b: env(safe-area-inset-bottom, 0px);
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: var(--font);
+      background: #1a1a1e;
+      color: var(--wx-text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 桌面预览：手机框 */
+    .preview-stage {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .phone {
+      width: min(100%, var(--phone-w));
+      height: min(100dvh, var(--phone-h));
+      max-height: calc(100dvh - 48px);
+      background: var(--wx-bg);
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 10px #1c1c1e,
+        0 0 0 12px #3a3a3c,
+        0 40px 80px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 状态栏 */
+    .status-bar {
+      height: 44px;
+      padding: 12px 28px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--wx-card);
+      flex-shrink: 0;
+    }
+
+    .status-bar.light {
+      background: transparent;
+      color: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    /* 顶栏 */
+    .app-header {
+      height: var(--header-h);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--wx-card);
+      border-bottom: 1px solid var(--wx-border);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
+
+    .app-header h1 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .app-header .actions {
+      display: flex;
+      gap: 18px;
+      color: var(--wx-text);
+    }
+
+    .app-header .actions button {
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      color: inherit;
+      display: flex;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    /* 主内容区 */
+    .app-main {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+      padding-bottom: calc(var(--dock-h) + 24px + var(--safe-b));
+    }
+
+    .view {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* ========== 聊天列表 ========== */
+    .search-bar {
+      padding: 8px 12px;
+      background: var(--wx-card);
+    }
+
+    .search-bar input {
+      width: 100%;
+      border: none;
+      background: var(--wx-bg);
+      border-radius: 8px;
+      padding: 8px 12px 8px 36px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--wx-sub);
+    }
+
+    .chat-list {
+      list-style: none;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--wx-card);
+      border-bottom: 1px solid var(--wx-border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .chat-item:active {
+      background: #f5f5f5;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .chat-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .chat-name {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .chat-time {
+      font-size: 12px;
+      color: var(--wx-sub);
+      flex-shrink: 0;
+    }
+
+    .chat-preview {
+      font-size: 14px;
+      color: var(--wx-sub);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      background: #fa5151;
+      color: #fff;
+      font-size: 11px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 6px;
+    }
+
+    /* ========== 聊天详情 ========== */
+    .screen-stack {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    .screen-stack .sub-screen {
+      position: absolute;
+      inset: 0;
+      background: var(--wx-bg);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+      pointer-events: none;
+    }
+
+    .screen-stack .sub-screen.open {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .chat-header {
+      background: var(--wx-card);
+      border-bottom: 1px solid var(--wx-border);
+    }
+
+    .chat-header .back-title {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-header .back-title span {
+      font-size: 17px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .call-actions {
+      display: flex;
+      gap: 16px;
+    }
+
+    .call-actions .icon-btn {
+      color: var(--wx-text);
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .msg-time {
+      text-align: center;
+      font-size: 12px;
+      color: var(--wx-sub);
+      margin: 8px 0;
+    }
+
+    .msg {
+      display: flex;
+      gap: 8px;
+      max-width: 88%;
+    }
+
+    .msg.me {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg .avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 14px;
+    }
+
+    .bubble {
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      line-height: 1.45;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .msg:not(.me) .bubble {
+      background: var(--wx-bubble-other);
+    }
+
+    .msg.me .bubble {
+      background: var(--wx-bubble-me);
+    }
+
+    .bubble.voice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 100px;
+    }
+
+    .bubble.video-call,
+    .bubble.voice-call {
+      background: var(--wx-card);
+      border: 1px solid var(--wx-border);
+      font-size: 14px;
+      color: var(--wx-sub);
+    }
+
+    .bubble.video-call strong,
+    .bubble.voice-call strong {
+      display: block;
+      color: var(--wx-green);
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .composer {
+      background: #f7f7f7;
+      border-top: 1px solid var(--wx-border);
+      padding: 8px 10px calc(8px + var(--safe-b));
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .composer .icon-btn {
+      color: #555;
+      flex-shrink: 0;
+    }
+
+    .composer-input {
+      flex: 1;
+      min-height: 38px;
+      max-height: 100px;
+      background: var(--wx-card);
+      border-radius: 8px;
+      border: none;
+      padding: 8px 12px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      line-height: 1.4;
+    }
+
+    .composer-send {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--wx-green);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* ========== 通讯录 ========== */
+    .contact-toolbar {
+      padding: 8px 16px;
+      background: var(--wx-card);
+      font-size: 14px;
+      color: var(--wx-sub);
+      display: flex;
+      gap: 16px;
+    }
+
+    .contact-toolbar span {
+      color: var(--wx-green);
+      font-weight: 500;
+    }
+
+    .index-bar {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--wx-green);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .letter-group {
+      background: var(--wx-bg);
+    }
+
+    .letter-label {
+      padding: 4px 16px;
+      font-size: 13px;
+      color: var(--wx-sub);
+      font-weight: 500;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--wx-card);
+      border-bottom: 1px solid var(--wx-border);
+      cursor: pointer;
+    }
+
+    .contact-item:active {
+      background: #f5f5f5;
+    }
+
+    /* ========== 朋友圈 ========== */
+    .moments-header {
+      position: relative;
+      height: 280px;
+      background: linear-gradient(160deg, #4a6741 0%, #2c3e50 50%, #1a252f 100%);
+      margin-bottom: 48px;
+    }
+
+    .moments-cover-user {
+      position: absolute;
+      right: 16px;
+      bottom: -28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .moments-cover-user .name {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .moments-cover-user .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      border: 2px solid #fff;
+    }
+
+    .moment-card {
+      background: var(--wx-card);
+      padding: 16px;
+      border-bottom: 8px solid var(--wx-bg);
+    }
+
+    .moment-head {
+      display: flex;
+      gap: 10px;
+    }
+
+    .moment-head .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+    }
+
+    .moment-meta .name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #576b95;
+    }
+
+    .moment-text {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .moment-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin-top: 10px;
+    }
+
+    .moment-images .ph {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #e8e8e8, #d0d0d0);
+      border-radius: 4px;
+    }
+
+    .moment-foot {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--wx-sub);
+    }
+
+    .moment-actions button {
+      background: #f7f7f7;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #576b95;
+      cursor: pointer;
+    }
+
+    .moment-likes {
+      margin-top: 10px;
+      background: #f7f7f7;
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #576b95;
+    }
+
+    /* ========== 我 ========== */
+    .profile-hero {
+      background: var(--wx-card);
+      padding: 24px 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .profile-hero .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      font-size: 24px;
+    }
+
+    .profile-hero h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .profile-hero p {
+      font-size: 14px;
+      color: var(--wx-sub);
+      margin-top: 4px;
+    }
+
+    .menu-group {
+      background: var(--wx-card);
+      margin-bottom: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--wx-border);
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+
+    .menu-item:active {
+      background: #f7f7f7;
+    }
+
+    .menu-item .mi-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--wx-green);
+    }
+
+    .menu-item .arrow {
+      margin-left: auto;
+      color: #c8c8c8;
+    }
+
+    /* ========== 悬浮 Dock TabBar ========== */
+    .floating-dock {
+      position: absolute;
+      left: 50%;
+      bottom: calc(10px + var(--safe-b));
+      transform: translateX(-50%);
+      z-index: 50;
+      width: calc(100% - 32px);
+      max-width: 340px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(28px) saturate(1.8);
+      -webkit-backdrop-filter: blur(28px) saturate(1.8);
+      border-radius: 28px;
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.12),
+        0 1px 3px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
+    .dock-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 4px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--wx-sub);
+      font-family: inherit;
+      font-size: 10px;
+      border-radius: 18px;
+      transition: color 0.2s, background 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .dock-item svg {
+      width: 26px;
+      height: 26px;
+      transition: transform 0.2s;
+    }
+
+    .dock-item.active {
+      color: var(--wx-green);
+    }
+
+    .dock-item.active svg {
+      transform: scale(1.08);
+    }
+
+    .dock-item.active::before {
+      content: '';
+      position: absolute;
+      inset: 2px 4px;
+      background: rgba(7, 193, 96, 0.12);
+      border-radius: 16px;
+      z-index: -1;
+    }
+
+    .dock-badge {
+      position: absolute;
+      top: 2px;
+      right: calc(50% - 22px);
+      min-width: 16px;
+      height: 16px;
+      background: #fa5151;
+      color: #fff;
+      font-size: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    /* 原型标注 */
+    .proto-tag {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    @media (max-width: 420px) {
+      .preview-stage {
+        padding: 0;
+      }
+
+      .phone {
+        width: 100%;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .proto-tag {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <p class="proto-tag">移动端原型 · 悬浮 Dock · 点击会话进入聊天</p>
+
+  <div class="preview-stage">
+    <div class="phone" id="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G ▮▮▮</span>
+      </div>
+
+      <!-- 顶栏（随 Tab 变化） -->
+      <header class="app-header" id="mainHeader">
+        <h1 id="headerTitle">微信</h1>
+        <div class="actions">
+          <button type="button" class="icon-btn" aria-label="搜索">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3-3" />
+            </svg>
+          </button>
+          <button type="button" class="icon-btn" aria-label="添加">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1" fill="currentColor" />
+              <circle cx="19" cy="12" r="1" fill="currentColor" />
+              <circle cx="5" cy="12" r="1" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <!-- 聊天 -->
+        <section class="view active" id="view-chats" data-title="微信">
+          <div class="search-bar">
+            <div class="search-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3-3" />
+              </svg>
+              <input type="search" placeholder="搜索" readonly />
+            </div>
+          </div>
+          <ul class="chat-list" id="chatList">
+            <li class="chat-item" data-chat="林晓雨" data-color="#5b7cfa">
+              <div class="avatar" style="background:#5b7cfa">林</div>
+              <div class="chat-body">
+                <div class="chat-row">
+                  <span class="chat-name">林晓雨</span>
+                  <span class="chat-time">晚上 8:32</span>
+                </div>
+                <p class="chat-preview">[视频通话] 未接听<span class="badge">1</span></p>
+              </div>
+            </li>
+            <li class="chat-item" data-chat="项目组" data-color="#07c160">
+              <div class="avatar" style="background:#07c160">项</div>
+              <div class="chat-body">
+                <div class="chat-row">
+                  <span class="chat-name">项目组</span>
+                  <span class="chat-time">下午 3:15</span>
+                </div>
+                <p class="chat-preview">张三：明天下午对一下原型稿</p>
+              </div>
+            </li>
+            <li class="chat-item" data-chat="妈妈" data-color="#fa9d3b">
+              <div class="avatar" style="background:#fa9d3b">妈</div>
+              <div class="chat-body">
+                <div class="chat-row">
+                  <span class="chat-name">妈妈</span>
+                  <span class="chat-time">昨天</span>
+                </div>
+                <p class="chat-preview">[语音] 15"</p>
+              </div>
+            </li>
+            <li class="chat-item" data-chat="文件传输助手" data-color="#10aeff">
+              <div class="avatar" style="background:#10aeff">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4z" />
+                </svg>
+              </div>
+              <div class="chat-body">
+                <div class="chat-row">
+                  <span class="chat-name">文件传输助手</span>
+                  <span class="chat-time">周一</span>
+                </div>
+                <p class="chat-preview">mobile-app.html</p>
+              </div>
+            </li>
+            <li class="chat-item" data-chat="陈逸飞" data-color="#8b5cf6">
+              <div class="avatar" style="background:#8b5cf6">陈</div>
+              <div class="chat-body">
+                <div class="chat-row">
+                  <span class="chat-name">陈逸飞</span>
+                  <span class="chat-time">周日</span>
+                </div>
+                <p class="chat-preview">好的，晚上语音聊</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 通讯录 -->
+        <section class="view" id="view-contacts" data-title="通讯录">
+          <div class="contact-toolbar">
+            <span>新的朋友</span>
+            <span>群聊</span>
+            <span>标签</span>
+          </div>
+          <div class="letter-group">
+            <div class="letter-label">A</div>
+            <div class="contact-item">
+              <div class="avatar" style="background:#ef4444">阿</div>
+              <span>阿杰</span>
+            </div>
+          </div>
+          <div class="letter-group">
+            <div class="letter-label">L</div>
+            <div class="contact-item">
+              <div class="avatar" style="background:#5b7cfa">林</div>
+              <span>林晓雨</span>
+            </div>
+          </div>
+          <div class="letter-group">
+            <div class="letter-label">M</div>
+            <div class="contact-item">
+              <div class="avatar" style="background:#fa9d3b">妈</div>
+              <span>妈妈</span>
+            </div>
+          </div>
+          <div class="letter-group">
+            <div class="letter-label">Z</div>
+            <div class="contact-item">
+              <div class="avatar" style="background:#8b5cf6">陈</div>
+              <span>陈逸飞</span>
+            </div>
+          </div>
+          <div class="index-bar">A<br>L<br>M<br>Z</div>
+        </section>
+
+        <!-- 朋友圈 -->
+        <section class="view" id="view-moments" data-title="朋友圈">
+          <div class="moments-header">
+            <div class="status-bar light">
+              <span>9:41</span>
+              <span>5G</span>
+            </div>
+            <div class="moments-cover-user">
+              <span class="name">周玉</span>
+              <div class="avatar" style="background:linear-gradient(135deg,#07c160,#10aeff)">周</div>
+            </div>
+          </div>
+          <article class="moment-card">
+            <div class="moment-head">
+              <div class="avatar" style="background:#5b7cfa">林</div>
+              <div class="moment-meta">
+                <div class="name">林晓雨</div>
+              </div>
+            </div>
+            <p class="moment-text">周末露营的照片～天气超好 ☀️</p>
+            <div class="moment-images">
+              <div class="ph"></div>
+              <div class="ph"></div>
+              <div class="ph"></div>
+              <div class="ph"></div>
+              <div class="ph"></div>
+              <div class="ph"></div>
+            </div>
+            <div class="moment-foot">
+              <span>2 小时前</span>
+              <div class="moment-actions">
+                <button type="button">赞</button>
+                <button type="button">评论</button>
+              </div>
+            </div>
+            <div class="moment-likes">❤ 周玉、陈逸飞 等 12 人</div>
+          </article>
+          <article class="moment-card">
+            <div class="moment-head">
+              <div class="avatar" style="background:#07c160">项</div>
+              <div class="moment-meta">
+                <div class="name">项目组</div>
+              </div>
+            </div>
+            <p class="moment-text">通讯 App 原型第一版完成，欢迎大家体验反馈 🎉</p>
+            <div class="moment-foot">
+              <span>昨天</span>
+              <div class="moment-actions">
+                <button type="button">赞</button>
+                <button type="button">评论</button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- 我 -->
+        <section class="view" id="view-profile" data-title="我">
+          <div class="profile-hero">
+            <div class="avatar" style="background:linear-gradient(135deg,#07c160,#06ad56)">周</div>
+            <div>
+              <h2>周玉</h2>
+              <p>微信号：zhouyu · 轻触编辑资料</p>
+            </div>
+          </div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <span class="mi-icon">💳</span>
+              <span>服务</span>
+              <span class="arrow">›</span>
+            </div>
+          </div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <span class="mi-icon">📷</span>
+              <span>朋友圈</span>
+              <span class="arrow">›</span>
+            </div>
+            <div class="menu-item">
+              <span class="mi-icon">⭐</span>
+              <span>收藏</span>
+              <span class="arrow">›</span>
+            </div>
+            <div class="menu-item">
+              <span class="mi-icon">🖼</span>
+              <span>相册</span>
+              <span class="arrow">›</span>
+            </div>
+          </div>
+          <div class="menu-group">
+            <div class="menu-item">
+              <span class="mi-icon">⚙</span>
+              <span>设置</span>
+              <span class="arrow">›</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 聊天详情（子页面） -->
+        <div class="screen-stack" id="screenStack">
+          <div class="sub-screen" id="chatScreen">
+            <header class="app-header chat-header">
+              <button type="button" class="icon-btn" id="btnBack" aria-label="返回">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <div class="back-title">
+                <span id="chatTitle">林晓雨</span>
+              </div>
+              <div class="call-actions">
+                <button type="button" class="icon-btn" title="语音通话" aria-label="语音">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3zm7 10v1a7 7 0 01-14 0v-1H3v1a9 9 0 008 8.94V22h2v-1.06A9 9 0 0021 13v-1h-2z" />
+                  </svg>
+                </button>
+                <button type="button" class="icon-btn" title="视频通话" aria-label="视频">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 10.5V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-3.5l4 4v-11l-4 4z" />
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="messages">
+              <div class="msg-time">今天 20:15</div>
+              <div class="msg">
+                <div class="avatar" style="background:#5b7cfa">林</div>
+                <div class="bubble">晚上有空吗？想跟你对一下产品方案</div>
+              </div>
+              <div class="msg me">
+                <div class="avatar" style="background:#07c160">周</div>
+                <div class="bubble">有的，八点之后都可以</div>
+              </div>
+              <div class="msg">
+                <div class="avatar" style="background:#5b7cfa">林</div>
+                <div class="bubble voice">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#333">
+                    <path
+                      d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+                  </svg>
+                  <span>12"</span>
+                </div>
+              </div>
+              <div class="msg me">
+                <div class="avatar" style="background:#07c160">周</div>
+                <div class="bubble voice">
+                  <span>8"</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#333" style="transform:scaleX(-1)">
+                    <path
+                      d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="avatar" style="background:#5b7cfa">林</div>
+                <div class="bubble video-call">
+                  <strong>视频通话未接听</strong>
+                  点击回拨进行视频聊天
+                </div>
+              </div>
+              <div class="msg me">
+                <div class="avatar" style="background:#07c160">周</div>
+                <div class="bubble">我稍后打给你</div>
+              </div>
+            </div>
+            <div class="composer">
+              <button type="button" class="icon-btn" aria-label="语音">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10" />
+                  <circle cx="12" cy="12" r="3" fill="currentColor" />
+                </svg>
+              </button>
+              <textarea class="composer-input" rows="1" placeholder=""></textarea>
+              <button type="button" class="icon-btn" aria-label="表情">😊</button>
+              <button type="button" class="composer-send" aria-label="更多">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 8v8M8 12h8" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 悬浮 Dock -->
+      <nav class="floating-dock" id="floatingDock" aria-label="主导航">
+        <button type="button" class="dock-item active" data-tab="chats" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2zm0 14H5.17L4 17.17V4h16v12z" />
+          </svg>
+          <span>微信</span>
+          <span class="dock-badge">3</span>
+        </button>
+        <button type="button" class="dock-item" data-tab="contacts">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+          </svg>
+          <span>通讯录</span>
+        </button>
+        <button type="button" class="dock-item" data-tab="moments">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M21 6h-2.64l1.14-3.14a1 1 0 00-.94-1.36H5.44a1 1 0 00-.94 1.36L5.64 6H3a1 1 0 00-1 1v12a1 1 0 001 1h18a1 1 0 001-1V7a1 1 0 00-1-1zm-9 11H8v-2h4v2zm6-4H6v-2h12v2z" />
+          </svg>
+          <span>朋友圈</span>
+        </button>
+        <button type="button" class="dock-item" data-tab="profile">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          </svg>
+          <span>我</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const views = {
+        chats: document.getElementById('view-chats'),
+        contacts: document.getElementById('view-contacts'),
+        moments: document.getElementById('view-moments'),
+        profile: document.getElementById('view-profile'),
+      };
+      const dockItems = document.querySelectorAll('.dock-item');
+      const headerTitle = document.getElementById('headerTitle');
+      const mainHeader = document.getElementById('mainHeader');
+      const chatScreen = document.getElementById('chatScreen');
+      const chatTitle = document.getElementById('chatTitle');
+      const btnBack = document.getElementById('btnBack');
+      const floatingDock = document.getElementById('floatingDock');
+
+      const tabTitles = {
+        chats: '微信',
+        contacts: '通讯录',
+        moments: '朋友圈',
+        profile: '我',
+      };
+
+      function switchTab(tab) {
+        Object.keys(views).forEach((key) => {
+          views[key].classList.toggle('active', key === tab);
+        });
+        dockItems.forEach((btn) => {
+          const isActive = btn.dataset.tab === tab;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
+        headerTitle.textContent = tabTitles[tab] || '';
+        mainHeader.style.display = '';
+        closeChat();
+      }
+
+      dockItems.forEach((btn) => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      function openChat(name) {
+        chatTitle.textContent = name;
+        chatScreen.classList.add('open');
+        mainHeader.style.display = 'none';
+        floatingDock.style.opacity = '0.4';
+        floatingDock.style.pointerEvents = 'none';
+      }
+
+      function closeChat() {
+        chatScreen.classList.remove('open');
+        mainHeader.style.display = '';
+        floatingDock.style.opacity = '';
+        floatingDock.style.pointerEvents = '';
+      }
+
+      document.querySelectorAll('.chat-item').forEach((item) => {
+        item.addEventListener('click', () => openChat(item.dataset.chat));
+      });
+
+      btnBack.addEventListener('click', closeChat);
+
+      document.querySelectorAll('.contact-item').forEach((item) => {
+        item.addEventListener('click', () => {
+          const name = item.querySelector('span')?.textContent;
+          if (name) {
+            switchTab('chats');
+            setTimeout(() => openChat(name), 280);
+          }
+        });
+      });
+    })();
+  </script>
+
+  <script>
+    // 获取音频数据
+    const audio = new Audio('./audio/message.mp3')
+    const audioCtx = new AudioContext()
+    const source = audioCtx.createMediaElementSource(audio)
+    source.connect(audioCtx.destination)
+    audio.play()
+    const buffer = new Uint8Array(audioCtx.getByteTimeDomainData(new Uint8Array(1024)))
+    console.log(buffer)
+  </script>
+</body>
+
+</html>

@@ -12,6 +12,11 @@ div[class^='language-'] {
   font-family: ui-monospace, 'SF Mono';
 }
 
+.vp-code-block-title [data-title]::before,
+.vp-code-group [data-title]::before {
+  transform: scale(1.2);
+}
+
 /** 自定义：模拟Mac电脑上 三个圆点 */
 .vp-code-group::before,
 div[class^='language-']::before,

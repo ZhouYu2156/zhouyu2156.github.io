@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>复利滚雪球 · 极客兔</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root,
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-2: #27272a;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.12);
+      --gold: #fbbf24;
+      --gold-muted: rgba(251, 191, 36, 0.15);
+      --text: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --warn: #f59e0b;
+      --warn-bg: rgba(245, 158, 11, 0.12);
+      --danger: #f87171;
+      --danger-bg: rgba(248, 113, 113, 0.12);
+      --ok: #4ade80;
+      --ok-bg: rgba(74, 222, 128, 0.1);
+      --real-line: #38bdf8;
+      --mesh-a: rgba(251, 191, 36, 0.09);
+      --mesh-b: rgba(245, 158, 11, 0.04);
+      --chart-compound: #fbbf24;
+      --chart-purchasing: #38bdf8;
+      --chart-simple: #52525b;
+      --chart-contributed: #a1a1aa;
+      --chart-tooltip-bg: rgba(24, 24, 27, 0.96);
+      --chart-tooltip-text: #fafafa;
+      --chart-axis: #71717a;
+      --chart-grid: rgba(255, 255, 255, 0.06);
+      --modal-overlay: rgba(0, 0, 0, 0.75);
+      --radius: 12px;
+      --radius-lg: 16px;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+    }
+
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f4f5;
+      --surface: #ffffff;
+      --surface-2: #e4e4e7;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --gold: #b45309;
+      --gold-muted: rgba(180, 83, 9, 0.12);
+      --text: #18181b;
+      --text-secondary: #52525b;
+      --text-tertiary: #71717a;
+      --warn: #d97706;
+      --warn-bg: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-bg: rgba(220, 38, 38, 0.08);
+      --ok: #16a34a;
+      --ok-bg: rgba(22, 163, 74, 0.1);
+      --real-line: #0369a1;
+      --mesh-a: rgba(180, 83, 9, 0.08);
+      --mesh-b: rgba(234, 179, 8, 0.05);
+      --chart-compound: #d97706;
+      --chart-purchasing: #0284c7;
+      --chart-simple: #a1a1aa;
+      --chart-contributed: #71717a;
+      --chart-tooltip-bg: rgba(255, 255, 255, 0.98);
+      --chart-tooltip-text: #18181b;
+      --chart-axis: #71717a;
+      --chart-grid: rgba(0, 0, 0, 0.06);
+      --modal-overlay: rgba(15, 15, 20, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -20%, var(--mesh-a), transparent 50%),
+        radial-gradient(ellipse 40% 30% at 100% 0%, var(--mesh-b), transparent 40%);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: clamp(20px, 4vw, 40px) clamp(16px, 3vw, 24px) clamp(48px, 8vw, 64px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font: inherit;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--gold-muted);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+      color: var(--gold);
+    }
+
+    .brand h1 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      max-width: 400px;
+    }
+
+    .status-banner {
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-size: 0.875rem;
+      line-height: 1.55;
+    }
+
+    .status-banner.show {
+      display: flex;
+    }
+
+    .status-banner.healthy {
+      background: var(--ok-bg);
+      border: 1px solid rgba(74, 222, 128, 0.25);
+    }
+
+    .status-banner.warning {
+      background: var(--warn-bg);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-banner.danger {
+      background: var(--danger-bg);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+    }
+
+    .status-banner strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .status-banner.healthy strong {
+      color: var(--ok);
+    }
+
+    .status-banner.warning strong {
+      color: var(--warn);
+    }
+
+    .status-banner.danger strong {
+      color: var(--danger);
+    }
+
+    .status-banner p {
+      color: var(--text-secondary);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar .brand {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .brand p {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 18px;
+      }
+
+      .result-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .pills {
+        width: 100%;
+      }
+
+      .delta-pill {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .chart-wrap {
+        height: 260px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .strategies {
+        grid-template-columns: 1fr;
+      }
+
+      .insight {
+        flex-direction: column;
+      }
+
+      .theme-toggle span {
+        display: none;
+      }
+
+      .milestones {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .milestones-short .milestone .amount {
+        font-size: 0.9375rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .milestones {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    [data-theme="light"] .modal-preview {
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .field-group-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 8px 0 14px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .field label output {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-strong);
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.9375rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: rgba(251, 191, 36, 0.5);
+      box-shadow: 0 0 0 3px var(--gold-muted);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--surface-2);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid var(--bg);
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+    }
+
+    .view-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .view-tabs button {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font: inherit;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .view-tabs button.active {
+      background: var(--gold-muted);
+      border-color: rgba(251, 191, 36, 0.35);
+      color: var(--gold);
+    }
+
+    .result-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-metric .label {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .hero-metric .value {
+      font-size: clamp(2rem, 4.5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-metric .value .currency {
+      font-size: 0.65em;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .hero-metric .value .highlight {
+      color: var(--gold);
+    }
+
+    .hero-metric .value .real {
+      color: var(--real-line);
+    }
+
+    .hero-metric .sub-metric {
+      font-size: 0.8125rem;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .delta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      background: var(--gold-muted);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    .delta-pill span {
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .delta-pill.real-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.25);
+      color: var(--real-line);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 720px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+
+    .stat .label {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 1rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat .value.accent {
+      color: var(--gold);
+    }
+
+    .stat .value.real {
+      color: var(--real-line);
+    }
+
+    .stat .sub {
+      font-size: 0.6875rem;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    .chart-wrap {
+      height: 320px;
+      border-radius: var(--radius);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    #chart {
+      width: 100%;
+      height: 100%;
+    }
+
+    .strategies {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .strategies.show {
+      display: grid;
+    }
+
+    .strategy-card {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+
+    .strategy-card h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .strategy-card p {
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+
+    .insight {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-radius: var(--radius);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .insight-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--gold-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+    }
+
+    .insight.danger .insight-icon {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .insight strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .milestone-group-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+    }
+
+    .milestone-group-label+.milestones {
+      margin-bottom: 20px;
+    }
+
+    .milestones {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+      gap: 10px;
+    }
+
+    .milestones-short .milestone {
+      border-color: rgba(251, 191, 36, 0.15);
+    }
+
+    [data-theme="light"] .milestones-short .milestone {
+      border-color: rgba(180, 83, 9, 0.2);
+    }
+
+    .milestone {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .milestone .year {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    .milestone .amount {
+      font-size: 1rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .milestone .real {
+      font-size: 0.75rem;
+      color: var(--real-line);
+    }
+
+    .milestone .gain {
+      font-size: 0.75rem;
+      color: var(--gold);
+    }
+
+    .btn-poster {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      background: var(--gold-muted);
+      color: var(--gold);
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-poster:hover {
+      opacity: 0.85;
+    }
+
+    .page-footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .page-footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .page-footer a:hover {
+      color: var(--gold);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 32px;
+      transform: translateX(-50%) translateY(12px);
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--gold);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--modal-overlay);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(12px, 3vw, 24px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(16px, 3vw, 24px);
+      max-width: min(520px, 100%);
+      max-height: min(92vh, 900px);
+      overflow-y: auto;
+      width: 100%;
+      text-align: center;
+    }
+
+    .modal h3 {
+      font-size: 1.125rem;
+      margin-bottom: 4px;
+    }
+
+    .modal .modal-desc {
+      font-size: 0.8125rem;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+    }
+
+    .modal-preview {
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-preview canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .modal-actions button {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .modal-actions button.primary {
+      background: var(--gold-muted);
+      border-color: rgba(251, 191, 36, 0.4);
+      color: var(--gold);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-mesh" aria-hidden="true"></div>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v10M9 10h4.5a2 2 0 1 0 0-2H11a2 2 0 1 1 0 4h3a2 2 0 1 1 0 4H9" />
+          </svg>
+        </div>
+        <div>
+          <h1>复利滚雪球</h1>
+          <p>时间、储蓄、收益与通胀 — 一站看清财富轨迹</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="切换主题">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <span id="themeLabel">浅色</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="statusBanner" class="status-banner" role="status"></div>
+
+    <div class="layout">
+      <aside class="card">
+        <div class="section-label">参数设置</div>
+
+        <div class="field">
+          <label for="assets">已有资产（元）</label>
+          <input type="number" id="assets" min="0" step="1000">
+        </div>
+
+        <div class="field">
+          <label for="daily">主业日收入（元）</label>
+          <input type="number" id="daily" min="0" step="10">
+          <p class="hint">月投入 = 日收入 × 30 × 储蓄比例</p>
+        </div>
+
+        <div class="field">
+          <label>储蓄比例 <output id="saveLabel">25%</output></label>
+          <input type="range" id="saveRate" min="5" max="80" step="1">
+          <p class="hint">月投入 ≈（主业 + 副业）× 储蓄比例</p>
+        </div>
+
+        <p class="field-group-title">收益与通胀</p>
+
+        <div class="field">
+          <label>年化收益率 <output id="rateLabel">6%</output></label>
+          <input type="range" id="annualRate" min="1" max="15" step="0.5">
+          <p class="hint">长期稳健型资产配置参考区间</p>
+        </div>
+
+        <div class="field">
+          <label>年化通胀率 <output id="inflationLabel">2.5%</output></label>
+          <input type="range" id="inflation" min="0" max="8" step="0.1">
+          <p class="hint">用于折算购买力，可按个人预期调整</p>
+        </div>
+
+        <div class="field">
+          <label>规划年限 <output id="yearsLabel">10 年</output></label>
+          <input type="range" id="years" min="1" max="30" step="1">
+        </div>
+
+        <p class="field-group-title">额外收入</p>
+
+        <div class="field">
+          <label for="sideIncome">副业月收入（元）</label>
+          <input type="number" id="sideIncome" min="0" step="100">
+          <p class="hint">自媒体、接单等，与主业同比例储蓄</p>
+        </div>
+      </aside>
+
+      <main>
+        <section class="card" style="margin-bottom: 16px;">
+          <div class="section-label">资产预测</div>
+
+          <div class="view-tabs" role="tablist">
+            <button type="button" class="active" data-view="nominal" role="tab">名义资产</button>
+            <button type="button" data-view="real" role="tab">购买力</button>
+          </div>
+
+          <div class="result-header">
+            <div class="hero-metric">
+              <div class="label" id="heroLabel">预计期末总资产（名义）</div>
+              <div class="value" id="finalValue">—</div>
+              <div class="sub-metric" id="heroSub"></div>
+            </div>
+            <div class="pills">
+              <div class="delta-pill" id="extraPill"><span>较只存钱</span> +¥ —</div>
+              <div class="delta-pill real-pill" id="realRatePill">实际年化 —</div>
+            </div>
+          </div>
+
+          <div class="stats" id="statsGrid"></div>
+
+          <div class="chart-wrap">
+            <div id="chart" role="img" aria-label="资产增长曲线"></div>
+          </div>
+
+          <div class="strategies" id="strategies"></div>
+
+          <div class="insight" id="encourageBox">
+            <div class="insight-icon" id="insightIcon" aria-hidden="true">↗</div>
+            <div class="insight-text"></div>
+          </div>
+
+        </section>
+
+        <section class="card">
+          <div class="section-label">时间里程碑</div>
+          <p class="milestone-group-label">近期阶段</p>
+          <div class="milestones milestones-short" id="milestonesShort"></div>
+          <p class="milestone-group-label">年度规划</p>
+          <div class="milestones" id="milestones"></div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="page-footer">
+      <a href="https://geektu.github.io" target="_blank" rel="noopener">极客兔</a>
+      <span> · 复利滚雪球</span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <div class="modal-overlay" id="posterModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-labelledby="posterTitle">
+      <h3 id="posterTitle">复利坚持成就证书</h3>
+      <p class="modal-desc">可保存或分享，记录你的复利里程碑</p>
+      <div class="modal-preview"><canvas id="posterCanvas"></canvas></div>
+      <div class="modal-actions">
+        <button type="button" id="posterClose">关闭</button>
+        <button type="button" class="primary" id="posterDownload">保存证书</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id)
+
+    /** 市场常规默认值 — 见 PRD §21 */
+    const DEFAULTS = {
+      assets: 100000,
+      daily: 250,
+      saveRate: 25,
+      annualRate: 6,
+      inflation: 2.5,
+      years: 10,
+      sideIncome: 0
+    }
+
+    const STORAGE_KEY = 'compound-snowball-v1'
+
+    const SHORT_MILESTONES = [
+      { id: 'd7', label: '7 天后', months: 7 / 30 },
+      { id: 'm1', label: '一月后', months: 1 },
+      { id: 'm3', label: '3 月后', months: 3 },
+      { id: 'm6', label: '6 月后', months: 6 }
+    ]
+
+    const YEAR_MILESTONES = [1, 3, 5, 10, 15, 20, 30]
+
+    const THEME_KEY = 'compound-snowball-theme'
+
+    function getChartColors() {
+      const s = getComputedStyle(document.documentElement)
+      return {
+        compound: s.getPropertyValue('--chart-compound').trim() || '#fbbf24',
+        purchasing: s.getPropertyValue('--chart-purchasing').trim() || '#38bdf8',
+        simple: s.getPropertyValue('--chart-simple').trim() || '#52525b',
+        contributed: s.getPropertyValue('--chart-contributed').trim() || '#a1a1aa',
+        tooltipBg: s.getPropertyValue('--chart-tooltip-bg').trim(),
+        tooltipText: s.getPropertyValue('--chart-tooltip-text').trim(),
+        axis: s.getPropertyValue('--chart-axis').trim(),
+        grid: s.getPropertyValue('--chart-grid').trim()
+      }
+    }
+
+    function getTheme() {
+      return document.documentElement.getAttribute('data-theme') || 'dark'
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme)
+      localStorage.setItem(THEME_KEY, theme)
+      const isDark = theme === 'dark'
+      $('themeLabel').textContent = isDark ? '浅色' : '深色'
+      $('themeToggle').setAttribute('aria-label', isDark ? '切换为浅色主题' : '切换为深色主题')
+      $('themeIcon').innerHTML = isDark
+        ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+      if (chart) update()
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem(THEME_KEY)
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
+      setTheme(saved || (prefersLight ? 'light' : 'dark'))
+      $('themeToggle').addEventListener('click', () => {
+        setTheme(getTheme() === 'dark' ? 'light' : 'dark')
+      })
+    }
+
+    function getPointAtMonths(series, months) {
+      const max = series.compound.length - 1
+      if (months <= 0) return { ...series.compound[0], month: 0 }
+      if (months >= max) return { ...series.compound[max], month: max }
+      const i = Math.floor(months)
+      const f = months - i
+      const a = series.compound[i]
+      const b = series.compound[i + 1]
+      const lerp = (x, y) => x + (y - x) * f
+      return {
+        month: months,
+        total: lerp(a.total, b.total),
+        contributed: lerp(a.contributed, b.contributed),
+        simple: lerp(a.simple, b.simple),
+        purchasing: lerp(a.purchasing, b.purchasing)
+      }
+    }
+
+    const STRATEGIES = [
+      { title: '扩大本金：副业/自媒体', text: '把技能与内容变成第二现金流，直接提高每月可投金额。' },
+      { title: '扩大本金：提升主业收入', text: '晋升、跳槽、接单 — 一次性抬高定投基数。' },
+      { title: '提高名义收益率', text: '在风险可承受前提下优化资产配置，提升长期回报空间。' },
+      { title: '提高储蓄比例', text: '短期无法增收时，先控制消费、提高储蓄率缓冲。' },
+      { title: '理解通胀', text: '账面赚钱≠购买力增加；关注实际年化是否为正。' }
+    ]
+
+    let chart = null
+    let viewMode = 'nominal'
+    let lastToastKey = ''
+    let posterPayload = null
+
+    const fmt = (n) => {
+      if (!Number.isFinite(n)) return '—'
+      if (n >= 1e8) return (n / 1e8).toFixed(2) + ' 亿'
+      if (n >= 1e4) return (n / 1e4).toFixed(2) + ' 万'
+      return Math.round(n).toLocaleString('zh-CN')
+    }
+
+    const fmtFull = (n) => '¥ ' + Math.round(n).toLocaleString('zh-CN')
+
+    function hexToRgba(hex, alpha) {
+      const h = (hex || '#fbbf24').replace('#', '')
+      const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
+      const n = parseInt(full, 16)
+      return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`
+    }
+
+    function diagnose(realRate) {
+      if (realRate <= 0) return 'danger'
+      if (realRate <= 1) return 'warning'
+      return 'healthy'
+    }
+
+    function simulate(principal, monthlyContrib, annualRatePct, years) {
+      const months = years * 12
+      const r = annualRatePct / 100 / 12
+      const compound = [{ month: 0, total: principal, contributed: principal, simple: principal }]
+      let balance = principal
+      let contributed = principal
+      let noCompound = principal
+
+      for (let m = 1; m <= months; m++) {
+        balance = balance * (1 + r) + monthlyContrib
+        contributed += monthlyContrib
+        noCompound += monthlyContrib
+        compound.push({ month: m, total: balance, contributed, simple: noCompound })
+      }
+
+      return {
+        compound,
+        final: balance,
+        contributed,
+        interest: balance - contributed,
+        extra: balance - noCompound
+      }
+    }
+
+    function attachPurchasingPower(compound, inflationPct) {
+      const im = inflationPct / 100 / 12
+      return compound.map((p) => ({
+        ...p,
+        purchasing: im >= 0 ? p.total / Math.pow(1 + im, p.month) : p.total
+      }))
+    }
+
+    function readInputs() {
+      const assets = Math.max(0, Number($('assets').value) || 0)
+      const daily = Math.max(0, Number($('daily').value) || 0)
+      const saveRate = Number($('saveRate').value) / 100
+      const annualRate = Number($('annualRate').value)
+      const inflation = Number($('inflation').value)
+      const years = Number($('years').value)
+      const sideIncome = Math.max(0, Number($('sideIncome').value) || 0)
+      const monthlyMain = daily * 30 * saveRate
+      const monthlySide = sideIncome * saveRate
+      const monthly = monthlyMain + monthlySide
+      const realRate = annualRate - inflation
+      return {
+        assets,
+        daily,
+        saveRate,
+        annualRate,
+        inflation,
+        years,
+        sideIncome,
+        monthly,
+        monthlyMain,
+        monthlySide,
+        realRate,
+        status: diagnose(realRate)
+      }
+    }
+
+    function ensureChart() {
+      if (!chart) {
+        chart = echarts.init($('chart'), null, { renderer: 'canvas' })
+        window.addEventListener('resize', () => chart?.resize())
+      }
+      return chart
+    }
+
+    function renderChart(series, years) {
+      const c = ensureChart()
+      const colors = getChartColors()
+      const points = series.compound
+      const months = years * 12
+      const xData = points.map((p) => p.month)
+      const hex = colors.compound
+      const areaGradient = new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: hexToRgba(hex, 0.28) },
+        { offset: 1, color: hexToRgba(hex, 0) }
+      ])
+
+      c.setOption({
+        backgroundColor: 'transparent',
+        animationDuration: 480,
+        legend: {
+          top: 4,
+          left: 'center',
+          itemWidth: 16,
+          itemHeight: 8,
+          textStyle: { color: colors.axis, fontSize: 11 }
+        },
+        grid: { left: 12, right: 16, top: 48, bottom: 8, containLabel: true },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: { color: 'rgba(251, 191, 36, 0.35)' }
+          },
+          backgroundColor: colors.tooltipBg,
+          borderColor: getTheme() === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255, 255, 255, 0.1)',
+          padding: [12, 14],
+          textStyle: { color: colors.tooltipText, fontSize: 13 },
+          extraCssText: 'border-radius:10px',
+          formatter(params) {
+            const idx = params[0]?.dataIndex ?? 0
+            const pt = points[idx]
+            const y = Math.floor(pt.month / 12)
+            const m = pt.month % 12
+            const title = pt.month === 0 ? '起点' : `第 ${y} 年 ${m} 个月`
+            const rows = params.map((p) =>
+              `<div style="display:flex;justify-content:space-between;gap:16px;margin-top:6px">
+                <span>${p.marker} ${p.seriesName}</span>
+                <strong>${fmtFull(p.value)}</strong>
+              </div>`
+            ).join('')
+            const gain = pt.total - pt.contributed
+            const erode = pt.total - pt.purchasing
+            return `<div style="font-weight:600;margin-bottom:4px">${title}</div>
+              ${rows}
+              <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);
+                font-size:12px;color:#a1a1aa">
+                <div style="display:flex;justify-content:space-between"><span>名义复利收益</span><span style="color:#fbbf24">${fmtFull(gain)}</span></div>
+                <div style="display:flex;justify-content:space-between;margin-top:4px"><span>通胀侵蚀（名义−购买力）</span><span>${fmtFull(erode)}</span></div>
+              </div>`
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: xData,
+          axisLine: { lineStyle: { color: colors.grid } },
+          axisTick: { show: false },
+          axisLabel: {
+            color: colors.axis,
+            fontSize: 11,
+            interval: (i) => i % 12 === 0 || i === months,
+            formatter: (v) => (v % 12 === 0 ? v / 12 + '年' : '')
+          }
+        },
+        yAxis: {
+          type: 'value',
+          splitNumber: 4,
+          axisLabel: { color: colors.axis, fontSize: 11, formatter: (v) => fmt(v) },
+          splitLine: { lineStyle: { color: colors.grid } }
+        },
+        series: [
+          {
+            name: '名义总资产',
+            type: 'line',
+            smooth: 0.35,
+            showSymbol: false,
+            lineStyle: { width: 2.5, color: colors.compound },
+            areaStyle: { color: areaGradient },
+            data: points.map((p) => p.total),
+            z: 4
+          },
+          {
+            name: '购买力等价',
+            type: 'line',
+            smooth: 0.35,
+            showSymbol: false,
+            lineStyle: { width: 2, color: colors.purchasing },
+            data: points.map((p) => p.purchasing),
+            z: 3
+          },
+          {
+            name: '只存钱',
+            type: 'line',
+            smooth: 0.2,
+            symbol: 'none',
+            lineStyle: { width: 2, color: colors.simple, type: [6, 4] },
+            data: points.map((p) => p.simple),
+            z: 1
+          },
+          {
+            name: '累计投入',
+            type: 'line',
+            smooth: 0.2,
+            symbol: 'none',
+            lineStyle: { width: 1.5, color: colors.contributed, type: [4, 3] },
+            data: points.map((p) => p.contributed),
+            z: 2
+          }
+        ]
+      }, true)
+
+      requestAnimationFrame(() => c.resize())
+    }
+
+    function renderStatusBanner(status, realRate, inflation, annualRate) {
+      const el = $('statusBanner')
+      const texts = {
+        healthy: {
+          title: '实际收益为正',
+          body: `实际年化约 ${realRate.toFixed(1)}%（${annualRate}% − ${inflation}% 通胀）。购买力随名义资产同步抬升，但仍需关注市场波动。`
+        },
+        warning: {
+          title: '实际收益偏低',
+          body: `实际年化约 ${realRate.toFixed(1)}%，接近通胀。建议关注增收或优化收益率，避免「账面涨、购买力停滞」。`
+        },
+        danger: {
+          title: '实际收益 ≤ 0：购买力可能缩水',
+          body: `在 ${annualRate}% 名义收益与 ${inflation}% 通胀下，存钱增值可能跑不赢物价。请优先扩大本金来源（副业等），而非仅提高储蓄比例。`
+        }
+      }
+      const t = texts[status]
+      el.className = `status-banner show ${status}`
+      el.innerHTML = `<div><strong>${t.title}</strong><p>${t.body}</p></div>`
+    }
+
+    function renderStrategies(status) {
+      const box = $('strategies')
+      if (status === 'healthy') {
+        box.classList.remove('show')
+        return
+      }
+      box.classList.add('show')
+      box.innerHTML = STRATEGIES.map((s) =>
+        `<article class="strategy-card"><h4>${s.title}</h4><p>${s.text}</p></article>`
+      ).join('')
+    }
+
+    function renderStats(series, input) {
+      const last = series.compound[series.compound.length - 1]
+      const pct = series.final ? ((series.interest / series.final) * 100).toFixed(1) : '0'
+      const erode = series.final - last.purchasing
+      $('statsGrid').innerHTML = `
+        <div class="stat"><div class="label">累计投入</div><div class="value">${fmtFull(series.contributed)}</div></div>
+        <div class="stat"><div class="label">名义复利收益</div><div class="value accent">${fmtFull(series.interest)}</div><div class="sub">占名义期末 ${pct}%</div></div>
+        <div class="stat"><div class="label">期末购买力</div><div class="value real">${fmtFull(last.purchasing)}</div><div class="sub">较名义 −${fmt(erode)}</div></div>
+        <div class="stat"><div class="label">月定投额</div><div class="value">${fmtFull(input.monthly)}</div>${input.sideIncome > 0 ? `<div class="sub">含副业 ${fmtFull(input.monthlySide)}</div>` : ''}</div>
+        <div class="stat"><div class="label">实际年化</div><div class="value ${input.realRate <= 0 ? 'accent' : 'real'}">${input.realRate.toFixed(1)}%</div></div>
+        <div class="stat"><div class="label">较只存钱多赚</div><div class="value accent">${fmtFull(series.extra)}</div></div>
+      `
+    }
+
+    function renderHero(series, input) {
+      const last = series.compound[series.compound.length - 1]
+      const isReal = viewMode === 'real'
+      $('heroLabel').textContent = isReal ? '预计期末购买力（今日币值）' : '预计期末总资产（名义）'
+      const main = isReal ? last.purchasing : series.final
+      const cls = isReal ? 'real' : 'highlight'
+      $('finalValue').innerHTML = `<span class="currency">¥</span><span class="${cls}">${fmt(main)}</span>`
+      $('heroSub').textContent = isReal
+        ? `名义账面 ${fmtFull(series.final)} · 通胀侵蚀约 ${fmtFull(series.final - last.purchasing)}`
+        : `购买力等价 ${fmtFull(last.purchasing)} · 实际年化约 ${input.realRate.toFixed(1)}%`
+      $('extraPill').innerHTML = `<span>较只存钱</span> +¥ ${fmt(series.extra)}`
+      $('realRatePill').textContent = `实际年化 ${input.realRate.toFixed(1)}%`
+    }
+
+    function milestoneCardHtml(pt, label) {
+      const gain = Math.max(0, pt.total - pt.contributed)
+      return `<article class="milestone">
+          <div class="year">${label}</div>
+          <div class="amount">名义 ¥ ${fmt(pt.total)}</div>
+          <div class="real">购买力 ¥ ${fmt(pt.purchasing)}</div>
+          <div class="gain">复利 +¥ ${fmt(gain)}</div>
+          <button type="button" class="btn-poster" data-poster-label="${label}">领取成就证书</button>
+        </article>`
+    }
+
+    function bindPosterButtons(container, series, input) {
+      container.querySelectorAll('[data-poster-label]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const label = btn.dataset.posterLabel
+          const short = SHORT_MILESTONES.find((s) => s.label === label)
+          const pt = short
+            ? getPointAtMonths(series, short.months)
+            : series.compound[parseInt(label, 10) * 12]
+          openPosterAtPoint(pt, input, label)
+        })
+      })
+    }
+
+    function renderMilestones(series, targetYears, input) {
+      const maxMonths = targetYears * 12
+      $('milestonesShort').innerHTML = SHORT_MILESTONES
+        .filter((s) => s.months <= maxMonths)
+        .map((s) => milestoneCardHtml(getPointAtMonths(series, s.months), s.label))
+        .join('')
+
+      $('milestones').innerHTML = YEAR_MILESTONES.filter((y) => y <= targetYears)
+        .map((y) => milestoneCardHtml(series.compound[y * 12], `${y} 年后`))
+        .join('')
+
+      bindPosterButtons($('milestonesShort'), series, input)
+      bindPosterButtons($('milestones'), series, input)
+    }
+
+    function renderInsight(series, input) {
+      const box = $('encourageBox')
+      const icon = $('insightIcon')
+      const { years, realRate, status, sideIncome, monthly, annualRate, inflation } = input
+      const extra5 = simulate(input.assets, monthly, annualRate, years + 5).final - series.final
+      const pct = ((series.interest / series.final) * 100).toFixed(1)
+      const last = series.compound[series.compound.length - 1]
+
+      box.classList.toggle('danger', status === 'danger')
+      icon.textContent = status === 'danger' ? '!' : status === 'warning' ? '△' : '↗'
+
+      let html = ''
+      if (status === 'danger') {
+        html = `按当前参数，<strong>${years} 年</strong>后名义资产约 <strong>${fmtFull(series.final)}</strong>，购买力约 <strong>${fmtFull(last.purchasing)}</strong>（实际年化 <strong>${realRate.toFixed(1)}%</strong> ≤ 0）。` +
+          `请优先通过<strong>副业、技能变现</strong>扩大月投入（当前 ¥${fmt(monthly)}/月）${sideIncome > 0 ? '，你已计入副业，可继续调高' : ''}，而非只盯着储蓄比例。`
+      } else if (status === 'warning') {
+        html = `名义复利约占 <strong>${pct}%</strong>，但扣除 <strong>${inflation}%</strong> 通胀后实际年化仅 <strong>${realRate.toFixed(1)}%</strong>。` +
+          `建议同步规划<strong>增收</strong>；再多坚持 5 年，名义或多 <strong>${fmt(extra5)}</strong>。`
+      } else {
+        html = `坚持 <strong>${years} 年</strong>，名义复利约占 <strong>${pct}%</strong>，实际年化约 <strong>${realRate.toFixed(1)}%</strong>。` +
+          `期末购买力 <strong>${fmtFull(last.purchasing)}</strong>；再多 5 年名义约多 <strong>${fmt(extra5)}</strong>。` +
+          (sideIncome > 0 ? `副业月投约 <strong>${fmt(input.monthlySide)}</strong>。` : '')
+      }
+      document.querySelector('.insight-text').innerHTML = html
+    }
+
+    const CERT = {
+      paper: ['#fffdf7', '#f3e8ce'],
+      gold: '#9a7212',
+      goldLight: '#c9a227',
+      goldPale: 'rgba(201, 162, 39, 0.12)',
+      ink: '#2a2218',
+      inkMuted: '#5c5040',
+      seal: '#b91c1c',
+      sealShadow: 'rgba(185, 28, 28, 0.22)'
+    }
+
+    function getStageRibbon(payload) {
+      if (payload.isShort) return `${payload.stageLabel} · 时间里程碑`
+      return `第 ${payload.year} 年 · ${payload.realRate <= 0 ? '时间' : '财富'}里程碑`
+    }
+
+    function getCertProofLines(payload) {
+      if (payload.isShort) {
+        return [
+          `兹证明，您已坚持执行储蓄计划至「${payload.stageLabel}」节点`,
+          '达成下列财富里程碑'
+        ]
+      }
+      return [
+        `兹证明，您已连续规划并执行 ${payload.year} 年储蓄计划`,
+        '达成下列财富里程碑'
+      ]
+    }
+
+    const CERT_TITLE = '复利坚持成就证书'
+
+    function getCertMeta(payload) {
+      const r = payload.realRate
+      const ribbon = getStageRibbon(payload)
+      if (r <= 0) {
+        return {
+          ribbon,
+          badge: '持续投入认证',
+          insight: '您已完成阶段性储蓄目标；提升实际年化需关注增收与资产配置。',
+          purchasingColor: '#7a5c1e'
+        }
+      }
+      if (r <= 1) {
+        return {
+          ribbon,
+          badge: '财富成长认证',
+          insight: '名义资产稳步积累，建议同步关注购买力与增收规划。',
+          purchasingColor: '#8b6914'
+        }
+      }
+      return {
+        ribbon,
+        badge: '财富增长认证',
+        insight: '名义资产与购买力同步向好，复利与时间正在发挥作用。',
+        purchasingColor: '#9a7212'
+      }
+    }
+
+    function drawCertCorner(ctx, x, y, flipX, flipY, size) {
+      ctx.save()
+      ctx.translate(x, y)
+      ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1)
+      ctx.strokeStyle = CERT.goldLight
+      ctx.lineWidth = 2.5
+      ctx.beginPath()
+      ctx.moveTo(0, size)
+      ctx.lineTo(0, 0)
+      ctx.lineTo(size, 0)
+      ctx.stroke()
+      ctx.fillStyle = CERT.gold
+      ctx.beginPath()
+      ctx.arc(size * 0.12, size * 0.12, 5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
+    }
+
+    function drawCertWatermark(ctx, W, H) {
+      ctx.save()
+      ctx.translate(W / 2, H * 0.48)
+      ctx.rotate(-18 * Math.PI / 180)
+      ctx.fillStyle = 'rgba(154, 114, 18, 0.04)'
+      ctx.font = '700 120px "Noto Serif SC", serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText('极客兔', 0, 0)
+      ctx.restore()
+    }
+
+    function drawMedal(ctx, cx, cy) {
+      ctx.save()
+      ctx.translate(cx, cy)
+      const r = 36
+      const g = ctx.createRadialGradient(0, 0, 4, 0, 0, r)
+      g.addColorStop(0, '#ffe9a8')
+      g.addColorStop(0.55, CERT.goldLight)
+      g.addColorStop(1, CERT.gold)
+      ctx.fillStyle = g
+      ctx.beginPath()
+      ctx.arc(0, 0, r, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = CERT.gold
+      ctx.lineWidth = 2
+      ctx.stroke()
+      ctx.fillStyle = CERT.ink
+      ctx.font = '700 28px "Noto Serif SC", serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText('★', 0, 2)
+      ctx.restore()
+    }
+
+    function drawYearRibbon(ctx, cx, y, text, w) {
+      const h = 52
+      const x = cx - w / 2
+      ctx.fillStyle = CERT.gold
+      roundRect(ctx, x, y, w, h, 6)
+      ctx.fill()
+      ctx.fillStyle = '#fffef8'
+      ctx.font = '700 30px "Noto Serif SC", serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(text, cx, y + h / 2 + 1)
+    }
+
+    function serratedCirclePath(ctx, r, teeth = 36) {
+      ctx.beginPath()
+      for (let i = 0; i < teeth; i++) {
+        const a0 = (i / teeth) * Math.PI * 2
+        const a1 = ((i + 0.5) / teeth) * Math.PI * 2
+        const R0 = r
+        const R1 = r - 5
+        const x0 = Math.cos(a0) * R0
+        const y0 = Math.sin(a0) * R0
+        const x1 = Math.cos(a1) * R1
+        const y1 = Math.sin(a1) * R1
+        if (i === 0) ctx.moveTo(x0, y0)
+        else ctx.lineTo(x0, y0)
+        ctx.lineTo(x1, y1)
+      }
+      ctx.closePath()
+    }
+
+    function drawOfficialSeal(ctx, cx, cy, radius) {
+      ctx.save()
+      ctx.translate(cx, cy)
+      ctx.rotate(-11 * Math.PI / 180)
+
+      ctx.shadowColor = 'rgba(0,0,0,0.15)'
+      ctx.shadowBlur = 12
+      ctx.shadowOffsetY = 4
+
+      ctx.fillStyle = CERT.sealShadow
+      serratedCirclePath(ctx, radius)
+      ctx.fill()
+
+      ctx.strokeStyle = CERT.seal
+      ctx.lineWidth = 4
+      serratedCirclePath(ctx, radius)
+      ctx.stroke()
+
+      ctx.shadowBlur = 0
+      ctx.shadowOffsetY = 0
+
+      ctx.strokeStyle = CERT.seal
+      ctx.lineWidth = 1.5
+      ctx.setLineDash([5, 3])
+      ctx.beginPath()
+      ctx.arc(0, 0, radius - 14, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.setLineDash([])
+
+      ctx.fillStyle = CERT.seal
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.font = '700 32px "Noto Serif SC", serif'
+      ctx.fillText('极客兔', 0, -20)
+      ctx.font = '600 24px "Noto Serif SC", serif'
+      ctx.fillText('官网认证', 0, 20)
+
+      ctx.globalCompositeOperation = 'multiply'
+      ctx.fillStyle = 'rgba(185, 28, 28, 0.1)'
+        ;[[-18, 12, 0.32], [14, -10, 0.28], [0, 0, 0.4], [22, 16, 0.22], [-8, -20, 0.26]].forEach(([ox, oy, s]) => {
+          ctx.beginPath()
+          ctx.arc(ox, oy, radius * s, 0, Math.PI * 2)
+          ctx.fill()
+        })
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.restore()
+    }
+
+    function drawCertDivider(ctx, x, y, w) {
+      const g = ctx.createLinearGradient(x, y, x + w, y)
+      g.addColorStop(0, 'transparent')
+      g.addColorStop(0.15, CERT.goldLight)
+      g.addColorStop(0.5, CERT.gold)
+      g.addColorStop(0.85, CERT.goldLight)
+      g.addColorStop(1, 'transparent')
+      ctx.strokeStyle = g
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(x, y)
+      ctx.lineTo(x + w, y)
+      ctx.stroke()
+    }
+
+    function wrapCenterText(ctx, text, x, y, maxW, lineH, font) {
+      ctx.save()
+      ctx.font = font
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'top'
+      let line = ''
+      const lines = []
+      for (const ch of text) {
+        const test = line + ch
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line)
+          line = ch
+        } else line = test
+      }
+      if (line) lines.push(line)
+      lines.forEach((ln, i) => ctx.fillText(ln, x, y + i * lineH))
+      ctx.restore()
+      return lines.length * lineH
+    }
+
+    /** 证书单列指标：labelY / valueY 由调用方指定，避免多行共用坐标重叠 */
+    function drawCertMetricCell(ctx, cx, labelY, valueY, label, value, valueFont, valueColor, sans, serif) {
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'alphabetic'
+      ctx.fillStyle = CERT.inkMuted
+      ctx.font = `500 20px ${sans}`
+      ctx.fillText(label, cx, labelY)
+      ctx.fillStyle = valueColor
+      ctx.font = valueFont
+      ctx.fillText(value, cx, valueY)
+    }
+
+    function drawPosterCanvas(payload) {
+      const meta = getCertMeta(payload)
+      const W = 1080
+      const H = 1480
+      const canvas = $('posterCanvas')
+      canvas.width = W
+      canvas.height = H
+      const ctx = canvas.getContext('2d')
+      const serif = '"Noto Serif SC", serif'
+      const sans = 'Inter, sans-serif'
+      const pad = 56
+      const inner = 80
+      const boxW = W - inner * 2
+
+      const bg = ctx.createLinearGradient(0, 0, 0, H)
+      bg.addColorStop(0, CERT.paper[0])
+      bg.addColorStop(0.5, '#faf6eb')
+      bg.addColorStop(1, CERT.paper[1])
+      ctx.fillStyle = bg
+      ctx.fillRect(0, 0, W, H)
+
+      drawCertWatermark(ctx, W, H)
+
+      const frame = pad - 8
+      ctx.strokeStyle = CERT.gold
+      ctx.lineWidth = 3
+      ctx.strokeRect(frame, frame, W - frame * 2, H - frame * 2)
+      ctx.strokeStyle = CERT.goldLight
+      ctx.lineWidth = 1
+      ctx.strokeRect(frame + 10, frame + 10, W - (frame + 10) * 2, H - (frame + 10) * 2)
+
+      const cs = 40
+      drawCertCorner(ctx, frame + 14, frame + 14, false, false, cs)
+      drawCertCorner(ctx, W - frame - 14, frame + 14, true, false, cs)
+      drawCertCorner(ctx, frame + 14, H - frame - 14, false, true, cs)
+      drawCertCorner(ctx, W - frame - 14, H - frame - 14, true, true, cs)
+
+      // —— 页眉 ——
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'alphabetic'
+      ctx.fillStyle = CERT.gold
+      ctx.font = `600 16px ${sans}`
+      ctx.letterSpacing = '0.14em'
+      ctx.fillText('GEEKTU · COMPOUND SNOWBALL', W / 2, 100)
+      ctx.letterSpacing = '0'
+
+      drawMedal(ctx, W / 2, 148)
+
+      ctx.fillStyle = CERT.ink
+      ctx.font = `700 46px ${serif}`
+      ctx.fillText(CERT_TITLE, W / 2, 228)
+
+      ctx.fillStyle = CERT.inkMuted
+      ctx.font = `500 17px ${sans}`
+      ctx.fillText('CERTIFICATE OF COMPOUND PERSISTENCE', W / 2, 262)
+
+      drawCertDivider(ctx, W * 0.2, 278, W * 0.6)
+
+      ctx.font = '700 28px "Noto Serif SC", serif'
+      const ribbonW = Math.min(boxW - 40, Math.max(400, ctx.measureText(meta.ribbon) + 88))
+      drawYearRibbon(ctx, W / 2, 296, meta.ribbon, ribbonW)
+
+      const proofLines = getCertProofLines(payload)
+      ctx.fillStyle = CERT.inkMuted
+      ctx.font = `500 23px ${serif}`
+      wrapCenterText(ctx, proofLines[0], W / 2, 378, boxW - 32, 34, `500 23px ${serif}`)
+      ctx.font = `500 22px ${serif}`
+      ctx.fillText(proofLines[1], W / 2, 448)
+
+      // —— 数据面板（固定行高，双行四格）——
+      const cardY = 488
+      const cardH = 368
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.78)'
+      ctx.strokeStyle = CERT.goldLight
+      ctx.lineWidth = 1.5
+      roundRect(ctx, inner, cardY, boxW, cardH, 16)
+      ctx.fill()
+      ctx.stroke()
+
+      const colMid = inner + boxW / 2
+      const leftCx = inner + boxW * 0.25
+      const rightCx = inner + boxW * 0.75
+
+      ctx.strokeStyle = 'rgba(154, 114, 18, 0.18)'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(colMid, cardY + 24)
+      ctx.lineTo(colMid, cardY + cardH - 72)
+      ctx.stroke()
+
+      const row1LabelY = cardY + 52
+      const row1ValueY = cardY + 108
+      drawCertMetricCell(
+        ctx, leftCx, row1LabelY, row1ValueY,
+        '名义总资产', fmtFull(payload.nominal),
+        `700 48px ${serif}`, CERT.gold, sans, serif
+      )
+      drawCertMetricCell(
+        ctx, rightCx, row1LabelY, row1ValueY,
+        '购买力（今日币值）', fmtFull(payload.purchasing),
+        `700 44px ${serif}`, meta.purchasingColor, sans, serif
+      )
+
+      const rowDivY = cardY + 168
+      ctx.beginPath()
+      ctx.moveTo(inner + 28, rowDivY)
+      ctx.lineTo(inner + boxW - 28, rowDivY)
+      ctx.stroke()
+
+      const row2LabelY = cardY + 200
+      const row2ValueY = cardY + 252
+      drawCertMetricCell(
+        ctx, leftCx, row2LabelY, row2ValueY,
+        '累计投入', fmtFull(payload.contributed),
+        `600 30px ${serif}`, CERT.ink, sans, serif
+      )
+      drawCertMetricCell(
+        ctx, rightCx, row2LabelY, row2ValueY,
+        '复利收益', fmtFull(payload.gain),
+        `600 30px ${serif}`, CERT.gold, sans, serif
+      )
+
+      const badgeY = cardY + cardH - 36
+      const badgeW = 220
+      ctx.fillStyle = CERT.goldPale
+      ctx.strokeStyle = CERT.goldLight
+      ctx.lineWidth = 1
+      roundRect(ctx, W / 2 - badgeW / 2, badgeY - 20, badgeW, 38, 19)
+      ctx.fill()
+      ctx.stroke()
+      ctx.fillStyle = CERT.gold
+      ctx.font = `600 19px ${serif}`
+      ctx.textAlign = 'center'
+      ctx.fillText(meta.badge, W / 2, badgeY + 5)
+
+      // —— 洞察与参数 ——
+      const insightY = cardY + cardH + 32
+      const insightH = 80
+      ctx.fillStyle = 'rgba(90, 72, 40, 0.07)'
+      roundRect(ctx, inner, insightY, boxW, insightH, 12)
+      ctx.fill()
+      ctx.fillStyle = CERT.inkMuted
+      wrapCenterText(ctx, meta.insight, W / 2, insightY + 22, boxW - 56, 28, `400 21px ${serif}`)
+
+      const paramY = insightY + insightH + 36
+      ctx.font = `400 19px ${sans}`
+      ctx.fillStyle = CERT.inkMuted
+      ctx.textAlign = 'center'
+      ctx.fillText(
+        `储蓄 ${payload.saveRate}% · 名义年化 ${payload.annualRate}% · 通胀 ${payload.inflation}%`,
+        W / 2,
+        paramY
+      )
+      ctx.fillStyle = payload.realRate <= 0 ? '#b45309' : CERT.inkMuted
+      ctx.font = `600 19px ${sans}`
+      ctx.fillText(`实际年化 ${payload.realRate.toFixed(1)}%`, W / 2, paramY + 30)
+
+      // —— 页脚：左元数据 / 底部水平居中品牌 / 右下公章 ——
+      const footerH = 172
+      const footerTop = H - pad - footerH
+
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'alphabetic'
+      ctx.fillStyle = CERT.inkMuted
+      ctx.font = `400 17px ${sans}`
+      ctx.fillText(`证书编号 ${payload.certNo || 'JKT'}`, inner, footerTop + 28)
+      ctx.fillText(`颁发日期 ${payload.issueDate || ''}`, inner, footerTop + 54)
+
+      const brandCy = footerTop + footerH * 0.56
+      ctx.textAlign = 'center'
+      ctx.fillStyle = CERT.ink
+      ctx.font = `600 22px ${serif}`
+      ctx.fillText('极客兔 · 复利雪球', W / 2, brandCy + 10)
+      ctx.fillStyle = CERT.gold
+      ctx.font = `500 16px ${sans}`
+      ctx.fillText('极客兔官网认证', W / 2, brandCy + 44)
+
+      const sealR = 72
+      const sealCx = W - frame - sealR - 14
+      const sealCy = H - frame - sealR - 14
+      drawOfficialSeal(ctx, sealCx, sealCy, sealR)
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath()
+      ctx.moveTo(x + r, y)
+      ctx.arcTo(x + w, y, x + w, y + h, r)
+      ctx.arcTo(x + w, y + h, x, y + h, r)
+      ctx.arcTo(x, y + h, x, y, r)
+      ctx.arcTo(x, y, x + w, y, r)
+      ctx.closePath()
+    }
+
+    function openPosterAtPoint(pt, input, stageLabel) {
+      const short = SHORT_MILESTONES.find((s) => s.label === stageLabel)
+      const yearMatch = stageLabel.match(/^(\d+)\s*年/)
+      const year = yearMatch ? Number(yearMatch[1]) : null
+      const now = new Date()
+      const dateSlug = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
+      const idSlug = short ? short.id.toUpperCase() : `${year}Y`
+      posterPayload = {
+        stageLabel,
+        year,
+        isShort: !!short,
+        nominal: pt.total,
+        purchasing: pt.purchasing,
+        contributed: pt.contributed,
+        gain: Math.max(0, pt.total - pt.contributed),
+        saveRate: Math.round(input.saveRate * 100),
+        annualRate: input.annualRate,
+        inflation: input.inflation,
+        realRate: input.realRate,
+        planYears: input.years,
+        issueDate: `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`,
+        certNo: `JKT-${idSlug}-${dateSlug}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
+      }
+      drawPosterCanvas(posterPayload)
+      $('posterTitle').textContent = `${CERT_TITLE} · ${stageLabel}`
+      $('posterModal').classList.add('open')
+      $('posterModal').setAttribute('aria-hidden', 'false')
+    }
+
+    function closePoster() {
+      $('posterModal').classList.remove('open')
+      $('posterModal').setAttribute('aria-hidden', 'true')
+    }
+
+    function downloadPoster() {
+      const canvas = $('posterCanvas')
+      const a = document.createElement('a')
+      a.download = `极客兔-复利成就证书-${posterPayload?.stageLabel || ''}.png`
+      a.href = canvas.toDataURL('image/png')
+      a.click()
+    }
+
+    function showToast(msg) {
+      const t = $('toast')
+      t.textContent = msg
+      t.classList.add('show')
+      clearTimeout(showToast._timer)
+      showToast._timer = setTimeout(() => t.classList.remove('show'), 2400)
+    }
+
+    function saveParams() {
+      try {
+        const data = {
+          assets: $('assets').value,
+          daily: $('daily').value,
+          saveRate: $('saveRate').value,
+          annualRate: $('annualRate').value,
+          inflation: $('inflation').value,
+          years: $('years').value,
+          sideIncome: $('sideIncome').value
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+      } catch (_) { /* ignore */ }
+    }
+
+    function loadParams() {
+      Object.entries(DEFAULTS).forEach(([key, val]) => {
+        const el = $(key === 'saveRate' || key === 'annualRate' || key === 'inflation' || key === 'years' ? (
+          { saveRate: 'saveRate', annualRate: 'annualRate', inflation: 'inflation', years: 'years' }[key]
+        ) : key)
+        if (el) el.value = val
+      })
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY)
+        if (!raw) return
+        const data = JSON.parse(raw)
+        Object.keys(data).forEach((k) => {
+          if ($(k)) $(k).value = data[k]
+        })
+      } catch (_) { /* ignore */ }
+    }
+
+    function update() {
+      const input = readInputs()
+      $('saveLabel').textContent = $('saveRate').value + '%'
+      $('rateLabel').textContent = input.annualRate + '%'
+      $('inflationLabel').textContent = input.inflation + '%'
+      $('yearsLabel').textContent = input.years + ' 年'
+
+      let series = simulate(input.assets, input.monthly, input.annualRate, input.years)
+      series.compound = attachPurchasingPower(series.compound, input.inflation)
+
+      renderStatusBanner(input.status, input.realRate, input.inflation, input.annualRate)
+      renderStrategies(input.status)
+      renderStats(series, input)
+      renderHero(series, input)
+      renderChart(series, input.years, input.inflation)
+      renderMilestones(series, input.years, input)
+      renderInsight(series, input)
+      saveParams()
+
+      const toastKey = `${input.status}-${input.years}`
+      if (input.status === 'healthy' && series.interest / series.final >= 0.28 && toastKey !== lastToastKey) {
+        lastToastKey = toastKey
+        showToast('复利效应已显现')
+      }
+    }
+
+    function initDefaults() {
+      $('assets').value = DEFAULTS.assets
+      $('daily').value = DEFAULTS.daily
+      $('saveRate').value = DEFAULTS.saveRate
+      $('annualRate').value = DEFAULTS.annualRate
+      $('inflation').value = DEFAULTS.inflation
+      $('years').value = DEFAULTS.years
+      $('sideIncome').value = DEFAULTS.sideIncome
+    }
+
+    document.querySelectorAll('.view-tabs button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-tabs button').forEach((b) => b.classList.remove('active'))
+        btn.classList.add('active')
+        viewMode = btn.dataset.view
+        update()
+      })
+    })
+
+      ;['assets', 'daily', 'saveRate', 'annualRate', 'inflation', 'years', 'sideIncome'].forEach((id) => {
+        $(id).addEventListener('input', update)
+      })
+
+    $('posterClose').addEventListener('click', closePoster)
+    $('posterDownload').addEventListener('click', downloadPoster)
+    $('posterModal').addEventListener('click', (e) => {
+      if (e.target === $('posterModal')) closePoster()
+    })
+
+    initTheme()
+    initDefaults()
+    loadParams()
+    update()
+  </script>
+</body>
+
+</html>

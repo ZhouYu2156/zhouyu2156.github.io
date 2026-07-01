@@ -4,11 +4,11 @@
 
 ### node 服务器
 
-| 工具 | 自动刷新 | SPA 支持 | 配置复杂度 | 推荐场景 |
-| --- | --- | --- | --- | --- |
-| http-server | ❌ | ✅（通过 404.html） | 低 | 简单静态文件服务 |
-| live-server | ✅ | ✅ | 低 | 前端开发调试 |
-| serve | ❌ | ✅（内置 SPA 支持） | 中 | 部署前测试 |
+| 工具        | 自动刷新 | SPA 支持            | 配置复杂度 | 推荐场景         |
+| ----------- | -------- | ------------------- | ---------- | ---------------- |
+| http-server | ❌       | ✅（通过 404.html） | 低         | 简单静态文件服务 |
+| live-server | ✅       | ✅                  | 低         | 前端开发调试     |
+| serve       | ❌       | ✅（内置 SPA 支持） | 中         | 部署前测试       |
 
 #### 方式一：http-server
 
@@ -17,8 +17,7 @@ http服务器是一个简单的、零配置的命令行静态http服务器。它
 
 :::
 
-
-```bash
+```sh
 $ npm install -g http-server
 $ http-server [path] [options]
 # 示例：启动 docs 目录下的服务器，监听 5173 端口
@@ -42,7 +41,7 @@ $ npx http-server [path] [options]
 
 :::
 
-```bash
+```sh
 $ npm install -g live-server
 $ live-server [path] [options]
 # 示例：启动 docs 目录下的服务器，监听 5173 端口
@@ -58,7 +57,7 @@ serve 是一个轻量级的静态文件服务器，支持 HTTP/2 和多路复用
 
 :::
 
-```bash
+```sh
 $ npm install -g serve
 $ serve folder-name/
 ```
@@ -76,15 +75,15 @@ Python 3.7+ 标准库自带，零依赖。适合本地预览静态站、临时�
 
 **命令行**（在项目或静态目录下执行 `python -m http.server`）常用项：
 
-| 写法 | 作用 | 默认 |
-| --- | --- | --- |
-| `[port]` | 监听端口 | `8000` |
-| `-b` / `--bind` | 绑定地址（如 `127.0.0.1` 仅本机；`0.0.0.0` 允许局域网访问；3.8+ 可用 IPv6） | 所有接口 |
-| `-d` / `--directory` | 作为网站根目录的文件夹路径 | 当前工作目录 |
-| `-p` / `--protocol` | HTTP 版本（如 `HTTP/1.1`；用 1.1 时要注意由处理器正确设置 `Content-Length` 等） | `HTTP/1.0` |
-| `-h` / `--help` | 打印帮助 | — |
+| 写法                 | 作用                                                                            | 默认         |
+| -------------------- | ------------------------------------------------------------------------------- | ------------ |
+| `[port]`             | 监听端口                                                                        | `8000`       |
+| `-b` / `--bind`      | 绑定地址（如 `127.0.0.1` 仅本机；`0.0.0.0` 允许局域网访问；3.8+ 可用 IPv6）     | 所有接口     |
+| `-d` / `--directory` | 作为网站根目录的文件夹路径                                                      | 当前工作目录 |
+| `-p` / `--protocol`  | HTTP 版本（如 `HTTP/1.1`；用 1.1 时要注意由处理器正确设置 `Content-Length` 等） | `HTTP/1.0`   |
+| `-h` / `--help`      | 打印帮助                                                                        | —            |
 
-```bash
+```sh
 # 默认：当前目录、端口 8000
 $ python -m http.server
 
@@ -95,7 +94,6 @@ $ python -m http.server 8080 --bind 127.0.0.1 --directory ./dist
 **代码里启动**：`HTTPServer(("主机", 端口), 请求处理类)`，处理类常用 `SimpleHTTPRequestHandler`（直接列目录、读静态文件）。需要同时处理多个连接时，可用 `ThreadingHTTPServer`（Python 3.7+）。要自定义路由或返回内容时，继承 `BaseHTTPRequestHandler` 实现 `do_GET`、`do_POST` 等。`CGIHTTPRequestHandler` 可跑 CGI，日常很少用。
 
 > 完整说明见 [Python 文档：http.server](https://docs.python.org/zh-cn/3/library/http.server.html)
-
 
 ## 支付宝沙箱支付
 
@@ -141,7 +139,7 @@ $ python -m http.server 8080 --bind 127.0.0.1 --directory ./dist
 
 #### 准备密钥
 
-然后我们就可以在项目下创建一个`keys`目录，来存放密钥相关的文件。密钥需要两个，`应用私钥`  和 `支付宝公钥`。我们在 `keys` 目录下分别创建 `public.key` 和 `private.key` 来保存 `支付宝公钥` 和 `应用私钥` 吧，之后我们会在项目中配置读取这两个文件的内容。:warning: 必须按照下面的格式配置你的密钥信息哦，前后两头都的内容是格式要求，中间是对应的密钥信息，要顶格书写，也就是不要空格，直接将你的秘钥信息复制过来，粘贴在中间即可！
+然后我们就可以在项目下创建一个`keys`目录，来存放密钥相关的文件。密钥需要两个，`应用私钥` 和 `支付宝公钥`。我们在 `keys` 目录下分别创建 `public.key` 和 `private.key` 来保存 `支付宝公钥` 和 `应用私钥` 吧，之后我们会在项目中配置读取这两个文件的内容。:warning: 必须按照下面的格式配置你的密钥信息哦，前后两头都的内容是格式要求，中间是对应的密钥信息，要顶格书写，也就是不要空格，直接将你的秘钥信息复制过来，粘贴在中间即可！
 
 - 支付宝公钥
 
@@ -162,7 +160,6 @@ $ python -m http.server 8080 --bind 127.0.0.1 --directory ./dist
 #### 设置配置信息
 
 创建一个存放配置信息的`config.py`文件，将下面的配置模板复制到`config.py`文件中。然后在网页 `沙箱应用` 页面，复制你的 `APPID` 的账号，填写在下方的 `ALIPAY_APP_ID` 字段。
-
 
 ```python
 # config.py
@@ -228,17 +225,15 @@ def generate_order_number():
 
 ```
 
-
-
 #### 安装依赖
 
-```bash
+```sh
 $ pip3 install python-alipay-sdk --upgrade -i https://pypi.douban.com/simple/
 ```
 
 #### 项目结构
 
-```bash
+```sh
 .
 │  app.py
 │  config.py
@@ -251,8 +246,6 @@ $ pip3 install python-alipay-sdk --upgrade -i https://pypi.douban.com/simple/
    ├─order.html
    ├─result.html
 ```
-
-
 
 ### 三、Flask 集成沙箱支付
 
@@ -321,8 +314,6 @@ if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-
-
 #### 页面模板
 
 - `order.html` 模板代码
@@ -330,42 +321,45 @@ if __name__ == '__main__':
 ```html
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>购买商品模拟 - 沙箱支付</title>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-</head>
-<body>
-<div class="goods">
-    <img src="https://img0.baidu.com/it/u=2685198448,3471487942&fm=253&fmt=auto?w=1200&h=800" alt="商品">
-    <button id="buy">
-        去购买
-    </button>
-</div>
+  </head>
+  <body>
+    <div class="goods">
+      <img
+        src="https://img0.baidu.com/it/u=2685198448,3471487942&fm=253&fmt=auto?w=1200&h=800"
+        alt="商品"
+      />
+      <button id="buy">去购买</button>
+    </div>
 
-<script>
-    $(function () {
-        $("#buy").click(function () {
-            $.ajax({
-                url: '/order/',
-                type: 'POST',
-                dataType: 'JSON',
-                success: function (res) {
-                    if (res.status === 1) {
-                        // 跳转到后端支付宝返回的支付链接页面
-                        location.href = res.url
-                    } else {
-                        // 前端页面处理失败逻辑
-                    }
-                }
-            })
+    <script>
+      $(function () {
+        $('#buy').click(function () {
+          $.ajax({
+            url: '/order/',
+            type: 'POST',
+            dataType: 'JSON',
+            success: function (res) {
+              if (res.status === 1) {
+                // 跳转到后端支付宝返回的支付链接页面
+                location.href = res.url
+              } else {
+                // 前端页面处理失败逻辑
+              }
+            }
+          })
         })
-    })
-</script>
-</body>
+      })
+    </script>
+  </body>
 </html>
 ```
 
@@ -374,27 +368,27 @@ if __name__ == '__main__':
 ```html
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>支付成功页面</title>
-</head>
-<body>
-{% if success %}
+  </head>
+  <body>
+    {% if success %}
     <h1>支付成功页面展示</h1>
     <ul>
-        {% for item in data %}
-        	<li>{{ item }}: {{ data[item] }}</li>
-        {% endfor %}
+      {% for item in data %}
+      <li>{{ item }}: {{ data[item] }}</li>
+      {% endfor %}
     </ul>
-{% endif %}
-</body>
+    {% endif %}
+  </body>
 </html>
 ```
-
-
 
 启动服务，流程开始，首先我们访问`http://localhost:5000/order/`会进入到商品展示页面。
 
@@ -444,7 +438,6 @@ APIPAY_GATEWAY="https://openapi.alipay.com/gateway.do"   # 使用真实支付网
 
 2. 修改`APPID`，修改为真实应用的`APPID`即可
 
-
 ### 四、参考资料
 
 - 参考博客：[支付宝支付(沙箱环境&真实支付)使用详解](https://blog.csdn.net/qq_52385631/article/details/122902877)
@@ -455,14 +448,13 @@ APIPAY_GATEWAY="https://openapi.alipay.com/gateway.do"   # 使用真实支付网
 
 > 🙏 项目搭建测试和内容整理撰写，花费不少时间，创作不易，转载请注明出处，谢谢！
 
-
 ## Electron 开发环境搭建
 
 <!--@include: @/public/snippets/preface.md-->
 
 > 本文项目搭建演示的`nodejs`版本如下：
 
-```bash
+```sh
 $ node -v
 # v22.14.0
 ```
@@ -479,7 +471,7 @@ $ node -v
 
 - 创建项目命令如下：
 
-```bash
+```sh
 $ npm init electron-app@latest my-app -- --template=vite  #my-app:项目名(自定义)
 # 或
 $ npm create electron-app@latest my-app -- --template=vite #my-app:项目名(自定义)
@@ -500,7 +492,7 @@ $ pnpm create electron-app my-app --template=vite  #my-app:项目名(自定义)
 
 - 创建项目命令如下：
 
-```bash
+```sh
 $ npm init electron-vite@latest my-app #my-app 项目名称
 # 或
 $ npm create electron-vite@latest my-app #my-app 项目名称
@@ -520,7 +512,7 @@ $ yarn create electron-vite my-app #my-app 项目名称
 
 - 🌞 备注：使用其他包管理器来搭建项目的同学，自行查看一下 [Vite 官方文档](https://cn.vitejs.dev/guide/) 等价于下面的创建命令方式，此处不再一一说明了哈。
 
-```bash
+```sh
 $ npm create vite@latest
 ```
 
@@ -535,7 +527,7 @@ $ npm create vite@latest
 
 - 创建项目命令如下：
 
-```bash
+```sh
 $ npm create @quick-start/electron
 # 或
 $ yarn create @quick-start/electron
@@ -545,7 +537,7 @@ $ pnpm create @quick-start/electron
 
 - 可以在创建命令中指定模板：
 
-```bash
+```sh
 # npm 6.x
 npm create @quick-start/electron my-app --template vue
 # npm 7+, extra double-dash is needed:
@@ -575,7 +567,7 @@ pnpm create @quick-start/electron my-app --template vue
 
 - 克隆项目命令如下：
 
-```bash
+```sh
 $ git clone https://github.com/umbrella22/electron-vite-template.git myapp #myapp 自定义项目名称
 ```
 
@@ -589,13 +581,13 @@ shamefully-hoist=true
 
 - 安装依赖
 
-```bash
+```sh
 $ npm install
 ```
 
 - ⚠️ 尝试设置代理（如果有网络问题）
 
-```bash
+```sh
 # windows
 $ set HTTP_PROXY=http://127.0.0.1:7890
 $ set HTTPS_PROXY=http://127.0.0.1:7890
@@ -619,12 +611,11 @@ $ export https_proxy=http://127.0.0.1:7890
 - vue
 - axios
 
-
 ## 桌面摄像头
 
 ### 创建项目
 
-```bash
+```sh
 $ npm create electron-vite@latest my-app
 ```
 
@@ -637,7 +628,7 @@ function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(__dirname, 'preload.mjs')
     },
     // 新增代码
     autoHideMenuBar: true,
@@ -649,7 +640,7 @@ function createWindow() {
     y: 0,
     transparent: true,
     center: true,
-    resizable: false,
+    resizable: false
   })
   // other code...
 }
@@ -665,7 +656,7 @@ const videoRef = ref<HTMLVideoElement>()
 const openCamera = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false,
+    audio: false
   })
   videoRef.value!.srcObject = stream
 }
@@ -690,13 +681,12 @@ video {
 
 ### 项目运行
 
-```bash
+```sh
 $ npm run dev
 ```
 
 ### 打包发布
 
-```bash
+```sh
 $ npm run build
 ```
-
