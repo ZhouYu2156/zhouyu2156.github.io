@@ -3,8 +3,6 @@ import { useData } from 'vitepress';
 import DefaultTheme, { VPSponsors } from 'vitepress/theme';
 import ContactCardList from './components/ContactCardList.vue';
 import MusicPlayerBar from './components/MusicPlayerBar.vue';
-import ProjectCardList from './components/ProjectCardList.vue';
-import WorkList from './components/WorkList.vue';
 import { useTreasuredMusicPlayer } from './composables/treasuredMusicPlayer';
 
 /** 可以获取每个页面的 frontmatter，向组件注入数据 */
@@ -17,8 +15,8 @@ const { playerBarExpanded, playbackEngaged } = useTreasuredMusicPlayer()
   <DefaultTheme.Layout>
     <template #home-features-after>
       <!-- <Sponsors /> -->
-      <ProjectCardList />
-      <WorkList />
+      <!-- <ProjectCardList /> -->
+      <!-- <WorkList /> -->
       <ContactCardList />
     </template>
     <template #aside-ads-before>
